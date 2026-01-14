@@ -9,7 +9,7 @@
     // Integração de vagas (Jobfeed/Selecty) – preencha quando colocar no ar
     jobfeed: {
       enabled: true, // API de vagas habilitada (via proxy /api/vagas)
-      baseUrl: "",   // mesmo domínio do site
+      baseUrl: window.location.origin,   // mesmo domínio do site
       endpoint: "/api/vagas", // endpoint do proxy (Vercel/GitHub + Vercel)
       token: "",
       app_id: "",
