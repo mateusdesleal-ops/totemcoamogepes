@@ -36,21 +36,25 @@ body{
 }
 
 .app{
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   position: relative; /* ancora as ondas */
 }
 
 .frame{
   width: 100%;
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: stretch;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Sidebar (fica atrás das ondas) */
 .sidebar{
-  height: 100dvh;
+  min-height: 100%;
   width: var(--sidebar-w);
   /* Mantém a barra no mesmo tom de verde da onda */
   background: var(--sidebar-green);
@@ -138,19 +142,22 @@ body{
   position: relative;
   flex: 1;
   min-width: 0;
+  min-height: 100%;
   background: var(--bg);
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding-bottom: calc(var(--waves-h) + 16px); /* espaço para ondas */
 }
 
 /* Alias: HTML atual usa .main e .pageHeader */
 .main{
-  height: 100dvh;
+  min-height: 100%;
   position: relative;
   flex: 1;
   min-width: 0;
   background: var(--bg);
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   /* Respiro interno e centralização consistente em qualquer monitor */
   padding: clamp(18px, 2.2vw, 44px);
@@ -414,8 +421,8 @@ display: block;
   inset:0;
   width:100%;
   height:100%;
-  object-fit: cover;          /* preenche ao máximo */
-  object-position: 50% 15%;   /* protege cabeça */
+  object-fit: contain;
+  object-position: center center;
 }
 
 .presentationSlide.is-portrait .presentationSlide__photo{

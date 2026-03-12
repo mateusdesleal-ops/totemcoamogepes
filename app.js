@@ -9,7 +9,7 @@
     // Integração de vagas (Jobfeed/Selecty) – preencha quando colocar no ar
     jobfeed: {
       enabled: true, // API de vagas habilitada (via proxy /api/vagas)
-      baseUrl: window.location.origin,   // mesmo domínio do site
+      baseUrl: "",   // mesmo domínio do site
       endpoint: "/api/vagas", // endpoint do proxy (Vercel/GitHub + Vercel)
       token: "",
       app_id: "",
@@ -312,11 +312,56 @@
     }
   }
 
+  function pickJobsArray(payload){
+    if(Array.isArray(payload)) return payload;
+    if(!payload || typeof payload !== "object") return [];
+
+    const candidates = [
+      payload.vacancies,
+      payload.data,
+      payload.jobs,
+      payload.items,
+      payload.results,
+      payload.rows,
+      payload.data?.vacancies,
+      payload.data?.jobs,
+      payload.data?.items,
+      payload.payload?.vacancies,
+      payload.payload?.jobs,
+    ];
+
+    for(const item of candidates){
+      if(Array.isArray(item)) return item;
+    }
+    return [];
+  }
+
+  function guessGroup(job){
+    const raw = String(
+      job.group || job.area || job.department || job.category || job.segment || job.business_unit || "admin"
+    ).toLowerCase();
+
+    if(raw.includes("ind")) return "industria";
+    if(raw.includes("agro") || raw.includes("campo") || raw.includes("fazenda")) return "agro";
+    return "admin";
+  }
+
+  function normalizeVacancy(job, idx){
+    return {
+      id: String(job.id || job.code || job.vacancy_id || job.job_id || idx),
+      title: String(job.title || job.name || job.position || job.job_title || "Vaga"),
+      location: String(job.location || job.city || job.unit || job.workplace || job.address_city || ""),
+      group: guessGroup(job),
+      raw: job,
+    };
+  }
+
   async function fetchVacanciesFromApi(){
     const jf = CONFIG.jobfeed;
-    if(!jf || !jf.enabled || !jf.baseUrl || !jf.endpoint) return null;
+    if(!jf || !jf.enabled || !jf.endpoint) return null;
 
-    const url = jf.baseUrl.replace(/\/$/,"") + jf.endpoint;
+    const base = jf.baseUrl ? jf.baseUrl.replace(/\/$/, "") : window.location.origin;
+    const url = base + jf.endpoint;
     const headers = {};
     if(jf.token) headers["Authorization"] = `Bearer ${jf.token}`;
 
@@ -324,18 +369,17 @@
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    // Normalização: ajuste conforme retorno real quando integrar
-    // Espera: array de vagas ou objeto com .vacancies
-    const arr = Array.isArray(data) ? data : (data.vacancies || data.data || []);
-    const norm = arr.map((x, idx) => ({
-      id: String(x.id || x.code || x.vacancy_id || idx),
-      title: String(x.title || x.name || x.position || "Vaga"),
-      location: String(x.location || x.city || x.unit || ""),
-      group: String(x.group || x.area || "admin").toLowerCase().includes("ind") ? "industria"
-            : String(x.group || x.area || "admin").toLowerCase().includes("agro") ? "agro"
-            : "admin",
-    }));
-    return norm;
+    const arr = pickJobsArray(data);
+    const unique = new Map();
+
+    arr.forEach((job, idx) => {
+      const normalized = normalizeVacancy(job, idx);
+      if(!unique.has(normalized.id)){
+        unique.set(normalized.id, normalized);
+      }
+    });
+
+    return Array.from(unique.values());
   }
 
   function applyVagasFilter(all){

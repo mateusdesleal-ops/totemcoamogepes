@@ -19,3 +19,9 @@ Acesse:
 `https://SEU-DOMINIO.vercel.app/api/vagas`
 
 Se retornar JSON com vagas, está OK ✅
+
+
+## Observação da versão corrigida
+- O endpoint `/api/vagas` agora traz automaticamente todas as páginas do Jobfeed, até o limite de segurança configurado no proxy.
+- A página de vagas do site passou a aceitar retornos com `vacancies`, `data`, `jobs`, `items` e formatos semelhantes.
+- O layout foi ajustado para telas de totem/webview, evitando sobra branca e cortes indevidos.
