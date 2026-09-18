@@ -1,65 +1,50 @@
 <!DOCTYPE html>
-
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<title>Coamo • Mapa</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="styles.css" rel="stylesheet"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b5d32">
+  <title>Áreas de atuação • Coamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<div class="app">
-<div class="frame" role="application"><aside aria-label="Menu" class="sidebar">
-<div class="brand">
-<img alt="Coamo" class="brand__logo" src="assets/logo.png"/>
-</div>
-<nav aria-label="Navegação" class="nav">
-<a class="nav__btn" href="index.html">Home</a>
-<a class="nav__btn" href="vagas.html">Vagas</a><a class="nav__btn" href="sorteio.html">Sorteio</a>
-<a aria-current="page" class="nav__btn" href="mapa.html">Mapa</a>
-<a class="nav__btn" href="apresentacao.html" id="btnApresentacao">Apresentação</a>
-</nav>
-<div class="sidebar__spacer"></div>
-<!-- QR sempre visível no menu -->
-<section aria-label="Faça parte da Coamo" class="qr">
-<div class="qr__card">
-<div class="qr__title">Faça parte da Coamo</div>
-<div class="qr__subtitle">É simples e rápido</div>
-<div class="qr__wrap">
-<div class="qr__imgWrap">
-<div class="qr__inner">
-<img alt="QR Code para candidatura" class="qr__img" src="assets/qr-selecty.png"/>
-</div>
-</div>
-</div>
-<div aria-label="Passo a passo" class="qr__steps">
-<div>1. Escaneie o QR Code</div>
-<div>2. Cadastre seu currículo</div>
-<div>3. Acompanhe sua candidatura</div>
-</div>
-</div>
-</section>
-</aside>
-<main aria-label="Conteúdo" class="content">
-<div class="content__inner">
-<header class="hero">
-<p class="hero__kicker">Mapa</p>
-<h1 class="hero__title">Página placeholder (Stage 1)</h1>
-</header>
-<div class="card">
-<p style="margin:0">Na etapa 2, vamos colocar o conteúdo real desta página mantendo exatamente o rodapé de ondas e a barra lateral.</p>
-</div>
-</div>
-</main>
-<!-- Ondas sempre acima de tudo (acima da barra lateral) -->
-<div aria-hidden="true" class="waves">
-<img alt="" class="waves__img" src="assets/waves.png"/>
-</div>
-</div>
-</div>
-<script src="app.js"></script>
+<body data-page="mapa">
+  <div class="kioskShell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <div class="sidebar__top">
+        <a class="brand" href="index.html"><img class="brand__logo" src="assets/logo.png" alt="Coamo"><div class="brand__context"><strong>GEPES</strong><span>Recrutamento e Seleção</span></div></a>
+        <nav class="nav" aria-label="Menu do totem">
+          <a class="nav__btn" href="index.html"><span>Início</span></a>
+          <a class="nav__btn" href="vagas.html"><span>Vagas</span></a>
+          <a class="nav__btn" href="sorteio.html"><span>Sorteio</span></a>
+          <a class="nav__btn" href="apresentacao.html" data-presentation-launch><span>Apresentação</span></a>
+        </nav>
+      </div>
+      <section class="joinCard joinCard--compact"><div class="joinCard__copy"><span class="joinCard__eyebrow">OPORTUNIDADES</span><strong>As vagas variam por cidade e área.</strong><p>Consulte a página de vagas para ver as oportunidades disponíveis agora.</p></div></section>
+    </aside>
+
+    <main class="main">
+      <div class="brandWaves" aria-hidden="true"></div>
+      <header class="topbar"><div><span class="topbar__eyebrow">ÁREAS DE ATUAÇÃO</span><strong>Onde você pode construir sua carreira</strong></div><div class="topbar__status"><span class="statusDot"></span><time id="currentTime"></time></div></header>
+
+      <section class="simpleHero">
+        <span class="sectionEyebrow">PRESENÇA E DIVERSIDADE DE CARREIRAS</span>
+        <h1>Oportunidades em diferentes ambientes da Coamo.</h1>
+        <p>Entrepostos, operações industriais e áreas administrativas reúnem diferentes perfis profissionais e possibilidades de desenvolvimento.</p>
+      </section>
+
+      <section class="areaGrid">
+        <article class="areaCard areaCard--agro"><div class="areaCard__icon">AG</div><h2>Entrepostos &amp; Agro</h2><p>Operações ligadas ao recebimento, classificação, armazenagem e atendimento nas unidades.</p></article>
+        <article class="areaCard areaCard--industry"><div class="areaCard__icon">IN</div><h2>Indústria</h2><p>Produção, manutenção, operação, qualidade e atividades de suporte ao processo industrial.</p></article>
+        <article class="areaCard areaCard--admin"><div class="areaCard__icon">AD</div><h2>Administrativo</h2><p>Tecnologia, finanças, pessoas, engenharia, comunicação e outras áreas corporativas.</p></article>
+      </section>
+
+      <div class="centerAction"><a class="touchButton touchButton--primary" href="vagas.html">Consultar vagas abertas</a></div>
+      <footer class="mainFooter"><span>Coamo Agroindustrial Cooperativa</span><span>Gerência de Pessoas</span></footer>
+    </main>
+  </div>
+  <script src="app.js"></script>
 </body>
 </html>

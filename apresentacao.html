@@ -1,56 +1,54 @@
 <!DOCTYPE html>
-
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<title>Coamo • Apresentação</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="styles.css" rel="stylesheet"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b5d32">
+  <title>Modo apresentação • Coamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<div class="app">
-<div class="frame" role="application"><aside aria-label="Menu" class="sidebar">
-<div class="brand">
-<img alt="Coamo" class="brand__logo" src="assets/logo.png"/>
-</div>
-<nav aria-label="Navegação" class="nav">
-<a class="nav__btn" href="index.html">Home</a>
-<a class="nav__btn" href="vagas.html">Vagas</a><a class="nav__btn" href="sorteio.html">Sorteio</a><a aria-current="page" class="nav__btn" href="apresentacao.html" id="btnApresentacao">Apresentação</a>
-</nav>
-<div class="sidebar__spacer"></div>
-<div aria-label="Faça parte da Coamo" class="qrCard">
-<div class="qr__title">Faça parte da Coamo</div>
-<div class="qr__subtitle">É simples e rápido</div>
-<div class="qr__wrap">
-<div class="qr__imgWrap"><div class="qr__inner"><img alt="QR Code" class="qr__img" src="assets/qr-selecty.png"/></div></div>
-<div class="qr__steps">
-<div>1. Escaneie o QR Code</div>
-<div>2. Cadastre seu currículo</div>
-<div>3. Acompanhe sua candidatura</div>
-</div>
-</div>
-</div>
-</aside>
-<main aria-label="Conteúdo" class="content">
-<div class="content__inner">
-<header class="hero">
-<p class="hero__kicker">Apresentação</p>
-<h1 class="hero__title">Página placeholder (Stage 1)</h1>
-</header>
-<div class="card">
-<p style="margin:0">Na etapa 2, vamos colocar o conteúdo real desta página mantendo exatamente o rodapé de ondas e a barra lateral.</p>
-</div>
-</div>
-</main>
-<!-- Ondas sempre acima de tudo (acima da barra lateral) -->
-<div aria-hidden="true" class="waves">
-<img alt="" class="waves__img" src="assets/waves.png"/>
-</div>
-</div>
-</div>
-<script src="app.js"></script>
+<body data-page="apresentacao" data-auto-presentation="1">
+  <div class="kioskShell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <div class="sidebar__top">
+        <a class="brand" href="index.html" aria-label="Página inicial">
+          <img class="brand__logo" src="assets/logo.png" alt="Coamo">
+          <div class="brand__context"><strong>GEPES</strong><span>Recrutamento e Seleção</span></div>
+        </a>
+        <nav class="nav" aria-label="Menu do totem">
+          <a class="nav__btn" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5v-8Z"/></svg><span>Início</span></a>
+          <a class="nav__btn" href="vagas.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6V4.8A1.8 1.8 0 0 1 9.8 3h4.4A1.8 1.8 0 0 1 16 4.8V6h3.5A2.5 2.5 0 0 1 22 8.5v9A2.5 2.5 0 0 1 19.5 20h-15A2.5 2.5 0 0 1 2 17.5v-9A2.5 2.5 0 0 1 4.5 6H8Zm2 0h4V5h-4v1Zm-6 5.2v6.3c0 .3.2.5.5.5h15c.3 0 .5-.2.5-.5v-6.3A17.4 17.4 0 0 1 13 13v1h-2v-1a17.4 17.4 0 0 1-7-1.8Z"/></svg><span>Vagas</span></a>
+          <a class="nav__btn" href="sorteio.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v8H4v-8h16ZM5 9h14a2 2 0 0 1 2 2v1H3v-1a2 2 0 0 1 2-2Zm6-1H6.5A2.5 2.5 0 1 1 9 5.5c0 .9.9 1.8 2 2.5Zm2 0c1.1-.7 2-1.6 2-2.5A2.5 2.5 0 1 1 17.5 8H13ZM11 12h2v8h-2v-8Z"/></svg><span>Sorteio</span></a>
+          <a class="nav__btn" aria-current="page" href="apresentacao.html" data-presentation-launch><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v12H3V4Zm2 2v8h14V6H5Zm5 11h4v2h3v2H7v-2h3v-2Z"/></svg><span>Apresentação</span></a>
+        </nav>
+      </div>
+      <section class="joinCard joinCard--compact">
+        <div class="joinCard__copy"><span class="joinCard__eyebrow">MODO TOTEM</span><strong>A apresentação também inicia automaticamente.</strong><p>Quando o totem fica sem interação, o conteúdo institucional volta a ser exibido.</p></div>
+      </section>
+    </aside>
+
+    <main class="main">
+      <div class="brandWaves" aria-hidden="true"></div>
+      <header class="topbar">
+        <div><span class="topbar__eyebrow">MODO APRESENTAÇÃO</span><strong>Conteúdo institucional</strong></div>
+        <div class="topbar__status"><span class="statusDot"></span><span>Pronto para iniciar</span><time id="currentTime"></time></div>
+      </header>
+
+      <section class="presentationLanding">
+        <div class="presentationLanding__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v12H3V4Zm2 2v8h14V6H5Zm5 11h4v2h3v2H7v-2h3v-2Z"/></svg></div>
+        <span class="sectionEyebrow">APRESENTAÇÃO AUTOMÁTICA</span>
+        <h1>Conteúdo pensado para chamar atenção à distância.</h1>
+        <p>O modo apresentação alterna cultura, carreira, bem-estar, depoimentos e oportunidades em destaque. Vagas sem uma foto específica usam um visual institucional por área, evitando imagens incompatíveis com o cargo.</p>
+        <button id="launchPresentation" class="touchButton touchButton--primary" type="button">Iniciar apresentação agora</button>
+      </section>
+
+      <footer class="mainFooter"><span>Coamo Agroindustrial Cooperativa</span><span>Toque na tela durante a apresentação para explorar o totem</span></footer>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
