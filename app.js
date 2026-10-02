@@ -82,17 +82,73 @@
     { id: "43066", title: "Classificador de Produtos Agrícolas", location: "Ibiporã, PR", group: "agro" },
   ];
 
-  const VACANCY_IMAGE_RULES = [
-    { keys: ["veterin"], img: "assets/vaga_fotos/medico_a_veterinario_a.jpg" },
-    { keys: ["tecnolog", "sistema", "software", "desenvolv", "program", "suporte", "infra", "devops", "dados", "ti"], img: "assets/vaga_fotos/vagas_de_ti.jpg" },
-    { keys: ["mecan", "veicul", "oficina", "manutencao"], img: "assets/vaga_fotos/mecanico_de_veiculos.jpg" },
-    { keys: ["vigilant", "seguranc", "portaria", "controlador de acesso"], img: "assets/vaga_fotos/vigilante.jpeg" },
-    { keys: ["zelador", "limpeza", "higien", "copeir"], img: "assets/vaga_fotos/zeladora.jpg" },
-    { keys: ["aprendiz", "jovem aprendiz", "estagio", "estagiario"], img: "assets/vaga_fotos/aprendiz.jpg" },
-    { keys: ["ajudant", "servicos gerais", "auxiliar de servicos"], img: "assets/vaga_fotos/ajudantes.jpg" },
-    { keys: ["fiacao", "eletric", "eletro", "cabos", "fios"], img: "assets/vaga_fotos/vagas_com_a_palavra_de_fiacao.jpg" },
-    { keys: ["agro", "campo", "fazenda", "lavour", "graos", "agric", "classificador", "maquinista"], img: "assets/vaga_fotos/agro.jpg" },
+  // As imagens das vagas são escolhidas a partir do conteúdo publicado na Selecty —
+  // não apenas do título. A classificação considera descrição, requisitos, área de
+  // atuação, qualificação e ocupação. Quando não há correspondência confiável,
+  // usamos um card neutro em vez de exibir uma foto potencialmente incorreta.
+  const VACANCY_PHOTO_PROFILES = [
+    {
+      id: "veterinaria",
+      images: ["assets/vaga_fotos/medico_a_veterinario_a.jpg"],
+      strong: ["medico veterinario", "medica veterinaria", "veterinario", "veterinaria", "zootecnista"],
+      context: ["sanidade animal", "saude animal", "pecuaria", "rebanho", "atendimento veterinario"],
+    },
+    {
+      id: "ti",
+      images: ["assets/vaga_fotos/vagas_de_ti.jpg", "assets/vaga_fotos/outra_opcao_vaga_de_ti.jpg"],
+      strong: ["tecnologia da informacao", "analista de sistemas", "desenvolvedor", "desenvolvedora", "programador", "programadora", "software", "devops", "infraestrutura de ti"],
+      context: ["sistemas", "banco de dados", "rede de computadores", "suporte tecnico", "ciberseguranca", "dados", "automacao", "erp", "sql", "api", "servidor"],
+    },
+    {
+      id: "mecanica",
+      images: ["assets/vaga_fotos/mecanico_de_veiculos.jpg"],
+      strong: ["mecanico", "mecanica", "mecanico de manutencao", "mecanico de veiculos", "mecanico automotivo"],
+      context: ["oficina", "motor", "manutencao mecanica", "veiculos", "caminhoes", "frota", "lubrificacao"],
+    },
+    {
+      id: "eletrica",
+      images: ["assets/vaga_fotos/vagas_com_a_palavra_de_fiacao.jpg", "assets/industria_04.jpg"],
+      strong: ["eletricista", "eletrica", "eletromecanico", "eletromecanica", "eletrotecnico", "eletrotecnica"],
+      context: ["fiacao", "cabos", "painel eletrico", "instalacao eletrica", "comandos eletricos", "manutencao eletrica"],
+    },
+    {
+      id: "seguranca",
+      images: ["assets/vaga_fotos/vigilante.jpeg"],
+      strong: ["vigilante", "seguranca patrimonial", "controlador de acesso", "porteiro", "portaria"],
+      context: ["controle de acesso", "rondas", "patrimonio", "vigilancia", "seguranca"],
+    },
+    {
+      id: "limpeza",
+      images: ["assets/vaga_fotos/zeladora.jpg"],
+      strong: ["zelador", "zeladora", "auxiliar de limpeza", "servicos de limpeza"],
+      context: ["higienizacao", "limpeza", "conservacao de ambientes", "sanitizacao"],
+    },
+    {
+      id: "aprendizagem",
+      images: ["assets/vaga_fotos/aprendiz.jpg"],
+      strong: ["jovem aprendiz", "aprendiz", "estagiario", "estagiaria", "estagio"],
+      context: ["programa de aprendizagem", "primeiro emprego", "formacao profissional"],
+    },
+    {
+      id: "operacional",
+      images: ["assets/vaga_fotos/ajudantes.jpg"],
+      strong: ["ajudante de servicos gerais", "ajudante de armazenista", "ajudante de maquinista", "auxiliar de servicos gerais", "movimentador de mercadorias"],
+      context: ["carga e descarga", "movimentacao de mercadorias", "apoio operacional", "limpeza operacional", "armazenagem"],
+    },
+    {
+      id: "agro",
+      images: ["assets/vaga_fotos/agro.jpg", "assets/vaga_fotos/agro_2.jpg", "assets/vaga_fotos/agro_4.jpg"],
+      strong: ["agronomo", "agronoma", "engenheiro agronomo", "engenheira agronoma", "classificador de produtos agricolas", "maquinista de cereais", "tecnico agricola", "tecnica agricola"],
+      context: ["lavoura", "cooperado", "assistencia tecnica", "producao agricola", "agricultura", "graos", "cereais", "soja", "milho", "trigo", "recebimento de graos", "classificacao de graos", "armazenagem de graos", "secagem de graos"],
+    },
+    {
+      id: "industria",
+      images: ["assets/industria_01.jpg", "assets/industria_03.jpg", "assets/industria_05.jpg"],
+      strong: ["operador industrial", "operadora industrial", "operador de producao", "operadora de producao", "tecnico de producao", "tecnica de producao"],
+      context: ["processo industrial", "linha de producao", "industria", "controle de processo", "qualidade industrial", "equipamentos industriais"],
+    },
   ];
+
 
   function pickJobsArray(payload) {
     if (Array.isArray(payload)) return payload;
@@ -134,12 +190,96 @@
     return "admin";
   }
 
-  function normalizeVacancy(job, idx) {
+  function htmlToPlainText(value) {
+    return String(value ?? "")
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;|&#160;/gi, " ")
+      .replace(/&amp;/gi, "&")
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;|&apos;/gi, "'")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function vacancyPublishedText(job) {
+    // Campos documentados pelo Jobfeed da Selecty. A descrição e os requisitos
+    // publicados no portal têm prioridade para classificar a imagem.
+    const title = htmlToPlainText(firstUseful(job?.occupation, job?.title, job?.name, job?.position, job?.job_title, job?.cargo));
+    const area = htmlToPlainText(firstUseful(job?.actingArea, job?.acting_area, job?.area, job?.department, job?.category));
+    const description = htmlToPlainText(firstUseful(job?.description, job?.activities, job?.job_description, job?.descricao));
+    const requirements = htmlToPlainText(firstUseful(job?.requirements, job?.qualification, job?.qualifications, job?.requisitos));
+    const employer = htmlToPlainText(firstUseful(job?.employerDescription, job?.employer_description));
     return {
-      id: firstUseful(job?.id, job?.code, job?.vacancy_id, job?.job_id, job?.codigo, idx + 1),
-      title: firstUseful(job?.title, job?.name, job?.position, job?.job_title, job?.cargo, "Oportunidade"),
+      title: normalizeText(title),
+      area: normalizeText(area),
+      description: normalizeText(description),
+      requirements: normalizeText(requirements),
+      employer: normalizeText(employer),
+      combined: normalizeText([title, area, description, requirements, employer].filter(Boolean).join(" ")),
+    };
+  }
+
+  function stableHash(value) {
+    const str = String(value ?? "");
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i += 1) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function scorePhotoProfile(profile, published) {
+    let score = 0;
+    for (const key of profile.strong) {
+      const k = normalizeText(key);
+      if (published.title.includes(k)) score += 9;
+      if (published.area.includes(k)) score += 6;
+      if (published.description.includes(k)) score += 5;
+      if (published.requirements.includes(k)) score += 4;
+    }
+    for (const key of profile.context) {
+      const k = normalizeText(key);
+      if (published.title.includes(k)) score += 5;
+      if (published.area.includes(k)) score += 4;
+      if (published.description.includes(k)) score += 2.5;
+      if (published.requirements.includes(k)) score += 2;
+    }
+    return score;
+  }
+
+  function classifyVacancyPhoto(job, stableKey = "") {
+    const published = vacancyPublishedText(job);
+    let best = null;
+    for (const profile of VACANCY_PHOTO_PROFILES) {
+      const score = scorePhotoProfile(profile, published);
+      if (!best || score > best.score) best = { profile, score };
+    }
+
+    // Limiar deliberadamente conservador: melhor card neutro do que foto errada.
+    if (!best || best.score < 6) {
+      return { image: "", profile: "neutral", score: best?.score || 0, basedOnDescription: !!published.description };
+    }
+
+    const images = best.profile.images || [];
+    const image = images.length
+      ? images[stableHash(`${stableKey}|${published.title}|${best.profile.id}`) % images.length]
+      : "";
+    return { image, profile: best.profile.id, score: best.score, basedOnDescription: !!published.description };
+  }
+
+  function normalizeVacancy(job, idx) {
+    const id = firstUseful(job?.id, job?.code, job?.vacancy_id, job?.job_id, job?.codigo, idx + 1);
+    const title = firstUseful(job?.occupation, job?.title, job?.name, job?.position, job?.job_title, job?.cargo, "Oportunidade");
+    const photo = classifyVacancyPhoto(job, id || title);
+    return {
+      id,
+      title,
       location: getLocation(job) || "Localidade a consultar",
       group: guessGroup(job),
+      photo,
       raw: job,
     };
   }
@@ -151,14 +291,9 @@
   }
 
   function getVacancyImage(v) {
-    const text = normalizeText(`${v?.title || ""} ${v?.group || ""} ${v?.location || ""}`);
-    for (const rule of VACANCY_IMAGE_RULES) {
-      if (rule.keys.some(key => text.includes(normalizeText(key)))) return rule.img;
-    }
-    if (v?.group === "industria") return "assets/img_industria.jpg";
-    if (v?.group === "agro") return "assets/img_agro.jpg";
-    return "assets/img_admin.jpg";
+    return v?.photo?.image || "";
   }
+
 
   const vacancyApiState = { status: "idle", error: "", count: 0 };
 
@@ -251,7 +386,9 @@
         const item = document.createElement("article");
         item.className = "vagaItem";
         item.innerHTML = `
-          <div class="vagaThumb"><img src="${escapeHtml(getVacancyImage(v))}" alt=""></div>
+          ${getVacancyImage(v)
+            ? `<div class="vagaThumb"><img src="${escapeHtml(getVacancyImage(v))}" alt="" loading="lazy" onerror="this.closest('.vagaThumb')?.classList.add('vagaThumb--neutral');this.remove()"></div>`
+            : `<div class="vagaThumb vagaThumb--neutral" aria-hidden="true"><span>coamo</span></div>`}
           <div class="vagaBody">
             <h3 class="vagaTitle">${escapeHtml(v.title)}</h3>
             <div class="vagaLoc">📍 ${escapeHtml(v.location)}</div>
@@ -477,7 +614,14 @@
     const author = $("#presentationAuthor");
     if (s.author) {
       author.hidden = false;
-      $("#presentationAuthorPhoto").src = s.author.photo || "";
+      const authorPhoto = $("#presentationAuthorPhoto");
+      if (authorPhoto) {
+        authorPhoto.hidden = true;
+        authorPhoto.onload = () => { authorPhoto.hidden = false; };
+        authorPhoto.onerror = () => { authorPhoto.hidden = true; authorPhoto.removeAttribute("src"); };
+        if (s.author.photo) authorPhoto.src = s.author.photo;
+        else authorPhoto.removeAttribute("src");
+      }
       $("#presentationAuthorName").textContent = s.author.name || "";
       $("#presentationAuthorRole").textContent = s.author.role || "";
     } else {
@@ -497,13 +641,22 @@
   async function enrichPresentationWithVacancies() {
     const vacancies = await getVacanciesCached();
     if (!vacancies.length) return;
-    const vacancySlides = vacancies.slice(0, 4).map(v => ({
-      pill: "Oportunidade em destaque",
-      title: v.title,
-      sub: `${v.location} • ${groupLabel(v.group)}${v.id ? ` • Cód. ${v.id}` : ""}`,
-      bg: getVacancyImage(v),
-    }));
-    slides = [...BASE_SLIDES.slice(0, -1), ...vacancySlides.slice(0, 3), BASE_SLIDES[BASE_SLIDES.length - 1]];
+    const seenImages = new Set();
+    const vacancySlides = vacancies
+      .filter(v => {
+        const img = getVacancyImage(v);
+        if (!img || seenImages.has(img)) return false;
+        seenImages.add(img);
+        return true;
+      })
+      .slice(0, 3)
+      .map(v => ({
+        pill: "Oportunidade em destaque",
+        title: v.title,
+        sub: `${v.location} • ${groupLabel(v.group)}${v.id ? ` • Cód. ${v.id}` : ""}`,
+        bg: getVacancyImage(v),
+      }));
+    slides = [...BASE_SLIDES.slice(0, -1), ...vacancySlides, BASE_SLIDES[BASE_SLIDES.length - 1]];
     if (presentationActive) {
       if (slideIndex >= slides.length) slideIndex = 0;
       renderProgress();

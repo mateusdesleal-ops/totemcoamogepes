@@ -286,3 +286,35 @@ img{display:block;max-width:100%}
 @media (max-height:820px) and (min-width:1100px){
   .presentation-top{top:30px}.presentation-content{bottom:92px}.presentation-title{font-size:clamp(42px,4.1vw,66px)}.presentation-sub{font-size:16px;margin-top:14px}.presentation-metric{margin-top:16px}.presentation-bottom{bottom:22px}
 }
+
+/* V4 • cards de vagas orientados pela descrição publicada na Selecty */
+.vagaThumb--neutral{
+  position:relative;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 18%,rgba(247,183,51,.28) 0 11%,transparent 12%),
+    linear-gradient(145deg,#0a4b2b 0%,#0f6337 100%);
+  border:1px solid rgba(11,77,43,.08);
+}
+.vagaThumb--neutral::before{
+  content:"";
+  position:absolute;
+  width:74px;
+  height:74px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;
+  right:-22px;
+  bottom:-22px;
+}
+.vagaThumb--neutral span{
+  position:relative;
+  z-index:1;
+  color:#fff;
+  font-size:17px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.04em;
+}
+.presentation-author img[hidden]{display:none!important}
