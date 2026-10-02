@@ -184,3 +184,105 @@ img{display:block;max-width:100%}
 @media (max-width:1050px){
   body{overflow:auto}.topbar{height:auto;min-height:86px;flex-wrap:wrap;padding:12px 18px}.topbar__brand{height:50px}.topnav{width:100%;order:3;overflow-x:auto;padding-bottom:2px;margin-left:0}.home-main{height:auto;min-height:calc(100vh - 130px);grid-template-columns:1fr}.home-hero{min-height:620px}.home-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}.page-main--vacancies,.raffle-main{height:auto;overflow:visible}.vacancy-layout{grid-template-columns:1fr}.vacancy-qr{min-height:420px}.vacancy-grid{overflow:visible}.about-grid{grid-template-columns:1fr 1fr;grid-template-rows:360px 260px 180px}.story-card--wide{grid-row:auto;grid-column:1/-1}.raffle-layout{grid-template-columns:1fr}.raffle-video-card{min-height:520px}.about-heading{align-items:flex-start;flex-direction:column}.about-heading>p{text-align:left}.presentation-title{font-size:8vw}.presentation-qr{width:250px}
 }
+
+/* =========================================================
+   V3 • refinamento visual para totem 16:9
+   ========================================================= */
+.home-hero__overlay{
+  background:
+    linear-gradient(90deg,rgba(3,35,21,.80) 0%,rgba(3,35,21,.68) 32%,rgba(3,35,21,.30) 58%,rgba(3,35,21,.05) 80%,rgba(3,35,21,0) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.10));
+}
+.home-hero__content{left:clamp(40px,3.7vw,70px);bottom:clamp(38px,5.4vh,62px);width:min(780px,68%)}
+.home-hero h1{font-size:clamp(42px,4.1vw,70px);line-height:1.02;max-width:760px}
+.home-hero p{max-width:680px;color:rgba(255,255,255,.92)}
+
+/* Conheça a Coamo • conteúdo menos genérico e mais editorial */
+.about-pro{overflow:auto;padding-bottom:30px}
+.about-pro__heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.62fr);gap:42px;align-items:end;margin:4px 2px 22px}
+.about-pro__heading h1{margin:0;font-size:clamp(38px,3.25vw,56px);line-height:1.02;letter-spacing:-.04em;font-weight:900;color:var(--green-950);max-width:900px}
+.about-pro__heading p{margin:0 0 5px;font-size:15px;line-height:1.6;color:var(--muted);font-weight:600;max-width:560px;justify-self:end}
+.career-intro{height:285px;position:relative;border-radius:30px;overflow:hidden;box-shadow:var(--shadow-sm);background:var(--green-950);margin-bottom:18px}
+.career-intro>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 45%}
+.career-intro__shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,38,22,.88) 0%,rgba(3,38,22,.70) 34%,rgba(3,38,22,.20) 64%,rgba(3,38,22,.02) 100%)}
+.career-intro__content{position:absolute;left:36px;bottom:30px;color:#fff;width:min(720px,66%)}
+.career-intro__label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.15em;font-weight:900;color:#d7eadb;margin-bottom:10px}
+.career-intro__content h2{font-size:clamp(28px,2.3vw,40px);line-height:1.05;letter-spacing:-.035em;margin:0 0 10px;font-weight:900}
+.career-intro__content p{font-size:14px;line-height:1.55;margin:0;color:rgba(255,255,255,.88);font-weight:500;max-width:650px}
+.career-areas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.career-area{min-height:210px;background:#fff;border:1px solid #dfe8e1;border-radius:24px;padding:11px;display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;box-shadow:0 9px 30px rgba(8,55,33,.055);overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.career-area:hover{transform:translateY(-2px);border-color:#bfd2c3;box-shadow:0 16px 38px rgba(8,55,33,.08)}
+.career-area>img{width:150px;height:100%;min-height:186px;object-fit:cover;border-radius:17px}
+.career-area__content{min-width:0;display:flex;flex-direction:column;padding:8px 9px 7px 0}
+.career-area__eyebrow{font-size:10px;line-height:1.2;text-transform:uppercase;letter-spacing:.115em;font-weight:900;color:var(--green-600);margin-bottom:8px}
+.career-area h2{font-size:18px;line-height:1.16;letter-spacing:-.02em;margin:0 0 8px;color:var(--green-950);font-weight:900}
+.career-area p{font-size:12px;line-height:1.48;color:#637169;margin:0;font-weight:600}
+.career-area__metric{margin-top:auto;padding-top:10px;display:flex;align-items:baseline;gap:8px;border-top:1px solid #e9efeb}
+.career-area__metric strong{font-size:28px;letter-spacing:-.04em;color:var(--green-800);line-height:1;font-weight:900}
+.career-area__metric span{font-size:10px;line-height:1.2;color:#5e6d65;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.career-area--featured{border-color:#b9d0bf;background:linear-gradient(145deg,#fff 55%,#f4faf5 100%)}
+.about-cta--pro{margin-top:16px;padding:17px 22px;background:#eef6f0}
+
+/* Vagas: falha real sem inventar oportunidades */
+.vacancy-empty--error{background:#fffaf5;border-color:#ead9c8;color:#776758}
+.vacancy-empty--error strong{color:#5d4735}
+.vacancy-empty .btn{margin-top:16px}
+
+/* Apresentação: fotografia protagonista, gradiente apenas onde há texto */
+.presentation-overlay{background:#071a10}
+.presentation-photo{filter:saturate(1.04) contrast(1.015);transform:scale(1.012);animation:kenburns 12s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1.01)}to{transform:scale(1.055)}}
+.presentation-shade{
+  background:
+    linear-gradient(90deg,rgba(2,27,16,.86) 0%,rgba(2,27,16,.73) 25%,rgba(2,27,16,.42) 43%,rgba(2,27,16,.13) 61%,rgba(2,27,16,0) 78%),
+    linear-gradient(180deg,rgba(0,0,0,.10) 0%,rgba(0,0,0,0) 24%,rgba(0,0,0,.05) 74%,rgba(0,0,0,.18) 100%);
+}
+.presentation-top{top:clamp(34px,4.4vh,52px);left:clamp(46px,4.3vw,82px);right:clamp(46px,4.3vw,82px);align-items:flex-start}
+.presentation-logo{width:clamp(145px,9.2vw,176px)}
+.presentation-counter{font-size:11px;line-height:1;font-weight:800;letter-spacing:.13em;color:rgba(255,255,255,.70);padding-top:7px;font-variant-numeric:tabular-nums}
+.presentation-mode{display:none!important}
+.presentation-content{left:clamp(48px,5.2vw,100px);bottom:clamp(112px,14vh,154px);width:min(820px,61vw)}
+.presentation-pill{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.17em;color:rgba(255,255,255,.88);margin-bottom:17px}
+.presentation-pill::before{content:"";width:28px;height:3px;border-radius:99px;background:var(--yellow);box-shadow:0 0 0 1px rgba(0,0,0,.03)}
+.presentation-title{font-size:clamp(46px,4.45vw,78px);line-height:1.01;letter-spacing:-.044em;max-width:850px;text-wrap:balance}
+.presentation-sub{font-size:clamp(16px,1.16vw,21px);line-height:1.55;color:rgba(255,255,255,.90);max-width:720px;margin-top:19px;font-weight:500;text-shadow:0 1px 16px rgba(0,0,0,.08)}
+.presentation-metric{display:flex;align-items:baseline;gap:13px;margin-top:24px;width:max-content;max-width:100%;padding:12px 16px 12px 0;border-top:1px solid rgba(255,255,255,.28)}
+.presentation-metric[hidden]{display:none!important}
+.presentation-metric strong{font-size:clamp(38px,3.1vw,54px);line-height:1;letter-spacing:-.05em;color:#fff;font-weight:900}
+.presentation-metric span{font-size:12px;line-height:1.25;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.82);font-weight:900;max-width:220px}
+.presentation-author{margin-top:23px;width:max-content;max-width:100%;padding:9px 13px 9px 9px;border:1px solid rgba(255,255,255,.16);background:rgba(5,35,22,.20);border-radius:999px;backdrop-filter:blur(7px)}
+.presentation-author img{width:54px;height:54px;border:1px solid rgba(255,255,255,.62)}
+.presentation-author strong{font-size:14px}.presentation-author span{font-size:11px}
+.presentation-qr{right:clamp(55px,6.3vw,120px);width:clamp(250px,17vw,305px);padding:18px;border-radius:24px;box-shadow:0 28px 80px rgba(0,0,0,.22)}
+.presentation-qr strong{font-size:17px}.presentation-qr span{font-size:11px}
+.presentation-bottom{left:clamp(48px,4.3vw,82px);right:clamp(48px,4.3vw,82px);bottom:clamp(28px,3.6vh,42px);gap:22px}
+.presentation-progress{display:flex;gap:7px;flex:0 1 420px}
+.presentation-progress i{height:3px;flex:1;max-width:48px;background:rgba(255,255,255,.30)}
+.presentation-progress i.is-active{background:rgba(255,255,255,.34)}
+.presentation-progress i.is-active::after{animation:progress-fill var(--slide-duration,9s) linear forwards;transform-origin:left}
+@keyframes progress-fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.presentation-hint{margin-left:auto;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.7);color:var(--green-950);box-shadow:0 10px 28px rgba(0,0,0,.10);backdrop-filter:blur(10px);padding:11px 16px 11px 17px;font-size:11px;letter-spacing:.03em;text-transform:none}
+.presentation-hint span{font-weight:900}.presentation-hint b{font-size:15px;margin-left:4px}
+.presentation-overlay.presentation-cta .presentation-content{width:min(760px,51vw)}
+.presentation-overlay.presentation-cta .presentation-shade{background:linear-gradient(90deg,rgba(2,27,16,.88) 0%,rgba(2,27,16,.74) 31%,rgba(2,27,16,.40) 51%,rgba(2,27,16,.12) 67%,rgba(2,27,16,0) 82%)}
+
+/* Painel privado: diagnóstico da integração */
+.admin-api-panel{margin-top:18px;padding:14px 15px;border-radius:16px;background:#f4f8f5;border:1px solid #dae6dd;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.admin-api-panel>div{min-width:0}.admin-api-panel strong{display:block;font-size:12px;color:var(--green-950)}
+.admin-api-panel span{display:block;margin-top:4px;font-size:11px;line-height:1.35;color:#64736b;max-width:330px;word-break:break-word}
+.admin-api-panel span[data-state="ok"]{color:#17663a}.admin-api-panel span[data-state="error"]{color:#9a4c35}.admin-api-panel .btn{height:42px;padding:0 13px;font-size:11px;flex:0 0 auto}
+
+@media (max-width:1450px){
+  .about-pro__heading{grid-template-columns:1fr .7fr;gap:28px}
+  .career-areas{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .career-area{min-height:205px}
+  .presentation-content{width:min(760px,63vw)}
+}
+@media (max-width:1050px){
+  .about-pro__heading{grid-template-columns:1fr}.about-pro__heading p{justify-self:start}
+  .career-intro__content{width:80%}.career-areas{grid-template-columns:1fr}
+  .presentation-content{width:min(720px,76vw);bottom:120px}.presentation-title{font-size:clamp(42px,7vw,68px)}
+}
+@media (max-height:820px) and (min-width:1100px){
+  .presentation-top{top:30px}.presentation-content{bottom:92px}.presentation-title{font-size:clamp(42px,4.1vw,66px)}.presentation-sub{font-size:16px;margin-top:14px}.presentation-metric{margin-top:16px}.presentation-bottom{bottom:22px}
+}

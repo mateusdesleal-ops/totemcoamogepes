@@ -1,45 +1,39 @@
-# Totem Coamo / GEPES — V2
+# Totem Coamo • GEPES — V3
 
-Versão redesenhada especificamente para uso em totem touchscreen.
+Aplicação web para uso interno em totem de Recrutamento e Seleção.
 
-## O que mudou
+## Principais recursos
+- Modo apresentação automático em tela cheia
+- Interface otimizada para touchscreen/1920×1080
+- Retorno automático para apresentação após inatividade
+- Vagas integradas ao Jobfeed da Selecty via `/api/vagas`
+- Busca por cargo e filtro por cidade
+- Área “Conheça a Coamo” com universos profissionais
+- Sorteio integrado ao formulário existente
+- Painel oculto de configurações: mantenha o logo pressionado por ~3 segundos
+- Teste da integração de vagas dentro do painel oculto
 
-- Home redesenhada para uso em 1920×1080.
-- Modo apresentação em tela cheia com rotação automática.
-- Apresentação inicia automaticamente ao abrir `index.html`.
-- Um toque na apresentação abre a interface interativa.
-- Após inatividade, o totem limpa campos e retorna à apresentação.
-- Vagas continuam sendo consultadas pelo endpoint `/api/vagas` e Jobfeed/Selecty.
-- Página de vagas com busca por cargo, filtro por cidade e QR Code.
-- Página "Conheça a Coamo" substitui a antiga página placeholder de apresentação.
-- Sorteio preserva o envio silencioso para o Google Forms existente.
-- Painel oculto de configuração: mantenha o logo Coamo pressionado por ~3 segundos.
+## Integração Selecty
+O frontend nunca recebe a chave da Selecty. O endpoint `/api/vagas.js` usa a variável de ambiente da Vercel.
 
-## Painel oculto
+### Variáveis na Vercel
+- `SELECTY_PORTAL` = `coamo` (opcional nesta versão; `coamo` é o padrão)
+- `SELECTY_JOBFEED_KEY` = chave do Jobfeed da Selecty
 
-Permite configurar no próprio navegador:
-- segundos por slide;
-- segundos para retorno por inatividade;
+A V3 higieniza automaticamente espaços, aspas externas e quebras de linha na chave antes de enviá-la no header `X-Api-Key`. Isso evita o erro de header inválido quando a chave foi copiada com caracteres invisíveis.
+
+Depois de alterar qualquer variável na Vercel, faça um novo **Redeploy**.
+
+### Teste direto
+Após publicar, acesse:
+`https://totemcoamogepes.vercel.app/api/vagas?all=1&per_page=100`
+
+Resultado esperado: JSON com `"ok": true` e a lista `vacancies`.
+
+## Painel do totem
+Mantenha o logo da Coamo pressionado por aproximadamente 3 segundos para abrir as configurações. O painel permite:
+- alterar tempo de cada slide;
+- alterar tempo de inatividade;
 - exibir/ocultar Sorteio;
-- ativar/desativar apresentação automática ao abrir.
-
-As configurações são salvas em `localStorage` apenas no navegador do totem.
-
-## Vercel
-
-Mantenha as variáveis já utilizadas pelo projeto:
-
-- `SELECTY_PORTAL=coamo`
-- `SELECTY_JOBFEED_KEY=<token do Jobfeed>`
-
-O endpoint serverless permanece em `api/vagas.js`.
-
-## Uso recomendado
-
-Abra no navegador do totem:
-
-`https://SEU-DOMINIO.vercel.app/`
-
-Para voltar diretamente à interface sem iniciar a apresentação:
-
-`https://SEU-DOMINIO.vercel.app/?interactive=1`
+- ligar/desligar apresentação automática;
+- testar a integração com a Selecty e visualizar o motivo de uma eventual falha.

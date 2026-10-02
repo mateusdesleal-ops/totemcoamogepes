@@ -160,10 +160,32 @@
     return "assets/img_admin.jpg";
   }
 
-  async function fetchVacancies() {
-    const res = await fetch(API_ENDPOINT, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const payload = await res.json();
+  const vacancyApiState = { status: "idle", error: "", count: 0 };
+
+  async function fetchVacancies({ bustCache = false } = {}) {
+    vacancyApiState.status = "loading";
+    vacancyApiState.error = "";
+
+    const suffix = bustCache ? `?all=1&per_page=100&_=${Date.now()}` : "?all=1&per_page=100";
+    const res = await fetch(API_ENDPOINT + suffix, {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    });
+
+    const raw = await res.text();
+    let payload = null;
+    try { payload = raw ? JSON.parse(raw) : null; } catch (_) {}
+
+    if (!res.ok) {
+      const detail = firstUseful(payload?.detail, payload?.error, raw, `HTTP ${res.status}`);
+      const err = new Error(detail || `HTTP ${res.status}`);
+      err.status = res.status;
+      err.code = payload?.code || "VACANCY_API_ERROR";
+      vacancyApiState.status = "error";
+      vacancyApiState.error = err.message;
+      throw err;
+    }
+
     const jobs = pickJobsArray(payload);
     const unique = new Map();
     jobs.forEach((job, idx) => {
@@ -171,7 +193,12 @@
       const key = String(v.id || `${v.title}|${v.location}`);
       if (!unique.has(key)) unique.set(key, v);
     });
-    return Array.from(unique.values());
+
+    const result = Array.from(unique.values());
+    vacancyApiState.status = "ok";
+    vacancyApiState.count = result.length;
+    vacancyApiState.error = "";
+    return result;
   }
 
   function isLocalPreview() {
@@ -181,9 +208,20 @@
   let vacancyCachePromise = null;
   function getVacanciesCached() {
     if (!vacancyCachePromise) {
-      vacancyCachePromise = fetchVacancies().catch(() => isLocalPreview() ? PREVIEW_VACANCIES.slice() : []);
+      vacancyCachePromise = fetchVacancies().catch(err => {
+        if (isLocalPreview()) {
+          vacancyApiState.status = "preview";
+          vacancyApiState.error = err?.message || "API indisponível em ambiente local";
+          return PREVIEW_VACANCIES.slice();
+        }
+        return [];
+      });
     }
     return vacancyCachePromise;
+  }
+
+  function resetVacancyCache() {
+    vacancyCachePromise = null;
   }
 
   function buildCityOptions(vacancies) {
@@ -247,9 +285,20 @@
     if (!vacancies.length) {
       const count = $("#vagasCount");
       const status = $("#vagasStatus");
-      if (count) count.textContent = "Indisponível";
-      if (status) status.textContent = "Não foi possível consultar as vagas agora. Use o QR Code para acessar o portal de oportunidades.";
-      renderVacancies([], 0, false);
+      const apiOk = vacancyApiState.status === "ok";
+      if (count) count.textContent = apiOk ? "0 oportunidades" : "Integração indisponível";
+      if (status) {
+        status.textContent = apiOk
+          ? "A integração está funcionando, mas não há oportunidades abertas retornadas pela Selecty neste momento."
+          : "Não foi possível consultar a Selecty agora. No painel oculto do totem você pode testar a integração e ver o motivo técnico.";
+      }
+      root.innerHTML = apiOk
+        ? `<div class="vacancy-empty"><strong>Nenhuma oportunidade aberta neste momento.</strong><span>O portal será atualizado automaticamente quando novas vagas forem publicadas.</span></div>`
+        : `<div class="vacancy-empty vacancy-empty--error"><strong>Não foi possível carregar as oportunidades.</strong><span>O QR Code continua disponível para acesso direto ao portal. Para diagnóstico, mantenha o logo da Coamo pressionado por 3 segundos.</span><button class="btn btn--soft" id="retryVacancies" type="button">Tentar novamente</button></div>`;
+      $("#retryVacancies")?.addEventListener("click", async () => {
+        resetVacancyCache();
+        initVacanciesPage();
+      });
       return;
     }
 
@@ -285,41 +334,62 @@
   ========================== */
   const BASE_SLIDES = [
     {
-      pill: "Coamo • GEPES",
-      title: "Construa sua história com a Coamo.",
-      sub: "Oportunidades para aprender, contribuir e crescer ao lado de pessoas que fazem acontecer.",
-      bg: "assets/img_carreira.jpg",
-    },
-    {
-      pill: "Pessoas",
-      title: "Pessoas movem cada parte dessa história.",
-      sub: "Do campo às áreas administrativas e industriais, diferentes trajetórias se encontram em um mesmo propósito de cooperação.",
+      pill: "Coamo",
+      title: "Uma história construída em cooperação.",
+      sub: "Diferentes profissões, conhecimentos e experiências se conectam todos os dias para fazer uma grande operação acontecer.",
       bg: "assets/img_cultura.jpg",
+      position: "center 40%",
     },
     {
-      pill: "Depoimento",
-      title: "“Aqui aprendi e cresci como profissional.”",
-      sub: "Uma trajetória construída com aprendizado, dedicação e desenvolvimento.",
+      pill: "Campo & Cooperado",
+      title: "Onde a relação com o produtor acontece.",
+      sub: "Assistência técnica, atendimento, orientação e atividades ligadas à produção aproximam conhecimento, cooperado e resultado.",
+      bg: "assets/agro_01.jpg",
+      position: "center 48%",
+      metric: { value: "+400", label: "Agrônomos e Veterinários" },
+    },
+    {
+      pill: "Armazenagem & Operações",
+      title: "Onde cada safra exige precisão.",
+      sub: "Recebimento, classificação, movimentação, conservação e expedição conectam pessoas, equipamentos e processos.",
+      bg: "assets/industria_03.jpg",
+      position: "center 46%",
+    },
+    {
+      pill: "Indústria & Qualidade",
+      title: "Onde matéria-prima ganha novas possibilidades.",
+      sub: "Produção, manutenção, controle de qualidade, segurança e eficiência fazem parte de uma operação industrial de grande escala.",
+      bg: "assets/industria_01.jpg",
+      position: "center 42%",
+    },
+    {
+      pill: "Tecnologia & Dados",
+      title: "Tecnologia por trás de uma operação que não para.",
+      sub: "Sistemas, infraestrutura, dados, automação e soluções digitais dão suporte às decisões e aos processos do negócio.",
+      bg: "assets/admin_04.jpg",
+      position: "center 45%",
+    },
+    {
+      pill: "Gestão & Áreas Corporativas",
+      title: "Estrutura para transformar estratégia em execução.",
+      sub: "Pessoas, finanças, engenharia, jurídico, comunicação, planejamento e outras especialidades sustentam a operação.",
+      bg: "assets/admin_01.jpg",
+      position: "center 42%",
+    },
+    {
+      pill: "Trajetórias",
+      title: "Carreiras são construídas com o tempo.",
+      sub: "Conhecimento, experiência e novas responsabilidades fazem parte de uma trajetória profissional que continua evoluindo.",
       bg: "assets/depo_edivilson_bg.jpg",
+      position: "center 42%",
       author: { name: "Edevilson Canali", role: "Supervisor de Soluções de Negócio", photo: "assets/depo_edivilson_avatar.jpg" },
     },
     {
-      pill: "Carreira",
-      title: "Diferentes áreas. Muitas possibilidades.",
-      sub: "Campo, indústria, tecnologia, operações e áreas corporativas fazem parte das oportunidades que você pode conhecer.",
-      bg: "assets/img_industria.jpg",
-    },
-    {
-      pill: "Bem-estar",
-      title: "Um ambiente pensado para pessoas.",
-      sub: "Segurança, cuidado e qualidade de vida fazem parte da construção de uma boa experiência de trabalho.",
-      bg: "assets/img_bemestar.jpg",
-    },
-    {
-      pill: "Faça parte",
+      pill: "Oportunidades",
       title: "Seu próximo passo pode começar aqui.",
-      sub: "Toque na tela para explorar ou escaneie o QR Code para acessar as oportunidades pelo celular.",
-      bg: "assets/img_agro.jpg",
+      sub: "Toque na tela para explorar as oportunidades ou continue pelo celular usando o QR Code.",
+      bg: "assets/img_carreira.jpg",
+      position: "center 42%",
       qr: true,
     },
   ];
@@ -340,12 +410,13 @@
       <div class="presentation-shade"></div>
       <div class="presentation-top">
         <div class="presentation-logo"><img src="assets/logo.png" alt="Coamo"></div>
-        <div class="presentation-mode">Modo apresentação</div>
+        <div class="presentation-counter" id="presentationCounter">01 / 08</div>
       </div>
       <div class="presentation-content">
         <div class="presentation-pill" id="presentationPill"></div>
         <div class="presentation-title" id="presentationTitle"></div>
         <div class="presentation-sub" id="presentationSub"></div>
+        <div class="presentation-metric" id="presentationMetric" hidden><strong id="presentationMetricValue"></strong><span id="presentationMetricLabel"></span></div>
         <div class="presentation-author" id="presentationAuthor" hidden>
           <img id="presentationAuthorPhoto" src="" alt="">
           <div><strong id="presentationAuthorName"></strong><span id="presentationAuthorRole"></span></div>
@@ -358,7 +429,7 @@
       </div>
       <div class="presentation-bottom">
         <div class="presentation-progress" id="presentationProgress"></div>
-        <div class="presentation-hint">TOQUE NA TELA PARA EXPLORAR ›</div>
+        <div class="presentation-hint"><span>Toque na tela</span> para explorar <b>→</b></div>
       </div>`;
     document.body.appendChild(overlay);
 
@@ -371,7 +442,10 @@
   function renderProgress() {
     const root = $("#presentationProgress");
     if (!root) return;
+    root.style.setProperty("--slide-duration", `${Math.max(5, Number(settings.slideSeconds) || 9)}s`);
     root.innerHTML = slides.map((_, i) => `<i class="${i === slideIndex ? "is-active" : ""}"></i>`).join("");
+    const counter = $("#presentationCounter");
+    if (counter) counter.textContent = `${String(slideIndex + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
   }
 
   function renderSlide(index) {
@@ -381,6 +455,7 @@
     if (!overlay || !photo || !s) return;
 
     photo.src = s.bg;
+    photo.style.objectPosition = s.position || "center center";
     photo.onload = () => {
       const ratio = photo.naturalWidth && photo.naturalHeight ? photo.naturalHeight / photo.naturalWidth : 0;
       overlay.classList.toggle("is-portrait", ratio > 1.15);
@@ -389,6 +464,15 @@
     $("#presentationPill").textContent = s.pill || "Coamo";
     $("#presentationTitle").textContent = s.title || "";
     $("#presentationSub").textContent = s.sub || "";
+
+    const metric = $("#presentationMetric");
+    if (s.metric) {
+      metric.hidden = false;
+      $("#presentationMetricValue").textContent = s.metric.value || "";
+      $("#presentationMetricLabel").textContent = s.metric.label || "";
+    } else {
+      metric.hidden = true;
+    }
 
     const author = $("#presentationAuthor");
     if (s.author) {
@@ -419,7 +503,7 @@
       sub: `${v.location} • ${groupLabel(v.group)}${v.id ? ` • Cód. ${v.id}` : ""}`,
       bg: getVacancyImage(v),
     }));
-    slides = [...BASE_SLIDES.slice(0, 5), ...vacancySlides, BASE_SLIDES[5]];
+    slides = [...BASE_SLIDES.slice(0, -1), ...vacancySlides.slice(0, 3), BASE_SLIDES[BASE_SLIDES.length - 1]];
     if (presentationActive) {
       if (slideIndex >= slides.length) slideIndex = 0;
       renderProgress();
@@ -578,6 +662,40 @@
     });
   }
 
+  function vacancyApiStatusText() {
+    if (vacancyApiState.status === "ok") return `Conectado à Selecty • ${vacancyApiState.count} vaga(s) recebida(s)`;
+    if (vacancyApiState.status === "loading") return "Testando integração…";
+    if (vacancyApiState.status === "preview") return "Prévia local • a API real funciona somente publicada na Vercel";
+    if (vacancyApiState.status === "error") return vacancyApiState.error || "Falha na integração";
+    return "Ainda não testado nesta sessão";
+  }
+
+  function updateAdminApiStatus() {
+    const el = $("#adminApiStatus");
+    if (!el) return;
+    el.textContent = vacancyApiStatusText();
+    el.dataset.state = vacancyApiState.status;
+  }
+
+  async function testVacancyIntegration() {
+    const btn = $("#adminTestApi");
+    if (btn) { btn.disabled = true; btn.textContent = "Testando…"; }
+    vacancyApiState.status = "loading";
+    updateAdminApiStatus();
+    try {
+      resetVacancyCache();
+      const vacancies = await fetchVacancies({ bustCache: true });
+      vacancyApiState.status = "ok";
+      vacancyApiState.count = vacancies.length;
+    } catch (err) {
+      vacancyApiState.status = "error";
+      vacancyApiState.error = err?.message || "Falha na integração";
+    } finally {
+      updateAdminApiStatus();
+      if (btn) { btn.disabled = false; btn.textContent = "Testar agora"; }
+    }
+  }
+
   /* =========================
      HIDDEN ADMIN PANEL
   ========================== */
@@ -601,6 +719,10 @@
           <label class="admin-field"><span>Sorteio</span><select id="adminRaffle"><option value="1">Exibir</option><option value="0">Ocultar</option></select></label>
           <label class="admin-field"><span>Apresentação ao abrir</span><select id="adminAuto"><option value="1">Ativar</option><option value="0">Desativar</option></select></label>
         </div>
+        <div class="admin-api-panel">
+          <div><strong>Integração de vagas</strong><span id="adminApiStatus">Ainda não testado nesta sessão</span></div>
+          <button type="button" class="btn btn--soft" id="adminTestApi">Testar agora</button>
+        </div>
         <p class="admin-note">Para abrir este painel novamente, mantenha o logo da Coamo pressionado por aproximadamente 3 segundos.</p>
         <div class="admin-actions"><button type="button" class="btn btn--soft" id="adminCancel">Cancelar</button><button type="button" class="btn btn--primary" id="adminSave">Salvar</button></div>
       </section>`;
@@ -619,6 +741,7 @@
       });
       close();
     });
+    $("#adminTestApi")?.addEventListener("click", testVacancyIntegration);
   }
 
   function openAdmin() {
@@ -627,6 +750,7 @@
     $("#adminIdleSeconds").value = settings.inactivitySeconds;
     $("#adminRaffle").value = settings.raffleEnabled ? "1" : "0";
     $("#adminAuto").value = settings.autoPresentation ? "1" : "0";
+    updateAdminApiStatus();
     $("#adminModal")?.classList.add("is-open");
   }
 
