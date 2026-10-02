@@ -1,83 +1,78 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<title>Totem Coamo</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="styles.css" rel="stylesheet"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Coamo • Totem GEPES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<div class="app" id="appRoot">
-<div class="frame" role="application"><!-- Sidebar -->
-<aside aria-label="Menu" class="sidebar">
-<div class="brand">
-<img alt="Coamo" class="brand__logo" src="assets/logo.png"/>
-</div>
-<nav aria-label="Navegação" class="nav">
-<a aria-current="page" class="nav__btn" href="index.html">Home</a>
-<a class="nav__btn" href="vagas.html">Vagas</a><a class="nav__btn" href="sorteio.html">Sorteio</a><a class="nav__btn" href="apresentacao.html" id="btnApresentacao">Apresentação</a>
-</nav>
-<div class="sidebar__spacer"></div>
-<!-- QR sempre visível no menu -->
-<section aria-label="Faça parte da Coamo" class="qr">
-<div class="qr__card">
-<div class="qr__title">Faça parte da Coamo</div>
-<div class="qr__subtitle">É simples e rápido</div>
-<div class="qr__wrap">
-<div class="qr__imgWrap"><div class="qr__inner"><img alt="QR Code para candidatura" class="qr__img" src="assets/qr-selecty.png"/></div></div>
-</div>
-<div aria-label="Passo a passo" class="qr__steps">
-<div>1. Escaneie o QR Code</div>
-<div>2. Cadastre seu currículo</div>
-<div>3. Acompanhe sua candidatura</div>
-</div>
-</div>
-</section>
-</aside>
-<!-- Main -->
-<main class="main">
-<header class="pageHeader">
-<h1 class="pageHeader__title">Uma cooperativa sólida, feita de pessoas e para pessoas.</h1>
-</header>
-<!-- Cartazes: Cultura / Carreira / Bem-estar -->
-<section aria-label="Destaques" class="posterGrid homePosterGrid">
-<div aria-label="Cultura da Coamo" class="poster poster--static" role="group">
-<div class="poster__media">
-<img alt="Cultura da Coamo" class="poster__img" src="assets/img_cultura.jpg"/>
-</div>
-<div class="poster__body">
-<div class="poster__title">Cultura da Coamo</div>
-<div class="poster__sub">Conheça os princípios, valores e comportamentos que orientam nosso jeito de fazer e fortalecem a cooperação no dia a dia.</div>
-</div>
-</div>
-<div aria-label="Carreira" class="poster poster--static" role="group">
-<div class="poster__media">
-<img alt="Carreira na Coamo" class="poster__img" src="assets/img_carreira.jpg"/>
-</div>
-<div class="poster__body">
-<div class="poster__title">Carreira</div>
-<div class="poster__sub">Encontre oportunidades em diferentes áreas, com trilhas de desenvolvimento, aprendizado contínuo e chances reais de crescimento na Coamo.</div>
-</div>
-</div>
-<div aria-label="Bem-estar" class="poster poster--static" role="group">
-<div class="poster__media">
-<img alt="Bem-estar na Coamo" class="poster__img" src="assets/img_bemestar.jpg"/>
-</div>
-<div class="poster__body">
-<div class="poster__title">Bem-estar</div>
-<div class="poster__sub">Trabalhe em um ambiente seguro e acolhedor, com foco em saúde, qualidade de vida e iniciativas que apoiam você e sua família.</div>
-</div>
-</div>
-</section>
-</main>
-<!-- Onda fixa no rodapé -->
-<img alt="" aria-hidden="true" class="waves" src="assets/waves.png"/>
-</div>
-</div>
-<script src="app.js"></script>
+<body data-page="home">
+  <div class="kiosk-shell">
+    <header class="topbar">
+      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início">
+        <img src="assets/logo_verde.png" alt="Coamo">
+      </a>
+      <div class="topbar__context">
+        <span class="topbar__eyebrow">GEPES</span>
+        <span class="topbar__label">Recrutamento e Seleção</span>
+      </div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__item is-active" href="index.html?interactive=1">Início</a>
+        <a class="topnav__item" href="vagas.html">Vagas</a>
+        <a class="topnav__item" href="apresentacao.html">Conheça a Coamo</a>
+        <a class="topnav__item" data-feature="raffle" href="sorteio.html">Sorteio</a>
+        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
+      </nav>
+    </header>
+
+    <main class="home-main">
+      <section class="home-hero" aria-label="Boas-vindas">
+        <img class="home-hero__image" src="assets/img_carreira.jpg" alt="Funcionários da Coamo em ambiente de trabalho">
+        <div class="home-hero__overlay"></div>
+        <div class="home-hero__content">
+          <span class="eyebrow-chip">Pessoas • Oportunidades • Desenvolvimento</span>
+          <h1>Construa sua história com a Coamo.</h1>
+          <p>Conheça nossas oportunidades e encontre um caminho para crescer com uma cooperativa feita de pessoas.</p>
+          <div class="hero-actions">
+            <a class="btn btn--light" href="vagas.html">Ver oportunidades</a>
+            <a class="btn btn--glass" href="apresentacao.html">Conheça a Coamo</a>
+          </div>
+        </div>
+      </section>
+
+      <aside class="home-side" aria-label="Ações do totem">
+        <section class="apply-card">
+          <div class="apply-card__topline">Continue no seu celular</div>
+          <h2>Faça parte da Coamo</h2>
+          <p>Escaneie o QR Code para acessar o portal de oportunidades.</p>
+          <div class="apply-card__qr">
+            <img src="assets/qr-selecty.png" alt="QR Code para candidatura">
+          </div>
+          <div class="apply-card__hint">Aponte a câmera do celular</div>
+        </section>
+
+        <section class="quick-actions" aria-label="Atalhos">
+          <a class="quick-action" href="vagas.html">
+            <span class="quick-action__icon">↗</span>
+            <span><strong>Vagas</strong><small>Pesquise cargo e cidade</small></span>
+          </a>
+          <a class="quick-action" href="apresentacao.html">
+            <span class="quick-action__icon">✦</span>
+            <span><strong>Conheça a Coamo</strong><small>Cultura, carreira e áreas</small></span>
+          </a>
+          <a class="quick-action" data-feature="raffle" href="sorteio.html">
+            <span class="quick-action__icon">★</span>
+            <span><strong>Sorteio</strong><small>Participe pelo próprio totem</small></span>
+          </a>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>

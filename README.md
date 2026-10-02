@@ -1,27 +1,45 @@
-# TOTEM Coamo (Site + API de Vagas)
+# Totem Coamo / GEPES — V2
 
-Este repositório contém:
-- Site estático do TOTEM (HTML/CSS/JS)
-- Endpoint `/api/vagas` (Serverless) para buscar vagas no Jobfeed da Selecty
+Versão redesenhada especificamente para uso em totem touchscreen.
 
-## Como publicar (Vercel)
-1. Suba este projeto no GitHub
-2. Importe na Vercel (New Project → Import Git Repository)
-3. Configure as variáveis de ambiente em **Settings → Environment Variables**:
+## O que mudou
 
-- `SELECTY_PORTAL` = `coamo`
-- `SELECTY_JOBFEED_KEY` = (seu token do Jobfeed)
+- Home redesenhada para uso em 1920×1080.
+- Modo apresentação em tela cheia com rotação automática.
+- Apresentação inicia automaticamente ao abrir `index.html`.
+- Um toque na apresentação abre a interface interativa.
+- Após inatividade, o totem limpa campos e retorna à apresentação.
+- Vagas continuam sendo consultadas pelo endpoint `/api/vagas` e Jobfeed/Selecty.
+- Página de vagas com busca por cargo, filtro por cidade e QR Code.
+- Página "Conheça a Coamo" substitui a antiga página placeholder de apresentação.
+- Sorteio preserva o envio silencioso para o Google Forms existente.
+- Painel oculto de configuração: mantenha o logo Coamo pressionado por ~3 segundos.
 
-4. Faça Redeploy
+## Painel oculto
 
-## Teste rápido
-Acesse:
-`https://SEU-DOMINIO.vercel.app/api/vagas`
+Permite configurar no próprio navegador:
+- segundos por slide;
+- segundos para retorno por inatividade;
+- exibir/ocultar Sorteio;
+- ativar/desativar apresentação automática ao abrir.
 
-Se retornar JSON com vagas, está OK ✅
+As configurações são salvas em `localStorage` apenas no navegador do totem.
 
+## Vercel
 
-## Observação da versão corrigida
-- O endpoint `/api/vagas` agora traz automaticamente todas as páginas do Jobfeed, até o limite de segurança configurado no proxy.
-- A página de vagas do site passou a aceitar retornos com `vacancies`, `data`, `jobs`, `items` e formatos semelhantes.
-- O layout foi ajustado para telas de totem/webview, evitando sobra branca e cortes indevidos.
+Mantenha as variáveis já utilizadas pelo projeto:
+
+- `SELECTY_PORTAL=coamo`
+- `SELECTY_JOBFEED_KEY=<token do Jobfeed>`
+
+O endpoint serverless permanece em `api/vagas.js`.
+
+## Uso recomendado
+
+Abra no navegador do totem:
+
+`https://SEU-DOMINIO.vercel.app/`
+
+Para voltar diretamente à interface sem iniciar a apresentação:
+
+`https://SEU-DOMINIO.vercel.app/?interactive=1`

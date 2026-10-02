@@ -1,56 +1,74 @@
-<!DOCTYPE html>
-
-<html lang="pt-br">
+<!doctype html>
+<html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<title>Coamo • Apresentação</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="styles.css" rel="stylesheet"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Conheça a Coamo • Totem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<div class="app">
-<div class="frame" role="application"><aside aria-label="Menu" class="sidebar">
-<div class="brand">
-<img alt="Coamo" class="brand__logo" src="assets/logo.png"/>
-</div>
-<nav aria-label="Navegação" class="nav">
-<a class="nav__btn" href="index.html">Home</a>
-<a class="nav__btn" href="vagas.html">Vagas</a><a class="nav__btn" href="sorteio.html">Sorteio</a><a aria-current="page" class="nav__btn" href="apresentacao.html" id="btnApresentacao">Apresentação</a>
-</nav>
-<div class="sidebar__spacer"></div>
-<div aria-label="Faça parte da Coamo" class="qrCard">
-<div class="qr__title">Faça parte da Coamo</div>
-<div class="qr__subtitle">É simples e rápido</div>
-<div class="qr__wrap">
-<div class="qr__imgWrap"><div class="qr__inner"><img alt="QR Code" class="qr__img" src="assets/qr-selecty.png"/></div></div>
-<div class="qr__steps">
-<div>1. Escaneie o QR Code</div>
-<div>2. Cadastre seu currículo</div>
-<div>3. Acompanhe sua candidatura</div>
-</div>
-</div>
-</div>
-</aside>
-<main aria-label="Conteúdo" class="content">
-<div class="content__inner">
-<header class="hero">
-<p class="hero__kicker">Apresentação</p>
-<h1 class="hero__title">Página placeholder (Stage 1)</h1>
-</header>
-<div class="card">
-<p style="margin:0">Na etapa 2, vamos colocar o conteúdo real desta página mantendo exatamente o rodapé de ondas e a barra lateral.</p>
-</div>
-</div>
-</main>
-<!-- Ondas sempre acima de tudo (acima da barra lateral) -->
-<div aria-hidden="true" class="waves">
-<img alt="" class="waves__img" src="assets/waves.png"/>
-</div>
-</div>
-</div>
-<script src="app.js"></script>
+<body data-page="about">
+  <div class="kiosk-shell">
+    <header class="topbar">
+      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início"><img src="assets/logo_verde.png" alt="Coamo"></a>
+      <div class="topbar__context"><span class="topbar__eyebrow">GEPES</span><span class="topbar__label">Recrutamento e Seleção</span></div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__item" href="index.html?interactive=1">Início</a>
+        <a class="topnav__item" href="vagas.html">Vagas</a>
+        <a class="topnav__item is-active" href="apresentacao.html">Conheça a Coamo</a>
+        <a class="topnav__item" data-feature="raffle" href="sorteio.html">Sorteio</a>
+        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
+      </nav>
+    </header>
+
+    <main class="page-main page-main--about">
+      <section class="about-heading">
+        <div>
+          <span class="section-kicker">Conheça a Coamo</span>
+          <h1>Um ambiente para aprender, contribuir e crescer.</h1>
+        </div>
+        <p>Explore alguns dos pilares que fazem parte da experiência de quem constrói sua trajetória conosco.</p>
+      </section>
+
+      <section class="about-grid">
+        <article class="story-card story-card--wide">
+          <img src="assets/img_cultura.jpg" alt="Funcionária da Coamo em atividade no campo">
+          <div class="story-card__shade"></div>
+          <div class="story-card__content"><span>Cultura</span><h2>Cooperação que se transforma em atitude.</h2><p>Princípios, valores e comportamentos que orientam o jeito de fazer no dia a dia.</p></div>
+        </article>
+        <article class="story-card">
+          <img src="assets/img_carreira.jpg" alt="Funcionários da Coamo em ambiente administrativo">
+          <div class="story-card__shade"></div>
+          <div class="story-card__content"><span>Carreira</span><h2>Desenvolvimento contínuo.</h2><p>Aprendizado e oportunidades em diferentes áreas.</p></div>
+        </article>
+        <article class="story-card">
+          <img src="assets/img_bemestar.jpg" alt="Estrutura da Coamo">
+          <div class="story-card__shade"></div>
+          <div class="story-card__content"><span>Bem-estar</span><h2>Pessoas no centro.</h2><p>Segurança, qualidade de vida e cuidado no ambiente de trabalho.</p></div>
+        </article>
+        <article class="area-card">
+          <img src="assets/img_agro.jpg" alt="Atuação no campo">
+          <div><span>Campo / Agro</span><p>Conexão com o cooperado e com a produção.</p></div>
+        </article>
+        <article class="area-card">
+          <img src="assets/img_industria.jpg" alt="Atuação industrial">
+          <div><span>Indústria</span><p>Operações, produção, manutenção e qualidade.</p></div>
+        </article>
+        <article class="area-card">
+          <img src="assets/img_admin.jpg" alt="Atuação administrativa">
+          <div><span>Administrativo / Corporativo</span><p>Estratégia, tecnologia, pessoas e suporte ao negócio.</p></div>
+        </article>
+      </section>
+
+      <section class="about-cta">
+        <div><span class="section-kicker">Próximo passo</span><h2>Quer construir sua história com a Coamo?</h2></div>
+        <a class="btn btn--primary" href="vagas.html">Conhecer oportunidades</a>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
 </body>
 </html>

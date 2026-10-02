@@ -1,492 +1,672 @@
 (() => {
   "use strict";
 
-  const CONFIG = {
-    // Modo apresentação
-    inactivityMs: 25 * 1000,   // inicia após 25s sem clique/toque
-    slideMs: 12 * 1000,        // troca de slide
-
-    // Integração de vagas (Jobfeed/Selecty) – preencha quando colocar no ar
-    jobfeed: {
-      enabled: true, // API de vagas habilitada (via proxy /api/vagas)
-      baseUrl: "",   // mesmo domínio do site
-      endpoint: "/api/vagas", // endpoint do proxy (Vercel/GitHub + Vercel)
-      token: "",
-      app_id: "",
-      secret: ""
-    }
+  const STORAGE_KEY = "coamoTotemSettingsV2";
+  const DEFAULT_SETTINGS = {
+    slideSeconds: 9,
+    inactivitySeconds: 60,
+    raffleEnabled: true,
+    autoPresentation: true,
   };
 
-  /* =========================
-     Helpers
-  ========================== */
-  const $ = (sel, root=document) => root.querySelector(sel);
-  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+  const API_ENDPOINT = "/api/vagas";
+  const page = document.body?.dataset?.page || "";
 
-  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  /* =========================
-     NAV – Botão Apresentação
-  ========================== */
-  function wirePresentationButton(){
-    const btn = document.getElementById("btnApresentacao");
-    if(!btn) return;
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      startPresentation("manual");
+  function loadSettings() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      return { ...DEFAULT_SETTINGS, ...saved };
+    } catch (_) {
+      return { ...DEFAULT_SETTINGS };
+    }
+  }
+
+  let settings = loadSettings();
+
+  function saveSettings(next) {
+    settings = { ...settings, ...next };
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(settings)); } catch (_) {}
+    applyFeatureFlags();
+    resetIdleTimers();
+  }
+
+  function applyFeatureFlags() {
+    $$('[data-feature="raffle"]').forEach(el => {
+      el.classList.toggle("is-feature-hidden", !settings.raffleEnabled);
     });
-  }
-
-  /* =========================
-     Modo Apresentação (Overlay)
-  ========================== */
-  let idleTimer = null;
-  let slideTimer = null;
-  let isPresentationActive = false;
-  let currentSlide = 0;
-
-  let SLIDES = [
-    {
-      title: "Cultura da Coamo",
-      sub: "Princípios e valores que guiam o nosso jeito de fazer.",
-      bg: "assets/img_cultura.jpg",
-      pill: "Cultura"
-    },
-    {
-      title: "Depoimento",
-      sub: "A Coamo é uma Escola, uma segunda casa. Aqui aprendi muitas coisas, como ser um bom profissional, como é trabalhar em uma grande Empresa. São 40 anos de dedicação (primeiro e único emprego). Os princípios e valores da Coamo são muito nobres, valorizam as pessoas. Uma Cooperativa que sabe conciliar o Econômico e o Social, gerando benefícios para os Cooperados e para as Comunidades onde atua.",
-      bg: "assets/depo_edivilson_bg.jpg",
-      pill: "Depoimento",
-      author: {
-        name: "Edevilson Canali",
-        role: "Supervisor de Soluções de Negócio",
-        photo: "assets/depo_edivilson_avatar.jpg"
-      }
-    },
-    {
-      title: "Depoimento",
-      sub: "Criar cultura e valores em uma empresa depende de exemplos, especialmente dos fundadores, cooperados e colaboradores. Na Coamo, essas pessoas orientam o constante crescimento, e fazer parte desse time com profissionais qualificados traz imensa gratidão. Aqui, somos motivados diariamente a superar obstáculos e alcançar os resultados esperados.",
-      bg: "assets/depo_bruno_bg.jpg",
-      pill: "Depoimento",
-      author: {
-        name: "Bruno Bortolini",
-        role: "Assessor de Operações Portuárias",
-        photo: "assets/depo_bruno_avatar.jpg"
-      }
-    },
-    {
-      title: "Carreira",
-      sub: "Oportunidades, desenvolvimento e crescimento profissional.",
-      bg: "assets/img_carreira.jpg",
-      pill: "Carreira"
-    },
-    {
-      title: "Bem‑estar",
-      sub: "Qualidade de vida, saúde e um ambiente seguro para trabalhar.",
-      bg: "assets/img_bemestar.jpg",
-      pill: "Bem‑estar"
-    }
-  ];
-
-
-  function ensureOverlay(){
-    if(document.getElementById("presentationOverlay")) return;
-
-    const overlay = document.createElement("div");
-    overlay.id = "presentationOverlay";
-    overlay.className = "presentationOverlay";
-    overlay.innerHTML = `
-      <div class="presentationSlide" role="dialog" aria-modal="true">
-        <div class="presentationSlide__bg" id="presentationBg"></div>
-        <div class="presentationSlide__shade"></div>
-
-        <div class="presentationSlide__content">
-          <div class="presentationPill" id="presentationPill">Apresentação</div>
-          <div class="presentationTitle" id="presentationTitle"></div>
-          <div class="presentationSub" id="presentationSub"></div>
-
-          <div class="presentationAuthor" id="presentationAuthor" hidden>
-<div class="presentationAuthor__text">
-              <div class="presentationAuthor__name" id="presentationAuthorName"></div>
-              <div class="presentationAuthor__role" id="presentationAuthorRole"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="presentationFooter">
-          <div class="presentationBrand"><img src="assets/logo.png" alt="Coamo"></div>
-          <div class="presentationHint">Toque na tela para sair</div>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-
-    // sair com toque/click
-    overlay.addEventListener("pointerdown", () => stopPresentation());
-    overlay.addEventListener("click", () => stopPresentation());
-  }
-
-  function renderSlide(i){
-    const s = SLIDES[i % SLIDES.length];
-
-    const overlayEl = document.getElementById("presentationOverlay");
-    const bg = document.getElementById("presentationBg");
-    const pill = document.getElementById("presentationPill");
-    const title = document.getElementById("presentationTitle");
-    const sub = document.getElementById("presentationSub");
-
-    const author = document.getElementById("presentationAuthor");
-    const authorName = document.getElementById("presentationAuthorName");
-    const authorRole = document.getElementById("presentationAuthorRole");
-
-    if(bg){
-      bg.style.setProperty("--bg-url", `url("${s.bg}")`);
-      let img = bg.querySelector("img.presentationSlide__photo");
-      if(!img){
-        img = document.createElement("img");
-        img.className = "presentationSlide__photo";
-        img.alt = "";
-        img.loading = "eager";
-        bg.appendChild(img);
-      }
-      img.src = s.bg;
-      const slideEl = overlayEl ? overlayEl.querySelector(".presentationSlide") : null;
-      img.onload = () => {
-        const r = (img.naturalHeight && img.naturalWidth) ? (img.naturalHeight / img.naturalWidth) : 1;
-        if(slideEl){
-          slideEl.classList.toggle("is-portrait", r > 1.15);
-        }
-      };
-
-    }
-    if(pill) pill.textContent = s.pill || "Apresentação";
-    if(title) title.textContent = s.title || "";
-    if(sub) sub.textContent = s.sub || "";
-
-    const hasAuthor = !!(s.author && (s.author.name || s.author.role || s.author.photo));
-    if(author){
-      author.hidden = !hasAuthor;
-      if(hasAuthor){
-        if(authorName) authorName.textContent = s.author.name || "";
-        if(authorRole) authorRole.textContent = s.author.role || "";
-      } else {
-        if(authorName) authorName.textContent = "";
-        if(authorRole) authorRole.textContent = "";
-      }
+    if (page === "raffle" && !settings.raffleEnabled) {
+      window.location.replace("index.html?interactive=1");
     }
   }
 
-  function startPresentation(source="idle"){
-    ensureOverlay();
-    const overlay = document.getElementById("presentationOverlay");
-    if(!overlay) return;
-
-    isPresentationActive = true;
-    overlay.classList.add("is-active");
-
-    currentSlide = clamp(currentSlide, 0, SLIDES.length-1);
-    renderSlide(currentSlide);
-
-    clearInterval(slideTimer);
-    slideTimer = setInterval(() => {
-      currentSlide = (currentSlide + 1) % SLIDES.length;
-      renderSlide(currentSlide);
-    }, CONFIG.slideMs);
-
-    // enquanto apresenta, não fica rodando idle por trás
-    clearTimeout(idleTimer);
-  }
-
-  function stopPresentation(){
-    const overlay = document.getElementById("presentationOverlay");
-    if(overlay) overlay.classList.remove("is-active");
-
-    isPresentationActive = false;
-    clearInterval(slideTimer);
-    slideTimer = null;
-
-    // rearmar idle
-    armIdleTimer();
-  }
-
-  // IMPORTANTÍSSIMO: contar inatividade só por clique/toque
-  function armIdleTimer(){
-    clearTimeout(idleTimer);
-    if(isPresentationActive) return;
-    idleTimer = setTimeout(() => startPresentation("idle"), CONFIG.inactivityMs);
-  }
-
-  function wireIdle(){
-    // reseta SOMENTE em clique/toque (não em mousemove)
-    const reset = () => armIdleTimer();
-
-    ["pointerdown", "touchstart", "mousedown", "click"].forEach(evt => {
-      window.addEventListener(evt, reset, { passive: true });
-    });
-
-    // começar a contar assim que carregar
-    armIdleTimer();
-  }
-
-  /* =========================
-     Vagas (com fallback)
-  ========================== */
-  const FALLBACK_VACANCIES = [
-    { id:"43061", title:"Mecânico Manutenção Veículos Pesados", location:"Campo Mourão, PR", group:"industria" },
-    { id:"43062", title:"Vigilante", location:"Campo Mourão, PR", group:"industria" },
-    { id:"43063", title:"Arquiteto(a) Corporativo de TI", location:"Campo Mourão, PR", group:"admin" },
-    { id:"43064", title:"Estágio – Programa GeraTalentos", location:"Campo Mourão, PR", group:"admin" },
-    { id:"43065", title:"Assistente de Distribuição", location:"Paranaguá, PR", group:"agro" },
-  ];
-
-  function groupLabel(group){
-    if(group === "industria") return "Indústria";
-    if(group === "admin") return "Administrativo / Corporativo";
-    return "Campo / Agro";
-  }
-
-    const VACANCY_IMAGE_RULES = [
-    { keys: ["veterin", "medico veterin", "medica veterin"], img: "assets/vaga_fotos/medico_a_veterinario_a.jpg" },
-    { keys: ["ti", "tecnolog", "sistema", "software", "desenvolv", "program", "suporte", "infra", "devops", "dados", "data", "analista de sistemas"], img: "assets/vaga_fotos/vagas_de_ti.jpg" },
-    { keys: ["mecan", "veicul", "oficina", "manutencao veicul", "mecanico de veiculos"], img: "assets/vaga_fotos/mecanico_de_veiculos.jpg" },
-    { keys: ["vigilant", "seguranc", "portaria", "controlador de acesso"], img: "assets/vaga_fotos/vigilante.jpeg" },
-    { keys: ["zelador", "zeladora", "limpeza", "higien", "copeir"], img: "assets/vaga_fotos/zeladora.jpg" },
-    { keys: ["aprendiz", "jovem aprendiz"], img: "assets/vaga_fotos/aprendiz.jpg" },
-    { keys: ["ajudant", "servicos gerais", "servico geral", "auxiliar de servicos", "ajudante de servicos"], img: "assets/vaga_fotos/ajudantes.jpg" },
-    { keys: ["fiacao", "fiação", "eletric", "eletro", "cab", "fios"], img: "assets/vaga_fotos/vagas_com_a_palavra_de_fiacao.jpg" },
-    { keys: ["agro", "campo", "fazenda", "lavour", "graos", "agric"], img: "assets/vaga_fotos/agro.jpg" },
-  ];
-
-  function _norm(str){
-    return (str || "")
-      .toString()
+  function normalizeText(value) {
+    return String(value ?? "")
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
+      .toLowerCase()
+      .trim();
   }
 
-  function getVacancyImage(v){
-    const t = _norm(`${v?.title || ""} ${v?.group || ""} ${v?.location || ""}`);
-
-    for(const rule of VACANCY_IMAGE_RULES){
-      if(rule.keys.some(k => t.includes(_norm(k)))) return rule.img;
-    }
-
-    // fallback por grupo (imagens existentes no assets/)
-    if(v.group === "industria") return "assets/img_industria.jpg";
-    if(v.group === "admin") return "assets/img_admin.jpg";
-    return "assets/img_agro.jpg";
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
-  function renderVagasList(list, meta={}) {
-    const root = document.getElementById("vagasList");
-    if(!root) return;
-
-    root.innerHTML = "";
-
-    list.forEach(v => {
-      const el = document.createElement("div");
-      el.className = "vagaItem";
-      el.innerHTML = `
-        <div class="vagaThumb"><img src="${getVacancyImage(v)}" alt=""></div>
-        <div class="vagaBody">
-          <h3 class="vagaTitle">${v.title}</h3>
-          <div class="vagaLoc">📍 ${v.location}</div>
-          <div class="vagaTags">
-            <span class="vagaTag">${groupLabel(v.group)}</span>
-            <span class="vagaTag">Cód. ${v.id}</span>
-            ${meta.isFallback ? `<span class="vagaTag vagaTag--muted">Exemplo</span>` : ``}
-          </div>
-        </div>
-      `;
-      root.appendChild(el);
-    });
-
-    const countEl = document.getElementById("vagasCount");
-    if(countEl){
-      if(meta.note){
-        countEl.textContent = meta.note;
-      } else {
-        countEl.textContent = `${list.length} vaga(s) encontrada(s)`;
+  function firstUseful(...values) {
+    for (const value of values) {
+      if (value === null || value === undefined) continue;
+      if (typeof value === "string" || typeof value === "number") {
+        const str = String(value).trim();
+        if (str && str !== "[object Object]") return str;
       }
     }
+    return "";
   }
 
-  function pickJobsArray(payload){
-    if(Array.isArray(payload)) return payload;
-    if(!payload || typeof payload !== "object") return [];
+  /* =========================
+     VAGAS / SELECTY
+  ========================== */
+  const PREVIEW_VACANCIES = [
+    { id: "43061", title: "Mecânico de Manutenção", location: "Campo Mourão, PR", group: "industria" },
+    { id: "43062", title: "Vigilante", location: "Campo Mourão, PR", group: "industria" },
+    { id: "43063", title: "Profissional de Tecnologia da Informação", location: "Campo Mourão, PR", group: "admin" },
+    { id: "43064", title: "Estágio", location: "Campo Mourão, PR", group: "admin" },
+    { id: "43065", title: "Assistente Operacional", location: "Paranaguá, PR", group: "agro" },
+    { id: "43066", title: "Classificador de Produtos Agrícolas", location: "Ibiporã, PR", group: "agro" },
+  ];
 
+  const VACANCY_IMAGE_RULES = [
+    { keys: ["veterin"], img: "assets/vaga_fotos/medico_a_veterinario_a.jpg" },
+    { keys: ["tecnolog", "sistema", "software", "desenvolv", "program", "suporte", "infra", "devops", "dados", "ti"], img: "assets/vaga_fotos/vagas_de_ti.jpg" },
+    { keys: ["mecan", "veicul", "oficina", "manutencao"], img: "assets/vaga_fotos/mecanico_de_veiculos.jpg" },
+    { keys: ["vigilant", "seguranc", "portaria", "controlador de acesso"], img: "assets/vaga_fotos/vigilante.jpeg" },
+    { keys: ["zelador", "limpeza", "higien", "copeir"], img: "assets/vaga_fotos/zeladora.jpg" },
+    { keys: ["aprendiz", "jovem aprendiz", "estagio", "estagiario"], img: "assets/vaga_fotos/aprendiz.jpg" },
+    { keys: ["ajudant", "servicos gerais", "auxiliar de servicos"], img: "assets/vaga_fotos/ajudantes.jpg" },
+    { keys: ["fiacao", "eletric", "eletro", "cabos", "fios"], img: "assets/vaga_fotos/vagas_com_a_palavra_de_fiacao.jpg" },
+    { keys: ["agro", "campo", "fazenda", "lavour", "graos", "agric", "classificador", "maquinista"], img: "assets/vaga_fotos/agro.jpg" },
+  ];
+
+  function pickJobsArray(payload) {
+    if (Array.isArray(payload)) return payload;
+    if (!payload || typeof payload !== "object") return [];
     const candidates = [
-      payload.vacancies,
-      payload.data,
-      payload.jobs,
-      payload.items,
-      payload.results,
-      payload.rows,
-      payload.data?.vacancies,
-      payload.data?.jobs,
-      payload.data?.items,
-      payload.payload?.vacancies,
-      payload.payload?.jobs,
+      payload.vacancies, payload.data, payload.jobs, payload.items, payload.results, payload.rows,
+      payload.data?.vacancies, payload.data?.jobs, payload.data?.items,
+      payload.payload?.vacancies, payload.payload?.jobs,
     ];
-
-    for(const item of candidates){
-      if(Array.isArray(item)) return item;
-    }
-    return [];
+    return candidates.find(Array.isArray) || [];
   }
 
-  function guessGroup(job){
-    const raw = String(
-      job.group || job.area || job.department || job.category || job.segment || job.business_unit || "admin"
-    ).toLowerCase();
+  function getLocation(job) {
+    const loc = job?.location;
+    if (typeof loc === "string" && loc.trim()) return loc.trim();
+    if (loc && typeof loc === "object") {
+      const city = firstUseful(loc.city, loc.name, loc.locality);
+      const state = firstUseful(loc.state, loc.state_code, loc.uf);
+      if (city || state) return [city, state].filter(Boolean).join(", ");
+    }
 
-    if(raw.includes("ind")) return "industria";
-    if(raw.includes("agro") || raw.includes("campo") || raw.includes("fazenda")) return "agro";
+    const city = firstUseful(
+      job?.city, job?.address_city, job?.work_city, job?.municipality,
+      job?.workplace_city, job?.unit_city, job?.cidade
+    );
+    const state = firstUseful(job?.state, job?.state_code, job?.uf, job?.address_state, job?.estado);
+    if (city || state) return [city, state].filter(Boolean).join(", ");
+
+    return firstUseful(job?.unit, job?.workplace, job?.address, job?.local);
+  }
+
+  function guessGroup(job) {
+    const raw = normalizeText([
+      job?.group, job?.area, job?.department, job?.category, job?.segment,
+      job?.business_unit, job?.title, job?.name, job?.position
+    ].filter(Boolean).join(" "));
+    if (/industr|produc|manutenc|mecan|eletric|operador/.test(raw)) return "industria";
+    if (/agro|campo|fazenda|agric|grao|cereal|classific|maquinista/.test(raw)) return "agro";
     return "admin";
   }
 
-  function normalizeVacancy(job, idx){
+  function normalizeVacancy(job, idx) {
     return {
-      id: String(job.id || job.code || job.vacancy_id || job.job_id || idx),
-      title: String(job.title || job.name || job.position || job.job_title || "Vaga"),
-      location: String(job.location || job.city || job.unit || job.workplace || job.address_city || ""),
+      id: firstUseful(job?.id, job?.code, job?.vacancy_id, job?.job_id, job?.codigo, idx + 1),
+      title: firstUseful(job?.title, job?.name, job?.position, job?.job_title, job?.cargo, "Oportunidade"),
+      location: getLocation(job) || "Localidade a consultar",
       group: guessGroup(job),
       raw: job,
     };
   }
 
-  async function fetchVacanciesFromApi(){
-    const jf = CONFIG.jobfeed;
-    if(!jf || !jf.enabled || !jf.endpoint) return null;
+  function groupLabel(group) {
+    if (group === "industria") return "Indústria";
+    if (group === "agro") return "Campo / Agro";
+    return "Administrativo / Corporativo";
+  }
 
-    const base = jf.baseUrl ? jf.baseUrl.replace(/\/$/, "") : window.location.origin;
-    const url = base + jf.endpoint;
-    const headers = {};
-    if(jf.token) headers["Authorization"] = `Bearer ${jf.token}`;
+  function getVacancyImage(v) {
+    const text = normalizeText(`${v?.title || ""} ${v?.group || ""} ${v?.location || ""}`);
+    for (const rule of VACANCY_IMAGE_RULES) {
+      if (rule.keys.some(key => text.includes(normalizeText(key)))) return rule.img;
+    }
+    if (v?.group === "industria") return "assets/img_industria.jpg";
+    if (v?.group === "agro") return "assets/img_agro.jpg";
+    return "assets/img_admin.jpg";
+  }
 
-    const res = await fetch(url, { headers, cache: "no-store" });
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-
-    const arr = pickJobsArray(data);
+  async function fetchVacancies() {
+    const res = await fetch(API_ENDPOINT, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const payload = await res.json();
+    const jobs = pickJobsArray(payload);
     const unique = new Map();
-
-    arr.forEach((job, idx) => {
-      const normalized = normalizeVacancy(job, idx);
-      if(!unique.has(normalized.id)){
-        unique.set(normalized.id, normalized);
-      }
+    jobs.forEach((job, idx) => {
+      const v = normalizeVacancy(job, idx);
+      const key = String(v.id || `${v.title}|${v.location}`);
+      if (!unique.has(key)) unique.set(key, v);
     });
-
     return Array.from(unique.values());
   }
 
-  function applyVagasFilter(all){
-    const qCargo = ($("#qCargo")?.value || "").trim().toLowerCase();
-    const qCidade = ($("#qCidade")?.value || "").trim().toLowerCase();
+  function isLocalPreview() {
+    return location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
+  }
 
-    const out = all.filter(v => {
-      const t = (v.title || "").toLowerCase();
-      const loc = (v.location || "").toLowerCase();
-      const okCargo = !qCargo || t.includes(qCargo);
-      const okCidade = !qCidade || loc.includes(qCidade);
-      return okCargo && okCidade;
+  let vacancyCachePromise = null;
+  function getVacanciesCached() {
+    if (!vacancyCachePromise) {
+      vacancyCachePromise = fetchVacancies().catch(() => isLocalPreview() ? PREVIEW_VACANCIES.slice() : []);
+    }
+    return vacancyCachePromise;
+  }
+
+  function buildCityOptions(vacancies) {
+    const select = $("#qCidade");
+    if (!select) return;
+    const cities = [...new Set(vacancies.map(v => v.location).filter(Boolean))]
+      .sort((a,b) => a.localeCompare(b, "pt-BR"));
+    cities.forEach(city => {
+      const option = document.createElement("option");
+      option.value = city;
+      option.textContent = city;
+      select.appendChild(option);
     });
-
-    renderVagasList(out, { isFallback: false });
   }
 
-  async function initVagasPage(){
-    const listEl = document.getElementById("vagasList");
-    if(!listEl) return;
+  function renderVacancies(list, total, isPreview = false) {
+    const root = $("#vagasList");
+    const count = $("#vagasCount");
+    const status = $("#vagasStatus");
+    if (!root) return;
 
-    // Estado inicial
-    const countEl = document.getElementById("vagasCount");
-    if(countEl) countEl.textContent = "Carregando vagas...";
-
-    let all = null;
-
-    try{
-      all = await fetchVacanciesFromApi();
-    } catch (err){
-      all = null;
-    }
-
-    if(!all || !all.length){
-      // Se estiver em file://, avisar que API precisa estar no ar (mas mostrar exemplo para UX)
-      const isFile = location.protocol === "file:";
-      const note = isFile
-        ? "Vagas reais serão exibidas quando o site estiver no ar. (Mostrando exemplo)"
-        : "Não foi possível carregar as vagas no momento. (Mostrando exemplo)";
-      renderVagasList(FALLBACK_VACANCIES, { isFallback: true, note });
-      all = FALLBACK_VACANCIES.slice();
+    root.innerHTML = "";
+    if (!list.length) {
+      root.innerHTML = `<div class="vacancy-empty"><strong>Nenhuma vaga encontrada.</strong><span>Tente remover um dos filtros ou escaneie o QR Code para consultar o portal completo.</span></div>`;
     } else {
-      renderVagasList(all, { isFallback: false });
+      list.forEach(v => {
+        const item = document.createElement("article");
+        item.className = "vagaItem";
+        item.innerHTML = `
+          <div class="vagaThumb"><img src="${escapeHtml(getVacancyImage(v))}" alt=""></div>
+          <div class="vagaBody">
+            <h3 class="vagaTitle">${escapeHtml(v.title)}</h3>
+            <div class="vagaLoc">📍 ${escapeHtml(v.location)}</div>
+            <div class="vagaTags">
+              <span class="vagaTag">${escapeHtml(groupLabel(v.group))}</span>
+              ${v.id ? `<span class="vagaTag">Cód. ${escapeHtml(v.id)}</span>` : ""}
+              ${isPreview ? `<span class="vagaTag vagaTag--muted">Prévia</span>` : ""}
+            </div>
+          </div>`;
+        root.appendChild(item);
+      });
     }
 
-    $("#qCargo")?.addEventListener("input", () => applyVagasFilter(all));
-    $("#qCidade")?.addEventListener("input", () => applyVagasFilter(all));
-    applyVagasFilter(all);
+    if (count) count.textContent = `${list.length} de ${total} oportunidade${total === 1 ? "" : "s"}`;
+    if (status) {
+      status.textContent = isPreview
+        ? "Prévia local: as vagas reais serão carregadas quando o projeto estiver publicado na Vercel."
+        : `${total} oportunidade${total === 1 ? "" : "s"} disponível${total === 1 ? "" : "is"} no momento.`;
+    }
   }
 
+  async function initVacanciesPage() {
+    if (page !== "vagas") return;
+    const root = $("#vagasList");
+    if (!root) return;
 
-  /* =========================
-     Apresentação – Vagas como slides
-  ========================== */
-  function vacancyToSlide(v, meta={}) {
-    const group = v.group || "admin";
-    const label = groupLabel(group);
-    const isFallback = !!meta.isFallback;
+    root.innerHTML = `<div class="vacancy-empty"><strong>Carregando oportunidades…</strong><span>Aguarde um instante.</span></div>`;
+    const vacancies = await getVacanciesCached();
+    const preview = isLocalPreview();
 
-    return {
-      title: v.title || "Vaga",
-      sub: `${v.location ? v.location + " • " : ""}${label} • Cód. ${v.id}${isFallback ? " • Exemplo" : ""}`,
-      bg: getVacancyImage(v),
-      pill: "Vaga"
+    if (!vacancies.length) {
+      const count = $("#vagasCount");
+      const status = $("#vagasStatus");
+      if (count) count.textContent = "Indisponível";
+      if (status) status.textContent = "Não foi possível consultar as vagas agora. Use o QR Code para acessar o portal de oportunidades.";
+      renderVacancies([], 0, false);
+      return;
+    }
+
+    buildCityOptions(vacancies);
+    const cargo = $("#qCargo");
+    const city = $("#qCidade");
+    const clear = $("#clearFilters");
+
+    const apply = () => {
+      const q = normalizeText(cargo?.value || "");
+      const c = city?.value || "";
+      const filtered = vacancies.filter(v => {
+        const okCargo = !q || normalizeText(v.title).includes(q);
+        const okCity = !c || v.location === c;
+        return okCargo && okCity;
+      });
+      renderVacancies(filtered, vacancies.length, preview);
     };
-  }
 
-  async function initPresentationVacancies(){
-    // Carrega vagas (API se habilitada; senão fallback) para usar no slideshow
-    let all = null;
-    try{
-      all = await fetchVacanciesFromApi();
-    } catch (e){
-      all = null;
-    }
-
-    let meta = { isFallback: false };
-    if(!all || !all.length){
-      all = FALLBACK_VACANCIES.slice();
-      meta.isFallback = true;
-    }
-
-    const vacancySlides = all.map(v => vacancyToSlide(v, meta));
-    if(!vacancySlides.length) return;
-
-    // Inserir após o slide "Carreira" (mantém narrativa)
-    const idxCarreira = SLIDES.findIndex(s => (s.pill || "").toLowerCase() === "carreira" || (s.title || "").toLowerCase() === "carreira");
-    const insertAt = idxCarreira >= 0 ? idxCarreira + 1 : SLIDES.length;
-
-    SLIDES.splice(insertAt, 0, ...vacancySlides);
-
-    // Se a apresentação estiver ativa, garantir limites
-    if(currentSlide >= SLIDES.length) currentSlide = 0;
+    cargo?.addEventListener("input", apply);
+    city?.addEventListener("change", apply);
+    clear?.addEventListener("click", () => {
+      if (cargo) cargo.value = "";
+      if (city) city.value = "";
+      apply();
+      cargo?.focus();
+    });
+    apply();
   }
 
   /* =========================
-     Boot
+     PRESENTATION MODE
+  ========================== */
+  const BASE_SLIDES = [
+    {
+      pill: "Coamo • GEPES",
+      title: "Construa sua história com a Coamo.",
+      sub: "Oportunidades para aprender, contribuir e crescer ao lado de pessoas que fazem acontecer.",
+      bg: "assets/img_carreira.jpg",
+    },
+    {
+      pill: "Pessoas",
+      title: "Pessoas movem cada parte dessa história.",
+      sub: "Do campo às áreas administrativas e industriais, diferentes trajetórias se encontram em um mesmo propósito de cooperação.",
+      bg: "assets/img_cultura.jpg",
+    },
+    {
+      pill: "Depoimento",
+      title: "“Aqui aprendi e cresci como profissional.”",
+      sub: "Uma trajetória construída com aprendizado, dedicação e desenvolvimento.",
+      bg: "assets/depo_edivilson_bg.jpg",
+      author: { name: "Edevilson Canali", role: "Supervisor de Soluções de Negócio", photo: "assets/depo_edivilson_avatar.jpg" },
+    },
+    {
+      pill: "Carreira",
+      title: "Diferentes áreas. Muitas possibilidades.",
+      sub: "Campo, indústria, tecnologia, operações e áreas corporativas fazem parte das oportunidades que você pode conhecer.",
+      bg: "assets/img_industria.jpg",
+    },
+    {
+      pill: "Bem-estar",
+      title: "Um ambiente pensado para pessoas.",
+      sub: "Segurança, cuidado e qualidade de vida fazem parte da construção de uma boa experiência de trabalho.",
+      bg: "assets/img_bemestar.jpg",
+    },
+    {
+      pill: "Faça parte",
+      title: "Seu próximo passo pode começar aqui.",
+      sub: "Toque na tela para explorar ou escaneie o QR Code para acessar as oportunidades pelo celular.",
+      bg: "assets/img_agro.jpg",
+      qr: true,
+    },
+  ];
+
+  let slides = BASE_SLIDES.slice();
+  let slideIndex = 0;
+  let slideTimer = null;
+  let presentationActive = false;
+
+  function buildPresentationOverlay() {
+    if ($("#presentationOverlay")) return;
+    const overlay = document.createElement("section");
+    overlay.id = "presentationOverlay";
+    overlay.className = "presentation-overlay";
+    overlay.setAttribute("aria-label", "Modo apresentação");
+    overlay.innerHTML = `
+      <div class="presentation-bg"><img class="presentation-photo" id="presentationPhoto" src="" alt=""></div>
+      <div class="presentation-shade"></div>
+      <div class="presentation-top">
+        <div class="presentation-logo"><img src="assets/logo.png" alt="Coamo"></div>
+        <div class="presentation-mode">Modo apresentação</div>
+      </div>
+      <div class="presentation-content">
+        <div class="presentation-pill" id="presentationPill"></div>
+        <div class="presentation-title" id="presentationTitle"></div>
+        <div class="presentation-sub" id="presentationSub"></div>
+        <div class="presentation-author" id="presentationAuthor" hidden>
+          <img id="presentationAuthorPhoto" src="" alt="">
+          <div><strong id="presentationAuthorName"></strong><span id="presentationAuthorRole"></span></div>
+        </div>
+      </div>
+      <div class="presentation-qr" id="presentationQr">
+        <img src="assets/qr-selecty.png" alt="QR Code para oportunidades">
+        <strong>Conheça as oportunidades</strong>
+        <span>Aponte a câmera do celular para continuar.</span>
+      </div>
+      <div class="presentation-bottom">
+        <div class="presentation-progress" id="presentationProgress"></div>
+        <div class="presentation-hint">TOQUE NA TELA PARA EXPLORAR ›</div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      stopPresentation(true);
+    }, { passive: false });
+  }
+
+  function renderProgress() {
+    const root = $("#presentationProgress");
+    if (!root) return;
+    root.innerHTML = slides.map((_, i) => `<i class="${i === slideIndex ? "is-active" : ""}"></i>`).join("");
+  }
+
+  function renderSlide(index) {
+    const s = slides[index % slides.length];
+    const overlay = $("#presentationOverlay");
+    const photo = $("#presentationPhoto");
+    if (!overlay || !photo || !s) return;
+
+    photo.src = s.bg;
+    photo.onload = () => {
+      const ratio = photo.naturalWidth && photo.naturalHeight ? photo.naturalHeight / photo.naturalWidth : 0;
+      overlay.classList.toggle("is-portrait", ratio > 1.15);
+    };
+
+    $("#presentationPill").textContent = s.pill || "Coamo";
+    $("#presentationTitle").textContent = s.title || "";
+    $("#presentationSub").textContent = s.sub || "";
+
+    const author = $("#presentationAuthor");
+    if (s.author) {
+      author.hidden = false;
+      $("#presentationAuthorPhoto").src = s.author.photo || "";
+      $("#presentationAuthorName").textContent = s.author.name || "";
+      $("#presentationAuthorRole").textContent = s.author.role || "";
+    } else {
+      author.hidden = true;
+    }
+
+    const qr = $("#presentationQr");
+    qr.classList.toggle("is-visible", !!s.qr);
+    overlay.classList.toggle("presentation-cta", !!s.qr);
+
+    photo.style.animation = "none";
+    void photo.offsetWidth;
+    photo.style.animation = "";
+    renderProgress();
+  }
+
+  async function enrichPresentationWithVacancies() {
+    const vacancies = await getVacanciesCached();
+    if (!vacancies.length) return;
+    const vacancySlides = vacancies.slice(0, 4).map(v => ({
+      pill: "Oportunidade em destaque",
+      title: v.title,
+      sub: `${v.location} • ${groupLabel(v.group)}${v.id ? ` • Cód. ${v.id}` : ""}`,
+      bg: getVacancyImage(v),
+    }));
+    slides = [...BASE_SLIDES.slice(0, 5), ...vacancySlides, BASE_SLIDES[5]];
+    if (presentationActive) {
+      if (slideIndex >= slides.length) slideIndex = 0;
+      renderProgress();
+    }
+  }
+
+  function startPresentation(source = "manual") {
+    if (page !== "home") {
+      window.location.href = "index.html?present=1";
+      return;
+    }
+    buildPresentationOverlay();
+    resetSensitiveData();
+    presentationActive = true;
+    slideIndex = 0;
+    const overlay = $("#presentationOverlay");
+    overlay.classList.add("is-active");
+    renderSlide(slideIndex);
+    clearInterval(slideTimer);
+    slideTimer = setInterval(() => {
+      slideIndex = (slideIndex + 1) % slides.length;
+      renderSlide(slideIndex);
+    }, Math.max(5, Number(settings.slideSeconds) || 9) * 1000);
+    clearIdleTimers();
+    if (source === "manual") {
+      try { history.replaceState(null, "", "index.html?present=1"); } catch (_) {}
+    }
+  }
+
+  function stopPresentation(userInitiated = false) {
+    const overlay = $("#presentationOverlay");
+    overlay?.classList.remove("is-active");
+    presentationActive = false;
+    clearInterval(slideTimer);
+    slideTimer = null;
+    if (userInitiated) {
+      try { history.replaceState(null, "", "index.html?interactive=1"); } catch (_) {}
+    }
+    resetIdleTimers();
+  }
+
+  function initPresentationButtons() {
+    $$(".js-start-presentation").forEach(btn => btn.addEventListener("click", startPresentation));
+  }
+
+  function maybeAutoStartPresentation() {
+    if (page !== "home") return;
+    const params = new URLSearchParams(location.search);
+    const interactive = params.get("interactive") === "1";
+    const forcePresent = params.get("present") === "1";
+    if (forcePresent || (settings.autoPresentation && !interactive)) {
+      window.setTimeout(() => startPresentation(forcePresent ? "idle" : "auto"), 300);
+    }
+  }
+
+  /* =========================
+     IDLE / KIOSK RESET
+  ========================== */
+  let warningTimer = null;
+  let idleTimer = null;
+  let countdownTimer = null;
+
+  function buildIdleWarning() {
+    if ($("#idleWarning")) return;
+    const el = document.createElement("div");
+    el.id = "idleWarning";
+    el.className = "idle-warning";
+    el.innerHTML = `<div><strong>Retornando à apresentação em <b id="idleCountdown">10</b>s</strong><span>Toque em continuar para permanecer nesta tela.</span></div><button type="button" id="idleContinue">Continuar</button>`;
+    document.body.appendChild(el);
+    $("#idleContinue")?.addEventListener("click", resetIdleTimers);
+  }
+
+  function clearIdleTimers() {
+    clearTimeout(warningTimer);
+    clearTimeout(idleTimer);
+    clearInterval(countdownTimer);
+    warningTimer = idleTimer = countdownTimer = null;
+    $("#idleWarning")?.classList.remove("is-visible");
+  }
+
+  function showIdleWarning(seconds = 10) {
+    buildIdleWarning();
+    const warning = $("#idleWarning");
+    const count = $("#idleCountdown");
+    let remaining = seconds;
+    if (count) count.textContent = remaining;
+    warning?.classList.add("is-visible");
+    clearInterval(countdownTimer);
+    countdownTimer = setInterval(() => {
+      remaining -= 1;
+      if (count) count.textContent = Math.max(0, remaining);
+      if (remaining <= 0) clearInterval(countdownTimer);
+    }, 1000);
+  }
+
+  function resetSensitiveData() {
+    const form = $("#sorteioForm");
+    if (form) {
+      try { form.reset(); } catch (_) {}
+      $("#sorteioSuccess")?.classList.remove("is-visible");
+    }
+    if ($("#qCargo")) $("#qCargo").value = "";
+    if ($("#qCidade")) $("#qCidade").value = "";
+  }
+
+  function returnToPresentation() {
+    clearIdleTimers();
+    resetSensitiveData();
+    if (page === "home") startPresentation("idle");
+    else window.location.replace("index.html?present=1");
+  }
+
+  function resetIdleTimers() {
+    if (presentationActive) return;
+    clearIdleTimers();
+    const total = Math.max(30, Number(settings.inactivitySeconds) || 60);
+    const warningAt = Math.max(1, total - 10);
+    warningTimer = setTimeout(() => showIdleWarning(10), warningAt * 1000);
+    idleTimer = setTimeout(returnToPresentation, total * 1000);
+  }
+
+  function initIdleTracking() {
+    ["pointerdown", "touchstart", "keydown"].forEach(evt => {
+      window.addEventListener(evt, () => {
+        if (!presentationActive) resetIdleTimers();
+      }, { passive: true });
+    });
+    resetIdleTimers();
+  }
+
+  /* =========================
+     RAFFLE FORM
+  ========================== */
+  function initRaffleForm() {
+    const form = $("#sorteioForm");
+    const phone = $("#sorteioTel");
+    const success = $("#sorteioSuccess");
+    if (!form) return;
+
+    function maskPhone(value) {
+      const d = String(value || "").replace(/\D/g, "").slice(0, 11);
+      if (d.length <= 2) return d;
+      if (d.length <= 7) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+      if (d.length <= 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+      return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+    }
+
+    phone?.addEventListener("input", () => { phone.value = maskPhone(phone.value); });
+    form.addEventListener("submit", () => {
+      success?.classList.remove("is-visible");
+      window.setTimeout(() => {
+        success?.classList.add("is-visible");
+        try { form.reset(); } catch (_) {}
+        resetIdleTimers();
+      }, 800);
+    });
+  }
+
+  /* =========================
+     HIDDEN ADMIN PANEL
+  ========================== */
+  let adminPressTimer = null;
+  let adminOpenedByPress = false;
+
+  function buildAdminModal() {
+    if ($("#adminModal")) return;
+    const modal = document.createElement("div");
+    modal.id = "adminModal";
+    modal.className = "admin-modal";
+    modal.innerHTML = `
+      <section class="admin-card" role="dialog" aria-modal="true" aria-label="Configurações do totem">
+        <div class="admin-card__head">
+          <div><h2>Configurações do totem</h2><p>Estas preferências ficam salvas apenas neste navegador.</p></div>
+          <button type="button" class="admin-close" id="adminClose" aria-label="Fechar">×</button>
+        </div>
+        <div class="admin-grid">
+          <label class="admin-field"><span>Tempo de cada slide</span><input id="adminSlideSeconds" type="number" min="5" max="30" step="1"></label>
+          <label class="admin-field"><span>Retorno por inatividade</span><input id="adminIdleSeconds" type="number" min="30" max="300" step="5"></label>
+          <label class="admin-field"><span>Sorteio</span><select id="adminRaffle"><option value="1">Exibir</option><option value="0">Ocultar</option></select></label>
+          <label class="admin-field"><span>Apresentação ao abrir</span><select id="adminAuto"><option value="1">Ativar</option><option value="0">Desativar</option></select></label>
+        </div>
+        <p class="admin-note">Para abrir este painel novamente, mantenha o logo da Coamo pressionado por aproximadamente 3 segundos.</p>
+        <div class="admin-actions"><button type="button" class="btn btn--soft" id="adminCancel">Cancelar</button><button type="button" class="btn btn--primary" id="adminSave">Salvar</button></div>
+      </section>`;
+    document.body.appendChild(modal);
+
+    const close = () => modal.classList.remove("is-open");
+    $("#adminClose")?.addEventListener("click", close);
+    $("#adminCancel")?.addEventListener("click", close);
+    modal.addEventListener("pointerdown", e => { if (e.target === modal) close(); });
+    $("#adminSave")?.addEventListener("click", () => {
+      saveSettings({
+        slideSeconds: Math.min(30, Math.max(5, Number($("#adminSlideSeconds")?.value) || 9)),
+        inactivitySeconds: Math.min(300, Math.max(30, Number($("#adminIdleSeconds")?.value) || 60)),
+        raffleEnabled: $("#adminRaffle")?.value !== "0",
+        autoPresentation: $("#adminAuto")?.value !== "0",
+      });
+      close();
+    });
+  }
+
+  function openAdmin() {
+    buildAdminModal();
+    $("#adminSlideSeconds").value = settings.slideSeconds;
+    $("#adminIdleSeconds").value = settings.inactivitySeconds;
+    $("#adminRaffle").value = settings.raffleEnabled ? "1" : "0";
+    $("#adminAuto").value = settings.autoPresentation ? "1" : "0";
+    $("#adminModal")?.classList.add("is-open");
+  }
+
+  function initAdminTrigger() {
+    $$(".js-admin-trigger").forEach(trigger => {
+      const cancel = () => { clearTimeout(adminPressTimer); adminPressTimer = null; };
+      trigger.addEventListener("pointerdown", () => {
+        adminOpenedByPress = false;
+        cancel();
+        adminPressTimer = setTimeout(() => {
+          adminOpenedByPress = true;
+          openAdmin();
+        }, 2600);
+      });
+      trigger.addEventListener("pointerup", cancel);
+      trigger.addEventListener("pointercancel", cancel);
+      trigger.addEventListener("pointerleave", cancel);
+      trigger.addEventListener("click", e => {
+        if (adminOpenedByPress) {
+          e.preventDefault();
+          adminOpenedByPress = false;
+        }
+      });
+    });
+  }
+
+  /* =========================
+     BOOT
   ========================== */
   window.addEventListener("DOMContentLoaded", () => {
-    wirePresentationButton();
-    wireIdle();
-    initPresentationVacancies();
-    initVagasPage();
+    applyFeatureFlags();
+    initPresentationButtons();
+    initAdminTrigger();
+    initRaffleForm();
+    initVacanciesPage();
+    initIdleTracking();
+    enrichPresentationWithVacancies();
+    maybeAutoStartPresentation();
   });
 
-  // Expor para debug/uso externo
   window.startPresentation = startPresentation;
   window.stopPresentation = stopPresentation;
-
 })();
