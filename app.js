@@ -7,6 +7,14 @@
     inactivitySeconds: 60,
     raffleEnabled: true,
     autoPresentation: true,
+    showInternship: true,
+    showInternshipLogo: false,
+    showUnicoamo: true,
+    showQualityOfLife: true,
+    showCoamoSaude: true,
+    showFups: true,
+    showArcam: true,
+    showVacancySlides: true,
   };
 
   const API_ENDPOINT = "/api/vagas";
@@ -31,6 +39,7 @@
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(settings)); } catch (_) {}
     applyFeatureFlags();
     resetIdleTimers();
+    refreshPresentationSlides();
   }
 
   function applyFeatureFlags() {
@@ -516,6 +525,7 @@
   ========================== */
   const BASE_SLIDES = [
     {
+      id: "coamo",
       pill: "Coamo",
       title: "Uma história construída em cooperação.",
       sub: "Diferentes profissões, conhecimentos e experiências se conectam todos os dias para fazer uma grande operação acontecer.",
@@ -523,6 +533,7 @@
       position: "center 40%",
     },
     {
+      id: "campo",
       pill: "Campo & Cooperado",
       title: "Onde a relação com o produtor acontece.",
       sub: "Assistência técnica, atendimento, orientação e atividades ligadas à produção aproximam conhecimento, cooperado e resultado.",
@@ -531,6 +542,7 @@
       metric: { value: "+400", label: "Agrônomos e Veterinários" },
     },
     {
+      id: "operacoes",
       pill: "Armazenagem & Operações",
       title: "Onde cada safra exige precisão.",
       sub: "Recebimento, classificação, movimentação, conservação e expedição conectam pessoas, equipamentos e processos.",
@@ -538,6 +550,7 @@
       position: "center 46%",
     },
     {
+      id: "industria",
       pill: "Indústria & Qualidade",
       title: "Onde matéria-prima ganha novas possibilidades.",
       sub: "Produção, manutenção, controle de qualidade, segurança e eficiência fazem parte de uma operação industrial de grande escala.",
@@ -545,6 +558,7 @@
       position: "center 42%",
     },
     {
+      id: "tecnologia",
       pill: "Tecnologia & Dados",
       title: "Tecnologia por trás de uma operação que não para.",
       sub: "Sistemas, infraestrutura, dados, automação e soluções digitais dão suporte às decisões e aos processos do negócio.",
@@ -552,6 +566,7 @@
       position: "center 45%",
     },
     {
+      id: "gestao",
       pill: "Gestão & Áreas Corporativas",
       title: "Estrutura para transformar estratégia em execução.",
       sub: "Pessoas, finanças, engenharia, jurídico, comunicação, planejamento e outras especialidades sustentam a operação.",
@@ -559,6 +574,89 @@
       position: "center 42%",
     },
     {
+      id: "unicoamo",
+      feature: "showUnicoamo",
+      pill: "Desenvolvimento de Pessoas",
+      title: "Conhecimento que une, cultura que transforma.",
+      sub: "A Unicoamo conecta conhecimento técnico, experiência prática, cultura organizacional e liderança para fortalecer o desenvolvimento contínuo e preparar pessoas para os desafios de hoje e do futuro.",
+      bg: "assets/unicoamo_treinamento.jpg",
+      position: "center 45%",
+      brand: "assets/logo_unicoamo.png",
+      tags: ["Conhecimento técnico", "Experiência prática", "Cultura", "Liderança"],
+    },
+    {
+      id: "qualidade-vida",
+      feature: "showQualityOfLife",
+      pill: "Qualidade de Vida",
+      title: "Cuidado com as pessoas de forma integral.",
+      sub: "O Programa Qualidade de Vida reúne iniciativas de saúde, valorização, engajamento e desenvolvimento emocional para fortalecer bem-estar, pertencimento e um ambiente de trabalho saudável.",
+      bg: "assets/fups_bemestar.jpg",
+      position: "center 45%",
+      brand: "assets/logo_qualidade_vida.png",
+      metric: { value: "4", label: "pilares de cuidado e bem-estar" },
+      tags: ["Saúde integral", "Valorização", "Engajamento social", "Maturidade emocional"],
+    },
+    {
+      id: "coamo-saude",
+      feature: "showCoamoSaude",
+      pill: "Coamo + Saúde",
+      title: "Cuidado disponível quando você precisa.",
+      sub: "Atendimento digital para funcionários e aprendizes, com médico clínico geral e suporte de enfermagem 24 horas por dia, além de psicologia, orientação nutricional, educadores físicos e outros serviços de cuidado.",
+      bg: "assets/qualidade_saude.jpg",
+      position: "center 42%",
+      brand: "assets/logo_coamo_saude.png",
+      metric: { value: "24/7", label: "atendimento médico e suporte de enfermagem" },
+      tags: ["Psicologia", "Nutrição", "Atividade física", "Gestantes", "2ª opinião médica"],
+    },
+    {
+      id: "fups",
+      feature: "showFups",
+      pill: "Proteção à Saúde",
+      title: "FUPS: proteção que faz parte do cuidado.",
+      sub: "O Fundo de Proteção à Saúde integra o conjunto de iniciativas ligadas ao cuidado e à qualidade de vida das pessoas na Coamo.",
+      bg: "assets/admin_03.jpg",
+      position: "center 44%",
+      brand: "assets/logo_fups.png",
+      tags: ["Fundo de Proteção à Saúde", "Cuidado", "Qualidade de vida"],
+    },
+    {
+      id: "arcam",
+      feature: "showArcam",
+      pill: "Convivência & Bem-estar",
+      title: "ARCAM: esporte, cultura, saúde e lazer.",
+      sub: "Um espaço de convivência que reforça vínculos, integração e momentos de lazer, conectando qualidade de vida e relacionamento entre as pessoas.",
+      bg: "assets/img_bemestar.jpg",
+      position: "center 47%",
+      brand: "assets/logo_arcam.png",
+      tags: ["Esporte", "Cultura", "Saúde", "Lazer"],
+    },
+    {
+      id: "estagio",
+      feature: "showInternship",
+      pill: "Programa de Estágio",
+      title: "111 oportunidades para começar uma trajetória na Coamo.",
+      sub: "O programa reúne oportunidades em diferentes áreas de formação, conectando aprendizado acadêmico, experiência prática e desenvolvimento profissional.",
+      bg: "assets/estagio_programa.jpg",
+      position: "center 40%",
+      brand: "assets/logo_programa_estagios.png",
+      brandSetting: "showInternshipLogo",
+      metric: { value: "111", label: "vagas de estágio" },
+      tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
+    },
+    {
+      id: "estagio-formacoes",
+      feature: "showInternship",
+      pill: "Programa de Estágio",
+      title: "Formações que encontram espaço na Coamo.",
+      sub: "Engenharias Mecânica, Civil, Elétrica, Química, Produção, Agrícola, Ambiental, Têxtil, Alimentos e Bioprocessos; Agronomia; Medicina Veterinária; Fisioterapia; Fonoaudiologia; Enfermagem; Psicologia; ADS e Ciência da Computação.",
+      bg: "assets/estagio_formacoes.jpg",
+      position: "center 44%",
+      brand: "assets/logo_programa_estagios.png",
+      brandSetting: "showInternshipLogo",
+      tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
+    },
+    {
+      id: "trajetorias",
       pill: "Trajetórias",
       title: "Carreiras são construídas com o tempo.",
       sub: "Conhecimento, experiência e novas responsabilidades fazem parte de uma trajetória profissional que continua evoluindo.",
@@ -567,6 +665,7 @@
       author: { name: "Edevilson Canali", role: "Supervisor de Soluções de Negócio", photo: "assets/depo_edivilson_avatar.jpg" },
     },
     {
+      id: "opportunities",
       pill: "Oportunidades",
       title: "Seu próximo passo pode começar aqui.",
       sub: "Toque na tela para explorar as oportunidades ou continue pelo celular usando o QR Code.",
@@ -576,7 +675,15 @@
     },
   ];
 
-  let slides = BASE_SLIDES.slice();
+  function isSlideEnabled(slide) {
+    return !slide.feature || settings[slide.feature] !== false;
+  }
+
+  function getEnabledBaseSlides() {
+    return BASE_SLIDES.filter(isSlideEnabled);
+  }
+
+  let slides = getEnabledBaseSlides();
   let slideIndex = 0;
   let slideTimer = null;
   let presentationActive = false;
@@ -595,9 +702,11 @@
         <div class="presentation-counter" id="presentationCounter">01 / 08</div>
       </div>
       <div class="presentation-content">
+        <div class="presentation-brand" id="presentationBrand" hidden><img id="presentationBrandImage" src="" alt=""></div>
         <div class="presentation-pill" id="presentationPill"></div>
         <div class="presentation-title" id="presentationTitle"></div>
         <div class="presentation-sub" id="presentationSub"></div>
+        <div class="presentation-tags" id="presentationTags" hidden></div>
         <div class="presentation-metric" id="presentationMetric" hidden><strong id="presentationMetricValue"></strong><span id="presentationMetricLabel"></span></div>
         <div class="presentation-author" id="presentationAuthor" hidden>
           <img id="presentationAuthorPhoto" src="" alt="">
@@ -646,6 +755,31 @@
     $("#presentationPill").textContent = s.pill || "Coamo";
     $("#presentationTitle").textContent = s.title || "";
     $("#presentationSub").textContent = s.sub || "";
+
+    const brand = $("#presentationBrand");
+    const brandImage = $("#presentationBrandImage");
+    const showBrand = !!s.brand && (!s.brandSetting || settings[s.brandSetting] !== false);
+    if (brand && brandImage && showBrand) {
+      brand.hidden = false;
+      brand.style.display = "inline-flex";
+      brandImage.src = s.brand;
+      brandImage.alt = s.pill || "Marca";
+    } else if (brand && brandImage) {
+      brand.hidden = true;
+      brand.style.display = "none";
+      brandImage.removeAttribute("src");
+    }
+
+    const tags = $("#presentationTags");
+    if (tags && Array.isArray(s.tags) && s.tags.length) {
+      tags.hidden = false;
+      tags.style.display = "flex";
+      tags.innerHTML = s.tags.map(tag => `<span>${escapeHtml(tag)}</span>`).join("");
+    } else if (tags) {
+      tags.hidden = true;
+      tags.style.display = "none";
+      tags.innerHTML = "";
+    }
 
     const metric = $("#presentationMetric");
     if (s.metric) {
@@ -701,30 +835,45 @@
     renderProgress();
   }
 
-  async function enrichPresentationWithVacancies() {
-    const vacancies = await getVacanciesCached();
-    if (!vacancies.length) return;
-    const seenImages = new Set();
-    const vacancySlides = vacancies
-      .filter(v => {
-        const img = getVacancyImage(v);
-        const roleMatched = v?.photo?.profile && v.photo.profile !== "estrutura" && (v.photo.score || 0) >= 6;
-        if (!img || !roleMatched || seenImages.has(img)) return false;
-        seenImages.add(img);
-        return true;
-      })
-      .slice(0, 3)
-      .map(v => ({
-        pill: "Oportunidade em destaque",
-        title: v.title,
-        sub: `${v.location} • ${groupLabel(v.group)}${v.id ? ` • Cód. ${v.id}` : ""}`,
-        bg: getVacancyImage(v),
-      }));
-    slides = [...BASE_SLIDES.slice(0, -1), ...vacancySlides, BASE_SLIDES[BASE_SLIDES.length - 1]];
+  async function refreshPresentationSlides() {
+    const baseSlides = getEnabledBaseSlides();
+    const cta = baseSlides.find(s => s.id === "opportunities");
+    const beforeCta = baseSlides.filter(s => s.id !== "opportunities");
+    let vacancySlides = [];
+
+    if (settings.showVacancySlides !== false) {
+      const vacancies = await getVacanciesCached();
+      if (vacancies.length) {
+        const seenImages = new Set();
+        vacancySlides = vacancies
+          .filter(v => {
+            const img = getVacancyImage(v);
+            const roleMatched = v?.photo?.profile && v.photo.profile !== "estrutura" && (v.photo.score || 0) >= 6;
+            if (!img || !roleMatched || seenImages.has(img)) return false;
+            seenImages.add(img);
+            return true;
+          })
+          .slice(0, 3)
+          .map(v => ({
+            id: `vaga-${v.id}`,
+            pill: "Oportunidade em destaque",
+            title: v.title,
+            sub: `${v.location} • ${groupLabel(v.group)}${v.id ? ` • Cód. ${v.id}` : ""}`,
+            bg: getVacancyImage(v),
+          }));
+      }
+    }
+
+    slides = cta ? [...beforeCta, ...vacancySlides, cta] : [...beforeCta, ...vacancySlides];
+    if (!slides.length) slides = BASE_SLIDES.filter(s => !s.feature).slice(0, 1);
     if (presentationActive) {
       if (slideIndex >= slides.length) slideIndex = 0;
-      renderProgress();
+      renderSlide(slideIndex);
     }
+  }
+
+  async function enrichPresentationWithVacancies() {
+    return refreshPresentationSlides();
   }
 
   function startPresentation(source = "manual") {
@@ -936,6 +1085,19 @@
           <label class="admin-field"><span>Sorteio</span><select id="adminRaffle"><option value="1">Exibir</option><option value="0">Ocultar</option></select></label>
           <label class="admin-field"><span>Apresentação ao abrir</span><select id="adminAuto"><option value="1">Ativar</option><option value="0">Desativar</option></select></label>
         </div>
+        <div class="admin-section">
+          <div class="admin-section__head"><div><strong>Conteúdos da apresentação</strong><span>Escolha o que pode aparecer no looping do totem.</span></div><b id="adminContentCount">0 ativos</b></div>
+          <div class="admin-toggle-list">
+            <label class="admin-toggle"><span><strong>Programa de Estágio</strong><small>Slide das 111 oportunidades</small></span><input id="adminShowInternship" type="checkbox"><i></i></label>
+            <label class="admin-toggle admin-toggle--nested"><span><strong>Logo nova do Estágio</strong><small>Deixe desligado até o lançamento oficial</small></span><input id="adminShowInternshipLogo" type="checkbox"><i></i></label>
+            <label class="admin-toggle"><span><strong>Unicoamo</strong><small>Desenvolvimento e universidade corporativa</small></span><input id="adminShowUnicoamo" type="checkbox"><i></i></label>
+            <label class="admin-toggle"><span><strong>Qualidade de Vida</strong><small>Programa e seus quatro pilares</small></span><input id="adminShowQualityOfLife" type="checkbox"><i></i></label>
+            <label class="admin-toggle"><span><strong>Coamo + Saúde</strong><small>Serviços de cuidado e atendimento digital</small></span><input id="adminShowCoamoSaude" type="checkbox"><i></i></label>
+            <label class="admin-toggle"><span><strong>FUPS</strong><small>Fundo de Proteção à Saúde</small></span><input id="adminShowFups" type="checkbox"><i></i></label>
+            <label class="admin-toggle"><span><strong>ARCAM</strong><small>Esporte, cultura, saúde e lazer</small></span><input id="adminShowArcam" type="checkbox"><i></i></label>
+            <label class="admin-toggle"><span><strong>Vagas em destaque</strong><small>Inclui vagas da Selecty no looping</small></span><input id="adminShowVacancySlides" type="checkbox"><i></i></label>
+          </div>
+        </div>
         <div class="admin-api-panel">
           <div><strong>Integração de vagas</strong><span id="adminApiStatus">Ainda não testado nesta sessão</span></div>
           <button type="button" class="btn btn--soft" id="adminTestApi">Testar agora</button>
@@ -955,10 +1117,31 @@
         inactivitySeconds: Math.min(300, Math.max(30, Number($("#adminIdleSeconds")?.value) || 60)),
         raffleEnabled: $("#adminRaffle")?.value !== "0",
         autoPresentation: $("#adminAuto")?.value !== "0",
+        showInternship: !!$("#adminShowInternship")?.checked,
+        showInternshipLogo: !!$("#adminShowInternshipLogo")?.checked,
+        showUnicoamo: !!$("#adminShowUnicoamo")?.checked,
+        showQualityOfLife: !!$("#adminShowQualityOfLife")?.checked,
+        showCoamoSaude: !!$("#adminShowCoamoSaude")?.checked,
+        showFups: !!$("#adminShowFups")?.checked,
+        showArcam: !!$("#adminShowArcam")?.checked,
+        showVacancySlides: !!$("#adminShowVacancySlides")?.checked,
       });
       close();
     });
     $("#adminTestApi")?.addEventListener("click", testVacancyIntegration);
+  }
+
+  function updateAdminContentCount() {
+    const ids = ["adminShowInternship","adminShowUnicoamo","adminShowQualityOfLife","adminShowCoamoSaude","adminShowFups","adminShowArcam","adminShowVacancySlides"];
+    const active = ids.filter(id => $("#" + id)?.checked).length;
+    const el = $("#adminContentCount");
+    if (el) el.textContent = `${active} ativo${active === 1 ? "" : "s"}`;
+    const internshipLogo = $("#adminShowInternshipLogo");
+    const internship = $("#adminShowInternship");
+    if (internshipLogo && internship) {
+      internshipLogo.disabled = !internship.checked;
+      internshipLogo.closest(".admin-toggle")?.classList.toggle("is-disabled", !internship.checked);
+    }
   }
 
   function openAdmin() {
@@ -967,6 +1150,16 @@
     $("#adminIdleSeconds").value = settings.inactivitySeconds;
     $("#adminRaffle").value = settings.raffleEnabled ? "1" : "0";
     $("#adminAuto").value = settings.autoPresentation ? "1" : "0";
+    $("#adminShowInternship").checked = settings.showInternship !== false;
+    $("#adminShowInternshipLogo").checked = settings.showInternshipLogo === true;
+    $("#adminShowUnicoamo").checked = settings.showUnicoamo !== false;
+    $("#adminShowQualityOfLife").checked = settings.showQualityOfLife !== false;
+    $("#adminShowCoamoSaude").checked = settings.showCoamoSaude !== false;
+    $("#adminShowFups").checked = settings.showFups !== false;
+    $("#adminShowArcam").checked = settings.showArcam !== false;
+    $("#adminShowVacancySlides").checked = settings.showVacancySlides !== false;
+    $$(".admin-toggle input[type=checkbox]").forEach(el => el.onchange = updateAdminContentCount);
+    updateAdminContentCount();
     updateAdminApiStatus();
     $("#adminModal")?.classList.add("is-open");
   }

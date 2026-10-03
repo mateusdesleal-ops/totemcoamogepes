@@ -1,39 +1,26 @@
-# Totem Coamo • GEPES — V3
+# Totem Coamo / GEPES — V6
 
-Aplicação web para uso interno em totem de Recrutamento e Seleção.
+Versão otimizada para uso em totem, com apresentação automática, vagas integradas à Selecty e painel oculto de configuração.
 
-## Principais recursos
-- Modo apresentação automático em tela cheia
-- Interface otimizada para touchscreen/1920×1080
-- Retorno automático para apresentação após inatividade
-- Vagas integradas ao Jobfeed da Selecty via `/api/vagas`
-- Busca por cargo e filtro por cidade
-- Área “Conheça a Coamo” com universos profissionais
-- Sorteio integrado ao formulário existente
-- Painel oculto de configurações: mantenha o logo pressionado por ~3 segundos
-- Teste da integração de vagas dentro do painel oculto
+## Painel oculto
+Mantenha pressionado o logo da Coamo por aproximadamente 3 segundos.
 
-## Integração Selecty
-O frontend nunca recebe a chave da Selecty. O endpoint `/api/vagas.js` usa a variável de ambiente da Vercel.
+No painel é possível ajustar:
+- tempo de cada slide;
+- retorno por inatividade;
+- Sorteio;
+- início automático da apresentação;
+- Programa de Estágio;
+- logo nova do Programa de Estágio (desativada por padrão);
+- Unicoamo;
+- Programa Qualidade de Vida;
+- Coamo + Saúde;
+- FUPS;
+- ARCAM;
+- vagas em destaque da Selecty;
+- teste da integração de vagas.
 
-### Variáveis na Vercel
-- `SELECTY_PORTAL` = `coamo` (opcional nesta versão; `coamo` é o padrão)
-- `SELECTY_JOBFEED_KEY` = chave do Jobfeed da Selecty
+As preferências ficam salvas no navegador do próprio totem.
 
-A V3 higieniza automaticamente espaços, aspas externas e quebras de linha na chave antes de enviá-la no header `X-Api-Key`. Isso evita o erro de header inválido quando a chave foi copiada com caracteres invisíveis.
-
-Depois de alterar qualquer variável na Vercel, faça um novo **Redeploy**.
-
-### Teste direto
-Após publicar, acesse:
-`https://totemcoamogepes.vercel.app/api/vagas?all=1&per_page=100`
-
-Resultado esperado: JSON com `"ok": true` e a lista `vacancies`.
-
-## Painel do totem
-Mantenha o logo da Coamo pressionado por aproximadamente 3 segundos para abrir as configurações. O painel permite:
-- alterar tempo de cada slide;
-- alterar tempo de inatividade;
-- exibir/ocultar Sorteio;
-- ligar/desligar apresentação automática;
-- testar a integração com a Selecty e visualizar o motivo de uma eventual falha.
+## Programa de Estágio
+O conteúdo do programa entra ativo por padrão com 111 oportunidades e áreas de formação. A nova logo do Programa de Estágio fica oculta por padrão e pode ser liberada posteriormente no painel oculto.
