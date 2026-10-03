@@ -1,0 +1,10 @@
+TOTEM COAMO/GEPES - V8
+
+Alterações desta versão:
+- Slides institucionais de Unicoamo, Qualidade de Vida, Coamo + Saúde, FUPS e ARCAM passam a usar a marca/logo como elemento visual principal, sem fotografia de fundo.
+- Programa de Estágio passa a usar composição institucional; a nova logo permanece DESATIVADA por padrão no painel oculto.
+- Quando a logo do Estágio estiver desligada, aparece somente uma composição tipográfica “Programa de Estágio”, sem revelar a nova identidade.
+- Textos institucionais revisados, incluindo FUPS como plano de saúde de autogestão criado em 1993 para funcionários do grupo Coamo.
+- Vagas continuam exclusivamente na página Vagas; não entram no looping da apresentação.
+
+Para atualizar a partir da V7, substitua app.js e styles.css na raiz do repositório.

@@ -575,83 +575,78 @@
     {
       id: "unicoamo",
       feature: "showUnicoamo",
+      institutional: true,
       pill: "Desenvolvimento de Pessoas",
       title: "Conhecimento que une, cultura que transforma.",
-      sub: "A Unicoamo conecta conhecimento técnico, experiência prática, cultura organizacional e liderança para fortalecer o desenvolvimento contínuo e preparar pessoas para os desafios de hoje e do futuro.",
-      bg: "assets/unicoamo_treinamento.jpg",
-      position: "center 45%",
+      sub: "A Unicoamo fortalece o compromisso da Coamo com o desenvolvimento contínuo das pessoas, conectando conhecimento técnico, experiência prática, cultura organizacional e liderança para preparar profissionais para os desafios de hoje e do futuro.",
       brand: "assets/logo_unicoamo.png",
       tags: ["Conhecimento técnico", "Experiência prática", "Cultura", "Liderança"],
     },
     {
       id: "qualidade-vida",
       feature: "showQualityOfLife",
+      institutional: true,
       pill: "Qualidade de Vida",
-      title: "Cuidado com as pessoas de forma integral.",
-      sub: "O Programa Qualidade de Vida reúne iniciativas de saúde, valorização, engajamento e desenvolvimento emocional para fortalecer bem-estar, pertencimento e um ambiente de trabalho saudável.",
-      bg: "assets/fups_bemestar.jpg",
-      position: "center 45%",
+      title: "Cuidado integral com as pessoas.",
+      sub: "O Programa Qualidade de Vida promove ações estruturadas de saúde, valorização, engajamento e desenvolvimento emocional, reforçando o bem-estar, o pertencimento e a construção de ambientes de trabalho mais saudáveis.",
       brand: "assets/logo_qualidade_vida.png",
       metric: { value: "4", label: "pilares de cuidado e bem-estar" },
-      tags: ["Saúde integral", "Valorização", "Engajamento social", "Maturidade emocional"],
+      tags: ["Saúde integral", "Valorização e reconhecimento", "Engajamento social", "Cultura de saúde e maturidade emocional"],
     },
     {
       id: "coamo-saude",
       feature: "showCoamoSaude",
+      institutional: true,
       pill: "Coamo + Saúde",
       title: "Cuidado disponível quando você precisa.",
-      sub: "Atendimento digital para funcionários e aprendizes, com médico clínico geral e suporte de enfermagem 24 horas por dia, além de psicologia, orientação nutricional, educadores físicos e outros serviços de cuidado.",
-      bg: "assets/qualidade_saude.jpg",
-      position: "center 42%",
+      sub: "O Coamo + Saúde oferece atendimento digital de forma prática e acessível para funcionários e aprendizes, com serviços de saúde e cuidado disponíveis para apoiar o bem-estar no dia a dia.",
       brand: "assets/logo_coamo_saude.png",
       metric: { value: "24/7", label: "atendimento médico e suporte de enfermagem" },
-      tags: ["Psicologia", "Nutrição", "Atividade física", "Gestantes", "2ª opinião médica"],
+      tags: ["Médico clínico geral", "Psicologia", "Enfermagem", "Nutrição", "Educador físico", "Gestantes", "Segunda opinião médica"],
     },
     {
       id: "fups",
       feature: "showFups",
+      institutional: true,
       pill: "Proteção à Saúde",
-      title: "FUPS: proteção que faz parte do cuidado.",
-      sub: "O Fundo de Proteção à Saúde integra o conjunto de iniciativas ligadas ao cuidado e à qualidade de vida das pessoas na Coamo.",
-      bg: "assets/admin_03.jpg",
-      position: "center 44%",
+      title: "FUPS: proteção à saúde para quem faz parte da Coamo.",
+      sub: "O FUPS é a Associação Fundo de Proteção à Saúde, um plano de saúde de autogestão criado em 1993 para atender exclusivamente os funcionários do grupo Coamo.",
       brand: "assets/logo_fups.png",
-      tags: ["Fundo de Proteção à Saúde", "Cuidado", "Qualidade de vida"],
+      tags: ["Autogestão", "Saúde", "Funcionários do grupo Coamo"],
     },
     {
       id: "arcam",
       feature: "showArcam",
-      pill: "Convivência & Bem-estar",
-      title: "ARCAM: esporte, cultura, saúde e lazer.",
-      sub: "Um espaço de convivência que reforça vínculos, integração e momentos de lazer, conectando qualidade de vida e relacionamento entre as pessoas.",
-      bg: "assets/img_bemestar.jpg",
-      position: "center 47%",
+      institutional: true,
+      pill: "Esporte, cultura, saúde e lazer",
+      title: "Integração e bem-estar além do trabalho.",
+      sub: "A ARCAM contribui para a qualidade de vida dos funcionários por meio de iniciativas voltadas ao esporte, à cultura, à saúde e ao lazer, fortalecendo vínculos e momentos de convivência.",
       brand: "assets/logo_arcam.png",
       tags: ["Esporte", "Cultura", "Saúde", "Lazer"],
     },
     {
       id: "estagio",
       feature: "showInternship",
+      institutional: true,
       pill: "Programa de Estágio",
       title: "111 oportunidades para começar uma trajetória na Coamo.",
-      sub: "O programa reúne oportunidades em diferentes áreas de formação, conectando aprendizado acadêmico, experiência prática e desenvolvimento profissional.",
-      bg: "assets/estagio_programa.jpg",
-      position: "center 40%",
+      sub: "O Programa de Estágio conecta aprendizado acadêmico, experiência prática e desenvolvimento profissional, criando oportunidades para estudantes de diferentes áreas construírem sua trajetória na Coamo.",
       brand: "assets/logo_programa_estagios.png",
       brandSetting: "showInternshipLogo",
+      brandFallback: "Programa de Estágio",
       metric: { value: "111", label: "vagas de estágio" },
       tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
     },
     {
       id: "estagio-formacoes",
       feature: "showInternship",
+      institutional: true,
       pill: "Programa de Estágio",
       title: "Formações que encontram espaço na Coamo.",
-      sub: "Engenharias Mecânica, Civil, Elétrica, Química, Produção, Agrícola, Ambiental, Têxtil, Alimentos e Bioprocessos; Agronomia; Medicina Veterinária; Fisioterapia; Fonoaudiologia; Enfermagem; Psicologia; ADS e Ciência da Computação.",
-      bg: "assets/estagio_formacoes.jpg",
-      position: "center 44%",
+      sub: "Há oportunidades para estudantes de Engenharias, Agronomia, Medicina Veterinária, Fisioterapia, Fonoaudiologia, Enfermagem, Psicologia, Tecnologia, Alimentos, Bioprocessos e Biotecnologia, entre outras formações ligadas ao desenvolvimento das operações e dos negócios da Coamo.",
       brand: "assets/logo_programa_estagios.png",
       brandSetting: "showInternshipLogo",
+      brandFallback: "Programa de Estágio",
       tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
     },
     {
@@ -687,12 +682,17 @@
     overlay.innerHTML = `
       <div class="presentation-bg"><img class="presentation-photo" id="presentationPhoto" src="" alt=""></div>
       <div class="presentation-shade"></div>
+      <div class="presentation-brand-stage" id="presentationBrandStage" hidden>
+        <div class="presentation-brand-stage__inner">
+          <img id="presentationBrandImage" src="" alt="">
+          <div class="presentation-brand-fallback" id="presentationBrandFallback" hidden></div>
+        </div>
+      </div>
       <div class="presentation-top">
         <div class="presentation-logo"><img src="assets/logo.png" alt="Coamo"></div>
         <div class="presentation-counter" id="presentationCounter">01 / 08</div>
       </div>
       <div class="presentation-content">
-        <div class="presentation-brand" id="presentationBrand" hidden><img id="presentationBrandImage" src="" alt=""></div>
         <div class="presentation-pill" id="presentationPill"></div>
         <div class="presentation-title" id="presentationTitle"></div>
         <div class="presentation-sub" id="presentationSub"></div>
@@ -735,29 +735,60 @@
     const photo = $("#presentationPhoto");
     if (!overlay || !photo || !s) return;
 
-    photo.src = s.bg;
-    photo.style.objectPosition = s.position || "center center";
-    photo.onload = () => {
-      const ratio = photo.naturalWidth && photo.naturalHeight ? photo.naturalHeight / photo.naturalWidth : 0;
-      overlay.classList.toggle("is-portrait", ratio > 1.15);
-    };
+    const institutional = !!s.institutional;
+    overlay.classList.toggle("is-institutional", institutional);
+    overlay.classList.remove("is-portrait");
+
+    const topLogo = $(".presentation-logo img");
+    if (topLogo) topLogo.src = institutional ? "assets/logo_verde.png" : "assets/logo.png";
+
+    if (institutional) {
+      photo.removeAttribute("src");
+      photo.style.display = "none";
+      photo.style.animation = "none";
+    } else {
+      photo.style.display = "block";
+      photo.src = s.bg || "";
+      photo.style.objectPosition = s.position || "center center";
+      photo.onload = () => {
+        const ratio = photo.naturalWidth && photo.naturalHeight ? photo.naturalHeight / photo.naturalWidth : 0;
+        overlay.classList.toggle("is-portrait", ratio > 1.15);
+      };
+    }
 
     $("#presentationPill").textContent = s.pill || "Coamo";
     $("#presentationTitle").textContent = s.title || "";
     $("#presentationSub").textContent = s.sub || "";
 
-    const brand = $("#presentationBrand");
+    const brandStage = $("#presentationBrandStage");
     const brandImage = $("#presentationBrandImage");
-    const showBrand = !!s.brand && (!s.brandSetting || settings[s.brandSetting] !== false);
-    if (brand && brandImage && showBrand) {
-      brand.hidden = false;
-      brand.style.display = "inline-flex";
-      brandImage.src = s.brand;
-      brandImage.alt = s.pill || "Marca";
-    } else if (brand && brandImage) {
-      brand.hidden = true;
-      brand.style.display = "none";
+    const brandFallback = $("#presentationBrandFallback");
+    const showBrand = !!s.brand && (!s.brandSetting || settings[s.brandSetting] === true || !s.brandSetting);
+    if (brandStage && brandImage && brandFallback && institutional) {
+      brandStage.hidden = false;
+      brandStage.style.display = "flex";
+      if (showBrand) {
+        brandImage.style.display = "block";
+        brandImage.src = s.brand;
+        brandImage.alt = s.pill || "Marca";
+        brandFallback.hidden = true;
+        brandFallback.style.display = "none";
+        brandFallback.textContent = "";
+      } else {
+        brandImage.style.display = "none";
+        brandImage.removeAttribute("src");
+        brandFallback.hidden = false;
+        brandFallback.style.display = "flex";
+        brandFallback.textContent = s.brandFallback || s.pill || "Coamo";
+      }
+    } else if (brandStage && brandImage && brandFallback) {
+      brandStage.hidden = true;
+      brandStage.style.display = "none";
+      brandImage.style.display = "none";
       brandImage.removeAttribute("src");
+      brandFallback.hidden = true;
+      brandFallback.style.display = "none";
+      brandFallback.textContent = "";
     }
 
     const tags = $("#presentationTags");
@@ -819,9 +850,11 @@
     qr.classList.toggle("is-visible", !!s.qr);
     overlay.classList.toggle("presentation-cta", !!s.qr);
 
-    photo.style.animation = "none";
-    void photo.offsetWidth;
-    photo.style.animation = "";
+    if (!institutional) {
+      photo.style.animation = "none";
+      void photo.offsetWidth;
+      photo.style.animation = "";
+    }
     renderProgress();
   }
 
