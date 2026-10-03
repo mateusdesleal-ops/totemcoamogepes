@@ -82,20 +82,32 @@
     { id: "43066", title: "Classificador de Produtos Agrícolas", location: "Ibiporã, PR", group: "agro" },
   ];
 
-  // As imagens das vagas são escolhidas a partir do conteúdo publicado na Selecty —
-  // não apenas do título. A classificação considera descrição, requisitos, área de
-  // atuação, qualificação e ocupação. Quando não há correspondência confiável,
-  // usamos um card neutro em vez de exibir uma foto potencialmente incorreta.
+  // As imagens das vagas são escolhidas a partir do conteúdo publicado na Selecty.
+  // A classificação usa título, área, descrição e requisitos. Quando não existe
+  // correspondência confiável com uma função, usamos uma estrutura real da Coamo
+  // — preferencialmente da mesma localidade — em vez de uma foto de pessoa sem relação.
   const VACANCY_PHOTO_PROFILES = [
     {
       id: "veterinaria",
-      images: ["assets/vaga_fotos/medico_a_veterinario_a.jpg"],
+      images: ["assets/vaga_fotos/veterinaria_real.jpg", "assets/vaga_fotos/medico_a_veterinario_a.jpg"],
       strong: ["medico veterinario", "medica veterinaria", "veterinario", "veterinaria", "zootecnista"],
       context: ["sanidade animal", "saude animal", "pecuaria", "rebanho", "atendimento veterinario"],
     },
     {
+      id: "engenharia_eletrica",
+      images: ["assets/vaga_fotos/engenheiro_eletricista.jpg"],
+      strong: ["engenheiro eletricista", "engenheira eletricista", "engenharia eletrica", "estagiario em engenharia eletrica", "estagiaria em engenharia eletrica"],
+      context: ["projetos eletricos", "instalacoes eletricas", "subestacao", "painel eletrico", "energia eletrica", "comandos eletricos"],
+    },
+    {
+      id: "eletrica",
+      images: ["assets/vaga_fotos/vagas_com_a_palavra_de_fiacao.jpg", "assets/industria_04.jpg", "assets/vaga_fotos/aprendiz_eletromecanica.jpg"],
+      strong: ["eletricista", "eletrica", "eletromecanico", "eletromecanica", "eletrotecnico", "eletrotecnica"],
+      context: ["fiacao", "cabos", "painel eletrico", "instalacao eletrica", "comandos eletricos", "manutencao eletrica"],
+    },
+    {
       id: "ti",
-      images: ["assets/vaga_fotos/vagas_de_ti.jpg", "assets/vaga_fotos/outra_opcao_vaga_de_ti.jpg"],
+      images: ["assets/vaga_fotos/ti_infraestrutura.jpg", "assets/vaga_fotos/vagas_de_ti.jpg", "assets/vaga_fotos/outra_opcao_vaga_de_ti.jpg"],
       strong: ["tecnologia da informacao", "analista de sistemas", "desenvolvedor", "desenvolvedora", "programador", "programadora", "software", "devops", "infraestrutura de ti"],
       context: ["sistemas", "banco de dados", "rede de computadores", "suporte tecnico", "ciberseguranca", "dados", "automacao", "erp", "sql", "api", "servidor"],
     },
@@ -106,10 +118,16 @@
       context: ["oficina", "motor", "manutencao mecanica", "veiculos", "caminhoes", "frota", "lubrificacao"],
     },
     {
-      id: "eletrica",
-      images: ["assets/vaga_fotos/vagas_com_a_palavra_de_fiacao.jpg", "assets/industria_04.jpg"],
-      strong: ["eletricista", "eletrica", "eletromecanico", "eletromecanica", "eletrotecnico", "eletrotecnica"],
-      context: ["fiacao", "cabos", "painel eletrico", "instalacao eletrica", "comandos eletricos", "manutencao eletrica"],
+      id: "laboratorio",
+      images: ["assets/vaga_fotos/sementes_laboratorio.jpg"],
+      strong: ["laboratorista", "analista de laboratorio", "tecnico de laboratorio", "tecnica de laboratorio", "sementes"],
+      context: ["laboratorio", "analises", "amostras", "germinacao", "qualidade de sementes", "controle laboratorial"],
+    },
+    {
+      id: "ambiental",
+      images: ["assets/vaga_fotos/engenharia_ambiental.jpg"],
+      strong: ["engenheiro ambiental", "engenheira ambiental", "engenharia ambiental", "analista ambiental", "meio ambiente"],
+      context: ["licenciamento ambiental", "gestao ambiental", "residuos", "efluentes", "sustentabilidade"],
     },
     {
       id: "seguranca",
@@ -125,15 +143,15 @@
     },
     {
       id: "aprendizagem",
-      images: ["assets/vaga_fotos/aprendiz.jpg"],
+      images: ["assets/vaga_fotos/aprendiz.jpg", "assets/vaga_fotos/aprendiz_eletromecanica.jpg"],
       strong: ["jovem aprendiz", "aprendiz", "estagiario", "estagiaria", "estagio"],
       context: ["programa de aprendizagem", "primeiro emprego", "formacao profissional"],
     },
     {
       id: "operacional",
-      images: ["assets/vaga_fotos/ajudantes.jpg"],
-      strong: ["ajudante de servicos gerais", "ajudante de armazenista", "ajudante de maquinista", "auxiliar de servicos gerais", "movimentador de mercadorias"],
-      context: ["carga e descarga", "movimentacao de mercadorias", "apoio operacional", "limpeza operacional", "armazenagem"],
+      images: ["assets/vaga_fotos/ajudantes.jpg", "assets/vaga_fotos/adm_operacional.jpg"],
+      strong: ["ajudante de servicos gerais", "ajudante de armazenista", "ajudante de maquinista", "auxiliar de servicos gerais", "movimentador de mercadorias", "assistente operacional"],
+      context: ["carga e descarga", "movimentacao de mercadorias", "apoio operacional", "limpeza operacional", "armazenagem", "controle operacional"],
     },
     {
       id: "agro",
@@ -144,9 +162,18 @@
     {
       id: "industria",
       images: ["assets/industria_01.jpg", "assets/industria_03.jpg", "assets/industria_05.jpg"],
-      strong: ["operador industrial", "operadora industrial", "operador de producao", "operadora de producao", "tecnico de producao", "tecnica de producao"],
-      context: ["processo industrial", "linha de producao", "industria", "controle de processo", "qualidade industrial", "equipamentos industriais"],
+      strong: ["operador industrial", "operadora industrial", "operador de producao", "operadora de producao", "tecnico de producao", "tecnica de producao", "assistente de utilidades"],
+      context: ["processo industrial", "linha de producao", "industria", "controle de processo", "qualidade industrial", "equipamentos industriais", "utilidades", "vapor", "caldeira", "ar comprimido", "tratamento de agua"],
     },
+  ];
+
+  const COAMO_STRUCTURE_IMAGES = [
+    "assets/estruturas/estrutura_campo_mourao_aerea.jpg",
+    "assets/estruturas/estrutura_unidade_aerea.jpg",
+    "assets/estruturas/estrutura_parque_industrial.jpg",
+    "assets/estruturas/estrutura_industria_dourados.jpg",
+    "assets/estruturas/estrutura_terminal_paranagua.jpg",
+    "assets/estruturas/estrutura_industrial_predio.jpg",
   ];
 
 
@@ -231,6 +258,17 @@
     return h >>> 0;
   }
 
+  function pickStructureFallback(job, stableKey = "") {
+    const location = normalizeText(getLocation(job));
+    if (location.includes("paranagua")) return "assets/estruturas/estrutura_terminal_paranagua.jpg";
+    if (location.includes("campo mourao")) return "assets/estruturas/estrutura_parque_industrial.jpg";
+    if (location.includes("dourados")) return "assets/estruturas/estrutura_industria_dourados.jpg";
+
+    const published = vacancyPublishedText(job);
+    const seed = `${stableKey}|${location}|${published.title}|${published.area}`;
+    return COAMO_STRUCTURE_IMAGES[stableHash(seed) % COAMO_STRUCTURE_IMAGES.length];
+  }
+
   function scorePhotoProfile(profile, published) {
     let score = 0;
     for (const key of profile.strong) {
@@ -258,9 +296,16 @@
       if (!best || score > best.score) best = { profile, score };
     }
 
-    // Limiar deliberadamente conservador: melhor card neutro do que foto errada.
+    // Limiar deliberadamente conservador. Se não houver relação segura com uma
+    // função, usamos uma estrutura real da Coamo, evitando associar pessoas a cargos errados.
     if (!best || best.score < 6) {
-      return { image: "", profile: "neutral", score: best?.score || 0, basedOnDescription: !!published.description };
+      return {
+        image: pickStructureFallback(job, stableKey),
+        profile: "estrutura",
+        score: best?.score || 0,
+        basedOnDescription: !!published.description,
+        fallback: true,
+      };
     }
 
     const images = best.profile.images || [];
@@ -387,7 +432,7 @@
         item.className = "vagaItem";
         item.innerHTML = `
           ${getVacancyImage(v)
-            ? `<div class="vagaThumb"><img src="${escapeHtml(getVacancyImage(v))}" alt="" loading="lazy" onerror="this.closest('.vagaThumb')?.classList.add('vagaThumb--neutral');this.remove()"></div>`
+            ? `<div class="vagaThumb ${v?.photo?.profile === "estrutura" ? "vagaThumb--structure" : ""}"><img src="${escapeHtml(getVacancyImage(v))}" alt="${v?.photo?.profile === "estrutura" ? "Estrutura Coamo" : ""}" loading="lazy" onerror="this.closest('.vagaThumb')?.classList.add('vagaThumb--neutral');this.remove()"></div>`
             : `<div class="vagaThumb vagaThumb--neutral" aria-hidden="true"><span>coamo</span></div>`}
           <div class="vagaBody">
             <h3 class="vagaTitle">${escapeHtml(v.title)}</h3>
@@ -605,20 +650,31 @@
     const metric = $("#presentationMetric");
     if (s.metric) {
       metric.hidden = false;
+      metric.style.display = "flex";
       $("#presentationMetricValue").textContent = s.metric.value || "";
       $("#presentationMetricLabel").textContent = s.metric.label || "";
     } else {
       metric.hidden = true;
+      metric.style.display = "none";
     }
 
     const author = $("#presentationAuthor");
     if (s.author) {
       author.hidden = false;
+      author.style.display = "flex";
       const authorPhoto = $("#presentationAuthorPhoto");
       if (authorPhoto) {
         authorPhoto.hidden = true;
-        authorPhoto.onload = () => { authorPhoto.hidden = false; };
-        authorPhoto.onerror = () => { authorPhoto.hidden = true; authorPhoto.removeAttribute("src"); };
+        authorPhoto.style.display = "none";
+        authorPhoto.onload = () => {
+          authorPhoto.hidden = false;
+          authorPhoto.style.display = "block";
+        };
+        authorPhoto.onerror = () => {
+          authorPhoto.hidden = true;
+          authorPhoto.style.display = "none";
+          authorPhoto.removeAttribute("src");
+        };
         if (s.author.photo) authorPhoto.src = s.author.photo;
         else authorPhoto.removeAttribute("src");
       }
@@ -626,6 +682,13 @@
       $("#presentationAuthorRole").textContent = s.author.role || "";
     } else {
       author.hidden = true;
+      author.style.display = "none";
+      const authorPhoto = $("#presentationAuthorPhoto");
+      if (authorPhoto) {
+        authorPhoto.hidden = true;
+        authorPhoto.style.display = "none";
+        authorPhoto.removeAttribute("src");
+      }
     }
 
     const qr = $("#presentationQr");
@@ -645,7 +708,8 @@
     const vacancySlides = vacancies
       .filter(v => {
         const img = getVacancyImage(v);
-        if (!img || seenImages.has(img)) return false;
+        const roleMatched = v?.photo?.profile && v.photo.profile !== "estrutura" && (v.photo.score || 0) >= 6;
+        if (!img || !roleMatched || seenImages.has(img)) return false;
         seenImages.add(img);
         return true;
       })

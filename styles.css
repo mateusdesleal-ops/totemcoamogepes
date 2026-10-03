@@ -318,3 +318,327 @@ img{display:block;max-width:100%}
   letter-spacing:-.04em;
 }
 .presentation-author img[hidden]{display:none!important}
+
+
+/* =========================================================
+   V5 • refinamento visual, QR premium e fallbacks de estrutura
+   ========================================================= */
+
+/* Cards de vagas: estrutura Coamo quando não há foto funcional confiável */
+.vagaThumb--structure{
+  position:relative;
+  background:#e9f0eb;
+}
+.vagaThumb--structure img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  filter:saturate(.93) contrast(1.03);
+}
+.vagaThumb--structure::after{
+  content:"COAMO";
+  position:absolute;
+  left:8px;
+  bottom:8px;
+  padding:4px 7px;
+  border-radius:999px;
+  background:rgba(5,52,31,.72);
+  color:#fff;
+  font-size:8px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.12em;
+  backdrop-filter:blur(5px);
+}
+
+/* QR da página de vagas: menos bloco pesado, mais acabamento institucional */
+.vacancy-qr{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(247,183,51,.10),transparent 34%),
+    linear-gradient(180deg,#ffffff 0%,#f5f9f6 100%);
+  color:var(--ink);
+  border:1px solid #d8e4db;
+  border-radius:30px;
+  padding:24px;
+  box-shadow:0 18px 45px rgba(7,56,32,.10);
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  min-height:0;
+  overflow:hidden;
+  position:relative;
+}
+.vacancy-qr::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;
+  height:5px;
+  background:linear-gradient(90deg,var(--green-800),var(--green-600),var(--yellow));
+}
+.vacancy-qr__head{padding-top:4px}
+.vacancy-qr .section-kicker{
+  color:var(--green-600);
+  margin-bottom:9px;
+}
+.vacancy-qr h2{
+  color:var(--green-950);
+  font-size:clamp(23px,1.65vw,29px);
+  line-height:1.08;
+  margin:0 0 10px;
+  letter-spacing:-.035em;
+  font-weight:900;
+}
+.vacancy-qr p{
+  color:#617168;
+  font-size:13px;
+  line-height:1.55;
+  margin:0;
+  font-weight:550;
+}
+.vacancy-qr__box{
+  margin:auto 0 16px;
+  padding:14px 14px 12px;
+  background:#fff;
+  border:1px solid #dce7df;
+  border-radius:24px;
+  box-shadow:0 12px 30px rgba(7,56,32,.08);
+}
+.vacancy-qr__image{
+  width:min(208px,100%);
+  aspect-ratio:1;
+  border-radius:18px;
+  background:#fff;
+  padding:8px;
+  margin:0 auto;
+  align-self:center;
+  box-shadow:none;
+  border:0;
+}
+.vacancy-qr__image img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.vacancy-qr__scan{
+  text-align:center;
+  margin-top:7px;
+}
+.vacancy-qr__scan strong{
+  display:block;
+  color:var(--green-950);
+  font-size:12px;
+  font-weight:900;
+}
+.vacancy-qr__scan span{
+  display:block;
+  color:#7a887f;
+  font-size:10px;
+  margin-top:3px;
+  font-weight:650;
+}
+.vacancy-qr__steps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  width:100%;
+}
+.vacancy-qr__steps span{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  min-height:58px;
+  padding:7px 5px;
+  border-radius:14px;
+  background:#eaf3ed;
+  color:var(--green-900);
+  text-align:center;
+}
+.vacancy-qr__steps b{
+  width:23px;
+  height:23px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:var(--green-800);
+  color:#fff;
+  font-size:10px;
+  font-weight:900;
+}
+.vacancy-qr__steps em{
+  font-style:normal;
+  font-size:9px;
+  line-height:1.05;
+  font-weight:900;
+  letter-spacing:.01em;
+}
+
+/* Tela inicial: atalhos deixam de parecer uma caixa vazia quando Sorteio está oculto */
+.quick-actions{
+  background:linear-gradient(180deg,#fff 0%,#f8fbf9 100%);
+  border:1px solid #dce7df;
+  border-radius:28px;
+  padding:16px;
+  box-shadow:var(--shadow-sm);
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  min-height:0;
+}
+.quick-actions__head{
+  padding:3px 5px 8px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+  border-bottom:1px solid #e8efea;
+}
+.quick-actions__head span{
+  color:var(--green-950);
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:-.01em;
+}
+.quick-actions__head small{
+  color:#849088;
+  font-size:9px;
+  font-weight:700;
+  text-align:right;
+}
+.quick-action{
+  flex:1 1 0;
+  min-height:72px;
+  max-height:105px;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) 32px;
+  align-items:center;
+  gap:12px;
+  border:1px solid #e3ebe5;
+  background:#fff;
+  border-radius:18px;
+  padding:11px 12px;
+  text-decoration:none;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.quick-action:hover{
+  background:#fff;
+  border-color:#bdd3c3;
+  box-shadow:0 9px 24px rgba(7,56,32,.08);
+  transform:translateY(-1px);
+}
+.quick-action__number{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:var(--green-100);
+  color:var(--green-800);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.06em;
+}
+.quick-action__copy{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+.quick-action__copy strong{
+  font-size:14px;
+  line-height:1.1;
+  color:var(--green-950);
+  font-weight:900;
+}
+.quick-action__copy small{
+  margin-top:5px;
+  font-size:10px;
+  line-height:1.3;
+  color:#708078;
+  font-weight:650;
+}
+.quick-action__go{
+  width:30px;
+  height:30px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:var(--green-950);
+  color:#fff;
+  font-size:15px;
+  font-weight:800;
+  transition:transform .18s ease,background .18s ease;
+}
+.quick-action:hover .quick-action__go{
+  transform:translateX(2px);
+  background:var(--green-700);
+}
+
+/* QR da home mais coerente com o restante do sistema */
+.apply-card{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(247,183,51,.10),transparent 34%),
+    linear-gradient(150deg,#fff 0,#f4faf6 100%);
+}
+.apply-card::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;
+  height:4px;
+  background:linear-gradient(90deg,var(--green-800),var(--yellow));
+}
+.apply-card__qr{
+  border-radius:20px;
+  border:1px solid #dce7df;
+  box-shadow:0 12px 28px rgba(7,56,32,.08);
+}
+
+/* Modo apresentação: nunca deixar blocos ocultos reaparecerem por regra display:flex */
+.presentation-author[hidden],
+.presentation-metric[hidden],
+.presentation-author img[hidden]{
+  display:none!important;
+}
+.presentation-author{
+  min-height:0;
+}
+.presentation-author img{
+  flex:0 0 auto;
+}
+.presentation-author:not([hidden]){
+  display:flex;
+}
+.presentation-bottom{
+  pointer-events:none;
+}
+.presentation-hint{
+  pointer-events:auto;
+}
+
+/* Evita qualquer resíduo visual de foto de autor quando o slide não a utiliza */
+.presentation-author:empty{
+  display:none!important;
+}
+
+@media (max-width:1450px){
+  .vacancy-qr{padding:20px}
+  .vacancy-qr__image{width:min(180px,100%)}
+  .vacancy-qr__steps span{min-height:52px}
+  .quick-actions{padding:13px}
+  .quick-action{min-height:65px;padding:9px 10px}
+  .quick-action__copy small{font-size:9px}
+}
+
+@media (max-height:820px) and (min-width:1100px){
+  .vacancy-qr{padding:17px}
+  .vacancy-qr h2{font-size:22px}
+  .vacancy-qr p{font-size:11px}
+  .vacancy-qr__box{padding:9px;margin:auto 0 9px}
+  .vacancy-qr__image{width:145px;padding:5px}
+  .vacancy-qr__scan{margin-top:3px}
+  .vacancy-qr__steps span{min-height:42px;padding:5px 3px}
+  .vacancy-qr__steps b{width:20px;height:20px}
+}
