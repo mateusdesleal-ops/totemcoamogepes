@@ -24,3 +24,11 @@ As preferências ficam salvas no navegador do próprio totem.
 
 ## Programa de Estágio
 O conteúdo do programa entra ativo por padrão com 111 oportunidades e áreas de formação. A nova logo do Programa de Estágio fica oculta por padrão e pode ser liberada posteriormente no painel oculto.
+
+
+## V7
+- Modo apresentação agora é exclusivamente institucional.
+- Vagas da Selecty aparecem somente na página Vagas.
+- Removido o slide final de oportunidades/QR do looping.
+- Removida a opção “Vagas em destaque” do painel oculto.
+- O diagnóstico da integração Selecty continua disponível no painel.

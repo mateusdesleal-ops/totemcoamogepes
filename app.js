@@ -14,7 +14,6 @@
     showCoamoSaude: true,
     showFups: true,
     showArcam: true,
-    showVacancySlides: true,
   };
 
   const API_ENDPOINT = "/api/vagas";
@@ -664,15 +663,6 @@
       position: "center 42%",
       author: { name: "Edevilson Canali", role: "Supervisor de Soluções de Negócio", photo: "assets/depo_edivilson_avatar.jpg" },
     },
-    {
-      id: "opportunities",
-      pill: "Oportunidades",
-      title: "Seu próximo passo pode começar aqui.",
-      sub: "Toque na tela para explorar as oportunidades ou continue pelo celular usando o QR Code.",
-      bg: "assets/img_carreira.jpg",
-      position: "center 42%",
-      qr: true,
-    },
   ];
 
   function isSlideEnabled(slide) {
@@ -836,35 +826,9 @@
   }
 
   async function refreshPresentationSlides() {
-    const baseSlides = getEnabledBaseSlides();
-    const cta = baseSlides.find(s => s.id === "opportunities");
-    const beforeCta = baseSlides.filter(s => s.id !== "opportunities");
-    let vacancySlides = [];
-
-    if (settings.showVacancySlides !== false) {
-      const vacancies = await getVacanciesCached();
-      if (vacancies.length) {
-        const seenImages = new Set();
-        vacancySlides = vacancies
-          .filter(v => {
-            const img = getVacancyImage(v);
-            const roleMatched = v?.photo?.profile && v.photo.profile !== "estrutura" && (v.photo.score || 0) >= 6;
-            if (!img || !roleMatched || seenImages.has(img)) return false;
-            seenImages.add(img);
-            return true;
-          })
-          .slice(0, 3)
-          .map(v => ({
-            id: `vaga-${v.id}`,
-            pill: "Oportunidade em destaque",
-            title: v.title,
-            sub: `${v.location} • ${groupLabel(v.group)}${v.id ? ` • Cód. ${v.id}` : ""}`,
-            bg: getVacancyImage(v),
-          }));
-      }
-    }
-
-    slides = cta ? [...beforeCta, ...vacancySlides, cta] : [...beforeCta, ...vacancySlides];
+    // O modo apresentação é exclusivamente institucional.
+    // As vagas permanecem somente na página Vagas.
+    slides = getEnabledBaseSlides();
     if (!slides.length) slides = BASE_SLIDES.filter(s => !s.feature).slice(0, 1);
     if (presentationActive) {
       if (slideIndex >= slides.length) slideIndex = 0;
@@ -873,6 +837,7 @@
   }
 
   async function enrichPresentationWithVacancies() {
+    // Mantido por compatibilidade: não inclui vagas na apresentação.
     return refreshPresentationSlides();
   }
 
@@ -1095,7 +1060,6 @@
             <label class="admin-toggle"><span><strong>Coamo + Saúde</strong><small>Serviços de cuidado e atendimento digital</small></span><input id="adminShowCoamoSaude" type="checkbox"><i></i></label>
             <label class="admin-toggle"><span><strong>FUPS</strong><small>Fundo de Proteção à Saúde</small></span><input id="adminShowFups" type="checkbox"><i></i></label>
             <label class="admin-toggle"><span><strong>ARCAM</strong><small>Esporte, cultura, saúde e lazer</small></span><input id="adminShowArcam" type="checkbox"><i></i></label>
-            <label class="admin-toggle"><span><strong>Vagas em destaque</strong><small>Inclui vagas da Selecty no looping</small></span><input id="adminShowVacancySlides" type="checkbox"><i></i></label>
           </div>
         </div>
         <div class="admin-api-panel">
@@ -1124,7 +1088,6 @@
         showCoamoSaude: !!$("#adminShowCoamoSaude")?.checked,
         showFups: !!$("#adminShowFups")?.checked,
         showArcam: !!$("#adminShowArcam")?.checked,
-        showVacancySlides: !!$("#adminShowVacancySlides")?.checked,
       });
       close();
     });
@@ -1132,7 +1095,7 @@
   }
 
   function updateAdminContentCount() {
-    const ids = ["adminShowInternship","adminShowUnicoamo","adminShowQualityOfLife","adminShowCoamoSaude","adminShowFups","adminShowArcam","adminShowVacancySlides"];
+    const ids = ["adminShowInternship","adminShowUnicoamo","adminShowQualityOfLife","adminShowCoamoSaude","adminShowFups","adminShowArcam"];
     const active = ids.filter(id => $("#" + id)?.checked).length;
     const el = $("#adminContentCount");
     if (el) el.textContent = `${active} ativo${active === 1 ? "" : "s"}`;
@@ -1157,7 +1120,6 @@
     $("#adminShowCoamoSaude").checked = settings.showCoamoSaude !== false;
     $("#adminShowFups").checked = settings.showFups !== false;
     $("#adminShowArcam").checked = settings.showArcam !== false;
-    $("#adminShowVacancySlides").checked = settings.showVacancySlides !== false;
     $$(".admin-toggle input[type=checkbox]").forEach(el => el.onchange = updateAdminContentCount);
     updateAdminContentCount();
     updateAdminApiStatus();
