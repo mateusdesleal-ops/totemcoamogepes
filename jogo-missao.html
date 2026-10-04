@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.v26.css?v=26.0">
+  <link rel="stylesheet" href="styles.v27.css?v=27.0">
 </head>
 <body data-page="game-mission">
   <div class="kiosk-shell">
@@ -25,7 +25,7 @@
       </nav>
     </header>
     <main class="game-single-page">
-      <div class="game-single-toolbar"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>SIMULAÇÃO EM 5 FASES</span></div>
+      <div class="game-single-toolbar"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>MISSÃO PREMIUM · 5 FASES</span></div>
       <section class="game-panel game-panel--single game-stage-hero--chain" id="gameMission">
         <div class="game-stage-hero game-stage-hero--chain">
           <div class="game-stage-character game-stage-character--left">
@@ -39,9 +39,13 @@
           </div>
         </div>
         <div class="mission-intro" id="missionIntro">
-          <div class="mission-intro__visual">
-            <img src="assets/estruturas/estrutura_campo_mourao_aerea.jpg" alt="Estrutura Coamo">
-            <div class="mission-intro__copy"><span>MISSÃO ESPECIAL</span><h2>Operação Safra</h2><p>Você terá 5 fases para conduzir uma operação intensa. Uma das fases será um imprevisto diferente a cada partida.</p></div>
+          <div class="mission-intro__visual mission-intro__visual--premium">
+            <img src="assets/mission/scene_arrival.webp" alt="Operação de safra ilustrada">
+            <div class="mission-intro__glow"></div>
+            <img class="mission-intro__actor mission-intro__actor--toninho" src="assets/mission/toninho_traffic.webp" alt="Toninho orientando a operação">
+            <img class="mission-intro__actor mission-intro__actor--aroldinho" src="assets/mascote_aroldinho_pose2.png" alt="Aroldinho">
+            <img class="mission-intro__brand" src="assets/logo.png" alt="Coamo">
+            <div class="mission-intro__copy"><span>MISSÃO ESPECIAL</span><h2>Operação Safra</h2><p>Assuma as decisões de uma operação intensa. O cenário reage às suas escolhas e os mascotes participam de cada etapa.</p></div>
           </div>
           <div class="mission-intro__panel">
             <h3>Seu desafio: equilibrar quatro resultados.</h3>
@@ -52,7 +56,7 @@
               <div class="mission-objective"><i>⚙</i><span><strong>Eficiência</strong><small>Mantenha o fluxo sem retrabalho.</small></span></div>
               <div class="mission-objective"><i>🤝</i><span><strong>Atendimento</strong><small>Mantenha orientação e boa experiência.</small></span></div>
             </div>
-            <button class="btn btn--primary" type="button" id="missionStart">Iniciar missão →</button>
+            <button class="btn btn--primary mission-start-premium" type="button" id="missionStart"><span>▶</span> Iniciar missão premium</button>
             <p class="mission-disclaimer">Simulação educativa e institucional. As situações não representam procedimentos operacionais oficiais.</p>
           </div>
         </div>
@@ -61,6 +65,6 @@
     </main>
   </div>
   <div class="game-confetti" id="gameConfetti" aria-hidden="true"></div>
-  <script src="app.v26.js?v=26.0"></script>
+  <script src="app.v27.js?v=27.0"></script>
 </body>
 </html>
