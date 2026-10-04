@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.v29.css?v=29.0">
+  <link rel="stylesheet" href="styles.v31.css?v=31.0">
 </head>
 <body data-page="game-chain">
   <div class="kiosk-shell">
@@ -26,7 +26,14 @@
     </header>
     <main class="game-single-page">
       <div class="game-single-toolbar"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>DESAFIO DE SEQUÊNCIA</span></div>
-      <section class="game-panel game-panel--single game-stage-hero--chain" id="gameChain">
+            <section class="game-cover" data-game-cover data-target="#gameChain">
+        <img class="game-cover__poster" src="assets/games/v31/chain_intro.png" alt="Monte a cadeia Coamo">
+        <div class="game-cover__shade" aria-hidden="true"></div>
+        <div class="game-cover__bubble game-cover__bubble--left">Aroldinho: tudo começa no campo!</div>
+        <div class="game-cover__bubble game-cover__bubble--right">Toninho: e termina no mercado!</div>
+        <button class="game-cover__start" type="button" data-game-cover-start>Montar a cadeia<span>→</span></button>
+      </section>
+<section class="game-panel game-panel--single game-stage-hero--chain game-play-hidden-v31" id="gameChain">
         <div class="game-stage-hero game-stage-hero--chain">
           <div class="game-stage-character game-stage-character--left">
             <div class="game-stage-bubble" id="leftMascotSpeech">Toque na próxima etapa correta!</div>
@@ -45,6 +52,6 @@
     </main>
   </div>
   <div class="game-confetti" id="gameConfetti" aria-hidden="true"></div>
-  <script src="app.v29.js?v=29.0"></script>
+  <script src="app.v31.js?v=31.0"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.v29.css?v=29.0">
+  <link rel="stylesheet" href="styles.v31.css?v=31.0">
 </head>
 <body data-page="game-memory">
   <div class="kiosk-shell">
@@ -26,7 +26,14 @@
     </header>
     <main class="game-single-page">
       <div class="game-single-toolbar"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>JOGO DA MEMÓRIA</span></div>
-      <section class="game-panel game-panel--single game-stage-hero--memory" id="gameMemory">
+            <section class="game-cover" data-game-cover data-target="#gameMemory">
+        <img class="game-cover__poster" src="assets/games/v31/memory_intro.png" alt="Desafio Coamo - jogo da memória">
+        <div class="game-cover__shade" aria-hidden="true"></div>
+        <div class="game-cover__bubble game-cover__bubble--left">Aroldinho: observe bem as cartas!</div>
+        <div class="game-cover__bubble game-cover__bubble--right">Toninho: encontre os pares e some pontos!</div>
+        <button class="game-cover__start" type="button" data-game-cover-start>Iniciar desafio<span>→</span></button>
+      </section>
+<section class="game-panel game-panel--single game-stage-hero--memory game-play-hidden-v31" id="gameMemory">
         <div class="game-stage-hero game-stage-hero--memory">
           <div class="game-stage-character game-stage-character--left">
             <div class="game-stage-bubble" id="leftMascotSpeech">Vire as cartas e encontre os pares!</div>
@@ -45,6 +52,6 @@
     </main>
   </div>
   <div class="game-confetti" id="gameConfetti" aria-hidden="true"></div>
-  <script src="app.v29.js?v=29.0"></script>
+  <script src="app.v31.js?v=31.0"></script>
 </body>
 </html>
