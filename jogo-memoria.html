@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Coamo • Desafio Coamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.v22.css?v=22.0">
+</head>
+<body data-page="game-memory">
+  <div class="kiosk-shell">
+    <header class="topbar">
+      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início"><img src="assets/logo_verde.png" alt="Coamo"></a>
+      <div class="topbar__context"><span class="topbar__eyebrow">GEPES</span><span class="topbar__label">Desafio Coamo</span></div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__item" href="index.html?interactive=1">Início</a>
+        <a class="topnav__item" href="vagas.html">Vagas</a>
+        <a class="topnav__item" href="apresentacao.html">Conheça a Coamo</a>
+        <a class="topnav__item is-active" data-feature="games" href="jogos.html">Jogos Coamo</a>
+        <a class="topnav__item" data-feature="raffle" href="sorteio.html">Sorteio</a>
+        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
+      </nav>
+    </header>
+    <main class="game-single-page">
+      <div class="game-single-toolbar"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>JOGO DA MEMÓRIA</span></div>
+      <section class="game-panel game-panel--single game-stage-hero--memory" id="gameMemory">
+        <div class="game-stage-hero game-stage-hero--memory">
+          <div class="game-stage-character game-stage-character--left">
+            <div class="game-stage-bubble" id="leftMascotSpeech">Vire as cartas e encontre os pares!</div>
+            <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_aroldinho_pose2.png" alt="Aroldinho">
+          </div>
+          <div class="game-stage-copy"><span>JOGO DA MEMÓRIA</span><h2>Desafio Coamo</h2><p>Encontre os pares, faça combinações e descubra curiosidades.</p></div>
+          <div class="game-stage-character game-stage-character--right">
+            <div class="game-stage-bubble game-stage-bubble--right" id="rightMascotSpeech">Cada acerto aumenta seu combo!</div>
+            <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_toninho.png" alt="Toninho">
+          </div>
+        </div>
+        <div class="memory-status memory-status--v18"><div><strong id="memoryMatches">0</strong><span>pares</span></div><div><strong id="memoryMoves">0</strong><span>tentativas</span></div><div><strong id="memoryTimer">00:00</strong><span>tempo</span></div><div><strong id="memoryStreak">0</strong><span>combo</span></div></div>
+        <div class="memory-board-shell"><div class="memory-grid memory-grid--v18" id="memoryGrid"></div></div>
+        <div class="game-result game-result--floating" id="memoryResult" hidden></div>
+      </section>
+    </main>
+  </div>
+  <div class="game-confetti" id="gameConfetti" aria-hidden="true"></div>
+  <script src="app.v22.js?v=22.0"></script>
+</body>
+</html>

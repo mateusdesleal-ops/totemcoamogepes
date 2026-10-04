@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Coamo • Monte a cadeia Coamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.v22.css?v=22.0">
+</head>
+<body data-page="game-chain">
+  <div class="kiosk-shell">
+    <header class="topbar">
+      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início"><img src="assets/logo_verde.png" alt="Coamo"></a>
+      <div class="topbar__context"><span class="topbar__eyebrow">GEPES</span><span class="topbar__label">Monte a cadeia</span></div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__item" href="index.html?interactive=1">Início</a>
+        <a class="topnav__item" href="vagas.html">Vagas</a>
+        <a class="topnav__item" href="apresentacao.html">Conheça a Coamo</a>
+        <a class="topnav__item is-active" data-feature="games" href="jogos.html">Jogos Coamo</a>
+        <a class="topnav__item" data-feature="raffle" href="sorteio.html">Sorteio</a>
+        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
+      </nav>
+    </header>
+    <main class="game-single-page">
+      <div class="game-single-toolbar"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>DESAFIO DE SEQUÊNCIA</span></div>
+      <section class="game-panel game-panel--single game-stage-hero--chain" id="gameChain">
+        <div class="game-stage-hero game-stage-hero--chain">
+          <div class="game-stage-character game-stage-character--left">
+            <div class="game-stage-bubble" id="leftMascotSpeech">Toque na próxima etapa correta!</div>
+            <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_toninho.png" alt="Toninho">
+          </div>
+          <div class="game-stage-copy"><span>DESAFIO DE SEQUÊNCIA</span><h2>Monte a cadeia Coamo</h2><p>Descubra a ordem correta. As respostas só aparecem depois que você acerta.</p></div>
+          <div class="game-stage-character game-stage-character--right">
+            <div class="game-stage-bubble game-stage-bubble--right" id="rightMascotSpeech">Complete a jornada até o mercado!</div>
+            <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_aroldinho_pose2.png" alt="Aroldinho">
+          </div>
+        </div>
+        <div class="chain-track chain-track--v18" id="chainTrack"></div>
+        <div class="game-result game-result--chain" id="chainResult" hidden></div>
+        <div class="chain-options chain-options--v18" id="chainOptions"></div>
+      </section>
+    </main>
+  </div>
+  <div class="game-confetti" id="gameConfetti" aria-hidden="true"></div>
+  <script src="app.v22.js?v=22.0"></script>
+</body>
+</html>
