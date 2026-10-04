@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.v28.css?v=28.0">
+  <link rel="stylesheet" href="styles.v29.css?v=29.0">
 </head>
 <body data-page="games">
   <div class="kiosk-shell">
@@ -26,10 +26,21 @@
     </header>
     <main class="games-page games-page--v22">
       <section class="games-hero games-hero--v22" id="gamesHero">
-        <div class="games-hero__landscape" aria-hidden="true"></div>
+        <div class="games-hero__landscape games-hero__landscape--living" aria-hidden="true"></div>
+        <div class="games-ambient" aria-hidden="true">
+          <span class="games-cloud games-cloud--1"></span><span class="games-cloud games-cloud--2"></span>
+          <span class="games-smoke games-smoke--1"></span><span class="games-smoke games-smoke--2"></span><span class="games-smoke games-smoke--3"></span>
+          <span class="games-worker games-worker--1"><i></i><b></b><em></em></span><span class="games-worker games-worker--2"><i></i><b></b><em></em></span>
+          <span class="games-forklift"><i></i><b></b><em></em><strong></strong></span>
+          <img class="games-ambient-truck" src="assets/mission/coamo_truck.png" alt="">
+        </div>
         <div class="games-mascot games-mascot--toninho">
           <div class="mascot-speech"><strong>Olá!</strong><span>Eu sou o Toninho e vou te guiar nessa jornada!</span></div>
-          <img src="assets/mascote_toninho_pose2.png" alt="Toninho">
+          <div class="games-mascot-motion games-mascot-motion--toninho" aria-label="Toninho">
+            <img class="games-pose games-pose--1" src="assets/mission/v29/toninho_wave.png" alt="Toninho acenando">
+            <img class="games-pose games-pose--2" src="assets/mission/v29/toninho_point.png" alt="Toninho apontando">
+            <img class="games-pose games-pose--3" src="assets/mission/v29/toninho_walk.png" alt="Toninho caminhando">
+          </div>
         </div>
         <div class="games-hero__center">
           <span class="games-hero__eyebrow">Experiência interativa</span>
@@ -39,7 +50,11 @@
         </div>
         <div class="games-mascot games-mascot--aroldinho">
           <div class="mascot-speech mascot-speech--right"><strong>Eu sou o Aroldinho!</strong><span>Escolha um jogo e vamos descobrir juntos.</span></div>
-          <img src="assets/mascote_aroldinho.png" alt="Aroldinho">
+          <div class="games-mascot-motion games-mascot-motion--aroldinho" aria-label="Aroldinho">
+            <img class="games-pose games-pose--1" src="assets/mission/v29/aroldinho_welcome.png" alt="Aroldinho dando boas-vindas">
+            <img class="games-pose games-pose--2" src="assets/mission/v29/aroldinho_walk.png" alt="Aroldinho em movimento">
+            <img class="games-pose games-pose--3" src="assets/mission/v29/aroldinho_win.png" alt="Aroldinho comemorando">
+          </div>
         </div>
       </section>
 
@@ -84,6 +99,6 @@
       </section>
     </main>
   </div>
-  <script src="app.v28.js?v=28.0"></script>
+  <script src="app.v29.js?v=29.0"></script>
 </body>
 </html>
