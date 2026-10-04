@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.v17.css?v=17.0">
+  <link rel="stylesheet" href="styles.v18.css?v=18.0">
 </head>
 <body data-page="games">
   <div class="kiosk-shell">
@@ -30,54 +30,131 @@
       </nav>
     </header>
 
-    <main class="games-page">
-      <section class="games-hero">
-        <div class="games-hero__spark games-hero__spark--1"></div>
-        <div class="games-hero__spark games-hero__spark--2"></div>
-        <span class="eyebrow-chip">Experiência interativa</span>
-        <h1>Conheça a Coamo de um jeito diferente.</h1>
-        <p>Escolha uma experiência interativa para descobrir áreas, testar a memória e completar desafios inspirados no universo da cooperativa.</p>
+    <main class="games-page games-page--v18">
+      <section class="games-hero games-hero--v18">
+        <div class="games-hero__landscape" aria-hidden="true"></div>
+        <div class="games-mascot games-mascot--toninho">
+          <div class="mascot-speech"><strong>Olá!</strong><span>Eu sou o Toninho e vou te guiar nessa jornada!</span></div>
+          <img src="assets/mascote_toninho.png" alt="Toninho">
+        </div>
+
+        <div class="games-hero__center">
+          <span class="games-hero__eyebrow">Experiência interativa</span>
+          <div class="games-hero__title"><span>Jogos</span><strong>Coamo</strong></div>
+          <h1>Conheça a Coamo de um jeito diferente.</h1>
+          <p>Explore, aprenda e se divirta com desafios inspirados nas áreas, programas e na operação da cooperativa.</p>
+        </div>
+
+        <div class="games-mascot games-mascot--aroldinho">
+          <div class="mascot-speech mascot-speech--right"><strong>Eu sou o Aroldinho!</strong><span>Escolha um jogo e vamos descobrir juntos.</span></div>
+          <img src="assets/mascote_aroldinho.png" alt="Aroldinho">
+        </div>
       </section>
 
-      <section class="games-menu" id="gamesMenu">
-        <button class="game-menu-card" data-game-launch="profile" data-feature="game-profile">
-          <span class="game-menu-card__icon">◎</span>
-          <strong>Descubra sua área</strong>
-          <small>Responda perguntas rápidas, some pontos e descubra em qual universo da Coamo você se encaixa.</small><span class="game-menu-card__cta">Jogar agora →</span>
+      <section class="games-menu games-menu--v18" id="gamesMenu">
+        <button class="game-menu-card game-menu-card--profile" data-game-launch="profile" data-feature="game-profile">
+          <span class="game-menu-card__preview">
+            <img class="game-menu-card__bg" src="assets/agro_01.jpg" alt="">
+            <img class="game-menu-card__mascot" src="assets/mascote_toninho.png" alt="">
+            <span class="game-menu-card__floating game-menu-card__floating--a">?</span>
+            <span class="game-menu-card__floating game-menu-card__floating--b">🌱</span>
+            <span class="game-menu-card__floating game-menu-card__floating--c">⚙</span>
+          </span>
+          <span class="game-menu-card__content">
+            <small class="game-menu-card__label">QUIZ</small>
+            <strong>Descubra sua área na Coamo</strong>
+            <span>Responda perguntas e descubra qual universo profissional mais combina com você.</span>
+            <b>Jogar agora <i>→</i></b>
+          </span>
         </button>
-        <button class="game-menu-card" data-game-launch="memory" data-feature="game-memory">
-          <span class="game-menu-card__icon">◈</span>
-          <strong>Desafio Coamo</strong>
-          <small>Vire cartas, faça combinações e descubra símbolos, programas e números marcantes da cooperativa.</small><span class="game-menu-card__cta">Jogar agora →</span>
+
+        <button class="game-menu-card game-menu-card--memory" data-game-launch="memory" data-feature="game-memory">
+          <span class="game-menu-card__preview">
+            <img class="game-menu-card__bg" src="assets/estruturas/estrutura_campo_mourao_aerea.jpg" alt="">
+            <img class="game-menu-card__mascot" src="assets/mascote_aroldinho.png" alt="">
+            <span class="mini-memory mini-memory--1">COAMO</span>
+            <span class="mini-memory mini-memory--2">+12 mil</span>
+            <span class="mini-memory mini-memory--3">?</span>
+          </span>
+          <span class="game-menu-card__content">
+            <small class="game-menu-card__label">JOGO DA MEMÓRIA</small>
+            <strong>Desafio Coamo</strong>
+            <span>Encontre os pares e conheça programas, números e curiosidades da cooperativa.</span>
+            <b>Jogar agora <i>→</i></b>
+          </span>
         </button>
-        <button class="game-menu-card" data-game-launch="chain" data-feature="game-chain">
-          <span class="game-menu-card__icon">→</span>
-          <strong>Monte a cadeia Coamo</strong>
-          <small>Descubra a ordem correta da jornada Coamo, do campo até o mercado.</small><span class="game-menu-card__cta">Jogar agora →</span>
+
+        <button class="game-menu-card game-menu-card--chain" data-game-launch="chain" data-feature="game-chain">
+          <span class="game-menu-card__preview game-menu-card__preview--chain">
+            <span class="chain-preview chain-preview--1"><img src="assets/agro_01.jpg" alt=""><i>1</i></span>
+            <span class="chain-preview chain-preview--2"><img src="assets/estruturas/estrutura_unidade_aerea.jpg" alt=""><i>2</i></span>
+            <span class="chain-preview chain-preview--3"><img src="assets/industria_05.jpg" alt=""><i>3</i></span>
+          </span>
+          <span class="game-menu-card__content">
+            <small class="game-menu-card__label">MONTE A SEQUÊNCIA</small>
+            <strong>Monte a cadeia Coamo</strong>
+            <span>Descubra a ordem correta da jornada, do campo até o mercado.</span>
+            <b>Jogar agora <i>→</i></b>
+          </span>
         </button>
       </section>
 
-      <section class="game-panel" id="gameProfile" hidden>
-        <div class="game-panel__head"><button class="btn btn--soft js-back-games" type="button">← Voltar</button><div><h2>Descubra sua área na Coamo</h2><p>Responda e veja qual universo profissional mais combina com você.</p></div></div>
-        <div class="game-progress"><span id="profileProgressBar"></span></div>
+      <section class="game-panel game-panel--profile" id="gameProfile" hidden>
+        <div class="game-stage-hero game-stage-hero--profile">
+          <button class="game-back js-back-games" type="button">← Voltar</button>
+          <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_toninho.png" alt="Toninho">
+          <div class="game-stage-copy">
+            <span>QUIZ INTERATIVO</span>
+            <h2>Descubra sua área na Coamo</h2>
+            <p>Não existe resposta certa ou errada. Escolha o que mais combina com você.</p>
+          </div>
+          <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_aroldinho.png" alt="Aroldinho">
+        </div>
+        <div class="game-progress game-progress--v18"><span id="profileProgressBar"></span></div>
         <div class="profile-game" id="profileGame"></div>
       </section>
 
-      <section class="game-panel" id="gameMemory" hidden>
-        <div class="game-panel__head"><button class="btn btn--soft js-back-games" type="button">← Voltar</button><div><h2>Desafio Coamo</h2><p>Jogo da memória com programas, números e referências da cooperativa.</p></div></div>
-        <div class="memory-status"><div><strong id="memoryMatches">0</strong><span>pares</span></div><div><strong id="memoryMoves">0</strong><span>tentativas</span></div><div><strong id="memoryTimer">00:00</strong><span>tempo</span></div><div><strong id="memoryStreak">0</strong><span>combo</span></div></div>
-        <div class="memory-grid" id="memoryGrid"></div>
-        <div class="game-result" id="memoryResult" hidden></div>
+      <section class="game-panel game-panel--memory" id="gameMemory" hidden>
+        <div class="game-stage-hero game-stage-hero--memory">
+          <button class="game-back js-back-games" type="button">← Voltar</button>
+          <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_toninho.png" alt="Toninho">
+          <div class="game-stage-copy">
+            <span>JOGO DA MEMÓRIA</span>
+            <h2>Desafio Coamo</h2>
+            <p>Encontre os pares, faça combinações e descubra curiosidades.</p>
+          </div>
+          <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_aroldinho.png" alt="Aroldinho">
+        </div>
+        <div class="memory-status memory-status--v18">
+          <div><small>⭐</small><strong id="memoryMatches">0</strong><span>pares</span></div>
+          <div><small>👣</small><strong id="memoryMoves">0</strong><span>tentativas</span></div>
+          <div><small>⏱</small><strong id="memoryTimer">00:00</strong><span>tempo</span></div>
+          <div><small>🔥</small><strong id="memoryStreak">0</strong><span>combo</span></div>
+        </div>
+        <div class="memory-board-shell">
+          <div class="memory-grid" id="memoryGrid"></div>
+        </div>
+        <div class="game-result game-result--floating" id="memoryResult" hidden></div>
       </section>
 
-      <section class="game-panel" id="gameChain" hidden>
-        <div class="game-panel__head"><button class="btn btn--soft js-back-games" type="button">← Voltar</button><div><h2>Monte a cadeia Coamo</h2><p>Avance etapa por etapa e descubra a ordem correta da jornada Coamo — sem a resposta pronta na tela.</p></div></div>
-        <div class="chain-track" id="chainTrack"></div>
-        <div class="chain-options" id="chainOptions"></div>
-        <div class="game-result" id="chainResult" hidden></div>
+      <section class="game-panel game-panel--chain" id="gameChain" hidden>
+        <div class="game-stage-hero game-stage-hero--chain">
+          <button class="game-back js-back-games" type="button">← Voltar</button>
+          <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_toninho.png" alt="Toninho">
+          <div class="game-stage-copy">
+            <span>DESAFIO DE SEQUÊNCIA</span>
+            <h2>Monte a cadeia Coamo</h2>
+            <p>Descubra a ordem correta. As respostas só aparecem depois que você acerta.</p>
+          </div>
+          <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_aroldinho.png" alt="Aroldinho">
+        </div>
+        <div class="chain-track chain-track--v18" id="chainTrack"></div>
+        <div class="game-result game-result--chain" id="chainResult" hidden></div>
+        <div class="chain-options chain-options--v18" id="chainOptions"></div>
       </section>
     </main>
   </div>
-  <script src="app.v17.js?v=17.0"></script>
+  <div class="game-confetti" id="gameConfetti" aria-hidden="true"></div>
+  <script src="app.v18.js?v=18.0"></script>
 </body>
 </html>
