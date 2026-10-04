@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Coamo • Jogos Coamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.v13.css?v=13.0">
+</head>
+<body data-page="games">
+  <div class="kiosk-shell">
+    <header class="topbar">
+      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início">
+        <img src="assets/logo_verde.png" alt="Coamo">
+      </a>
+      <div class="topbar__context">
+        <span class="topbar__eyebrow">GEPES</span>
+        <span class="topbar__label">Jogos Coamo</span>
+      </div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__item" href="index.html?interactive=1">Início</a>
+        <a class="topnav__item" href="vagas.html">Vagas</a>
+        <a class="topnav__item" href="apresentacao.html">Conheça a Coamo</a>
+        <a class="topnav__item is-active" data-feature="games" href="jogos.html">Jogos Coamo</a>
+        <a class="topnav__item" data-feature="raffle" href="sorteio.html">Sorteio</a>
+        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
+      </nav>
+    </header>
+
+    <main class="games-page">
+      <section class="games-hero">
+        <span class="eyebrow-chip">Experiência interativa</span>
+        <h1>Conheça a Coamo de um jeito diferente.</h1>
+        <p>Escolha uma experiência interativa para descobrir áreas, brincar com a memória e montar a cadeia da cooperativa.</p>
+      </section>
+
+      <section class="games-menu" id="gamesMenu">
+        <button class="game-menu-card" data-game-launch="profile" data-feature="game-profile">
+          <span class="game-menu-card__icon">◎</span>
+          <strong>Descubra sua área</strong>
+          <small>Responda perguntas rápidas e veja com qual área da Coamo seu perfil mais combina.</small>
+        </button>
+        <button class="game-menu-card" data-game-launch="memory" data-feature="game-memory">
+          <span class="game-menu-card__icon">◈</span>
+          <strong>Desafio Coamo</strong>
+          <small>Encontre os pares e descubra programas, símbolos e números importantes da cooperativa.</small>
+        </button>
+        <button class="game-menu-card" data-game-launch="chain" data-feature="game-chain">
+          <span class="game-menu-card__icon">→</span>
+          <strong>Monte a cadeia Coamo</strong>
+          <small>Conecte as etapas da operação, do campo ao mercado.</small>
+        </button>
+      </section>
+
+      <section class="game-panel" id="gameProfile" hidden>
+        <div class="game-panel__head"><button class="btn btn--soft js-back-games" type="button">← Voltar</button><div><h2>Descubra sua área na Coamo</h2><p>Responda e veja qual universo profissional mais combina com você.</p></div></div>
+        <div class="game-progress"><span id="profileProgressBar"></span></div>
+        <div class="profile-game" id="profileGame"></div>
+      </section>
+
+      <section class="game-panel" id="gameMemory" hidden>
+        <div class="game-panel__head"><button class="btn btn--soft js-back-games" type="button">← Voltar</button><div><h2>Desafio Coamo</h2><p>Jogo da memória com programas, números e referências da cooperativa.</p></div></div>
+        <div class="memory-status"><div><strong id="memoryMatches">0</strong><span>pares</span></div><div><strong id="memoryMoves">0</strong><span>tentativas</span></div></div>
+        <div class="memory-grid" id="memoryGrid"></div>
+        <div class="game-result" id="memoryResult" hidden></div>
+      </section>
+
+      <section class="game-panel" id="gameChain" hidden>
+        <div class="game-panel__head"><button class="btn btn--soft js-back-games" type="button">← Voltar</button><div><h2>Monte a cadeia Coamo</h2><p>Toque nas etapas na ordem correta para completar a cadeia.</p></div></div>
+        <div class="chain-track" id="chainTrack"></div>
+        <div class="chain-options" id="chainOptions"></div>
+        <div class="game-result" id="chainResult" hidden></div>
+      </section>
+    </main>
+  </div>
+  <script src="app.v13.js?v=13.0"></script>
+</body>
+</html>
