@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.v15.css?v=15.0">
+  <link rel="stylesheet" href="styles.v16.css?v=16.0">
 </head>
 <body data-page="games">
   <div class="kiosk-shell">
@@ -32,26 +32,28 @@
 
     <main class="games-page">
       <section class="games-hero">
+        <div class="games-hero__spark games-hero__spark--1"></div>
+        <div class="games-hero__spark games-hero__spark--2"></div>
         <span class="eyebrow-chip">Experiência interativa</span>
         <h1>Conheça a Coamo de um jeito diferente.</h1>
-        <p>Escolha uma experiência interativa para descobrir áreas, brincar com a memória e montar a cadeia da cooperativa.</p>
+        <p>Escolha uma experiência interativa para descobrir áreas, testar a memória e completar desafios inspirados no universo da cooperativa.</p>
       </section>
 
       <section class="games-menu" id="gamesMenu">
         <button class="game-menu-card" data-game-launch="profile" data-feature="game-profile">
           <span class="game-menu-card__icon">◎</span>
           <strong>Descubra sua área</strong>
-          <small>Responda perguntas rápidas e veja com qual área da Coamo seu perfil mais combina.</small>
+          <small>Responda perguntas rápidas, some pontos e descubra em qual universo da Coamo você se encaixa.</small><span class="game-menu-card__cta">Jogar agora →</span>
         </button>
         <button class="game-menu-card" data-game-launch="memory" data-feature="game-memory">
           <span class="game-menu-card__icon">◈</span>
           <strong>Desafio Coamo</strong>
-          <small>Encontre os pares e descubra programas, símbolos e números importantes da cooperativa.</small>
+          <small>Vire cartas, faça combinações e descubra símbolos, programas e números marcantes da cooperativa.</small><span class="game-menu-card__cta">Jogar agora →</span>
         </button>
         <button class="game-menu-card" data-game-launch="chain" data-feature="game-chain">
           <span class="game-menu-card__icon">→</span>
           <strong>Monte a cadeia Coamo</strong>
-          <small>Conecte as etapas da operação, do campo ao mercado.</small>
+          <small>Descubra a ordem correta da jornada Coamo, do campo até o mercado.</small><span class="game-menu-card__cta">Jogar agora →</span>
         </button>
       </section>
 
@@ -63,19 +65,19 @@
 
       <section class="game-panel" id="gameMemory" hidden>
         <div class="game-panel__head"><button class="btn btn--soft js-back-games" type="button">← Voltar</button><div><h2>Desafio Coamo</h2><p>Jogo da memória com programas, números e referências da cooperativa.</p></div></div>
-        <div class="memory-status"><div><strong id="memoryMatches">0</strong><span>pares</span></div><div><strong id="memoryMoves">0</strong><span>tentativas</span></div></div>
+        <div class="memory-status"><div><strong id="memoryMatches">0</strong><span>pares</span></div><div><strong id="memoryMoves">0</strong><span>tentativas</span></div><div><strong id="memoryTimer">00:00</strong><span>tempo</span></div><div><strong id="memoryStreak">0</strong><span>combo</span></div></div>
         <div class="memory-grid" id="memoryGrid"></div>
         <div class="game-result" id="memoryResult" hidden></div>
       </section>
 
       <section class="game-panel" id="gameChain" hidden>
-        <div class="game-panel__head"><button class="btn btn--soft js-back-games" type="button">← Voltar</button><div><h2>Monte a cadeia Coamo</h2><p>Descubra a ordem correta das etapas para completar a cadeia — sem a resposta aparecer pronta.</p></div></div>
+        <div class="game-panel__head"><button class="btn btn--soft js-back-games" type="button">← Voltar</button><div><h2>Monte a cadeia Coamo</h2><p>Avance etapa por etapa e descubra a ordem correta da jornada Coamo — sem a resposta pronta na tela.</p></div></div>
         <div class="chain-track" id="chainTrack"></div>
         <div class="chain-options" id="chainOptions"></div>
         <div class="game-result" id="chainResult" hidden></div>
       </section>
     </main>
   </div>
-  <script src="app.v15.js?v=15.0"></script>
+  <script src="app.v16.js?v=16.0"></script>
 </body>
 </html>
