@@ -31,7 +31,7 @@
     </header>
 
     <main class="games-page games-page--v18">
-      <section class="games-hero games-hero--v18">
+      <section class="games-hero games-hero--v18" id="gamesHero">
         <div class="games-hero__landscape" aria-hidden="true"></div>
         <div class="games-mascot games-mascot--toninho">
           <div class="mascot-speech"><strong>Olá!</strong><span>Eu sou o Toninho e vou te guiar nessa jornada!</span></div>
@@ -102,13 +102,19 @@
       <section class="game-panel game-panel--profile" id="gameProfile" hidden>
         <div class="game-stage-hero game-stage-hero--profile">
           <button class="game-back js-back-games" type="button">← Voltar</button>
-          <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_toninho.png" alt="Toninho">
+          <div class="game-stage-character game-stage-character--left">
+            <div class="game-stage-bubble">Toninho: vamos descobrir seu perfil!</div>
+            <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_toninho_pose2.png" alt="Toninho">
+          </div>
           <div class="game-stage-copy">
             <span>QUIZ INTERATIVO</span>
             <h2>Descubra sua área na Coamo</h2>
             <p>Não existe resposta certa ou errada. Escolha o que mais combina com você.</p>
           </div>
-          <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_aroldinho.png" alt="Aroldinho">
+          <div class="game-stage-character game-stage-character--right">
+            <div class="game-stage-bubble game-stage-bubble--right">Aroldinho: responda as 6 perguntas!</div>
+            <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_aroldinho.png" alt="Aroldinho">
+          </div>
         </div>
         <div class="game-progress game-progress--v18"><span id="profileProgressBar"></span></div>
         <div class="profile-game" id="profileGame"></div>
@@ -117,13 +123,19 @@
       <section class="game-panel game-panel--memory" id="gameMemory" hidden>
         <div class="game-stage-hero game-stage-hero--memory">
           <button class="game-back js-back-games" type="button">← Voltar</button>
-          <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_toninho.png" alt="Toninho">
+          <div class="game-stage-character game-stage-character--left">
+            <div class="game-stage-bubble">Aroldinho: vire as cartas e encontre os pares!</div>
+            <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_aroldinho_pose2.png" alt="Aroldinho">
+          </div>
           <div class="game-stage-copy">
             <span>JOGO DA MEMÓRIA</span>
             <h2>Desafio Coamo</h2>
             <p>Encontre os pares, faça combinações e descubra curiosidades.</p>
           </div>
-          <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_aroldinho.png" alt="Aroldinho">
+          <div class="game-stage-character game-stage-character--right">
+            <div class="game-stage-bubble game-stage-bubble--right">Toninho: cada acerto aumenta seu combo!</div>
+            <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_toninho.png" alt="Toninho">
+          </div>
         </div>
         <div class="memory-status memory-status--v18">
           <div><small>⭐</small><strong id="memoryMatches">0</strong><span>pares</span></div>
@@ -140,13 +152,19 @@
       <section class="game-panel game-panel--chain" id="gameChain" hidden>
         <div class="game-stage-hero game-stage-hero--chain">
           <button class="game-back js-back-games" type="button">← Voltar</button>
-          <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_toninho.png" alt="Toninho">
+          <div class="game-stage-character game-stage-character--left">
+            <div class="game-stage-bubble">Toninho: toque na próxima etapa correta!</div>
+            <img class="game-stage-mascot game-stage-mascot--left" src="assets/mascote_toninho.png" alt="Toninho">
+          </div>
           <div class="game-stage-copy">
             <span>DESAFIO DE SEQUÊNCIA</span>
             <h2>Monte a cadeia Coamo</h2>
             <p>Descubra a ordem correta. As respostas só aparecem depois que você acerta.</p>
           </div>
-          <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_aroldinho.png" alt="Aroldinho">
+          <div class="game-stage-character game-stage-character--right">
+            <div class="game-stage-bubble game-stage-bubble--right">Aroldinho: complete a jornada até o mercado!</div>
+            <img class="game-stage-mascot game-stage-mascot--right" src="assets/mascote_aroldinho_pose2.png" alt="Aroldinho">
+          </div>
         </div>
         <div class="chain-track chain-track--v18" id="chainTrack"></div>
         <div class="game-result game-result--chain" id="chainResult" hidden></div>
