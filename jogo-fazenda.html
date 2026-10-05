@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Coamo • Fazenda Coamo — Cooperar & Crescer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.v40.css?v=40.0">
+</head>
+<body data-page="game-farm">
+  <div class="kiosk-shell">
+    <header class="topbar">
+      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início"><img src="assets/logo_verde.png" alt="Coamo"></a>
+      <div class="topbar__context"><span class="topbar__eyebrow">GEPES</span><span class="topbar__label">Fazenda Coamo</span></div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__item" href="index.html?interactive=1">Início</a>
+        <a class="topnav__item" href="vagas.html">Vagas</a>
+        <a class="topnav__item" href="apresentacao.html">Conheça a Coamo</a>
+        <a class="topnav__item is-active" data-feature="games" href="jogos.html">Coamo Games</a>
+        <a class="topnav__item" data-feature="raffle" href="sorteio.html">Sorteio</a>
+        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
+      </nav>
+    </header>
+
+    <main class="farm-page">
+      <div class="game-single-toolbar farm-toolbar-top"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>FAZENDA INTERATIVA · COOPERAR & CRESCER</span></div>
+
+      <section class="farm-intro" id="farmIntro">
+        <img class="farm-intro__bg" src="assets/games/farm/farm_banner_v40.png" alt="Ilustração da Fazenda Coamo">
+        <div class="farm-intro__shade"></div>
+        <div class="farm-intro__copy">
+          <span class="farm-kicker">NOVO COAMO GAMES</span>
+          <h1>Fazenda Coamo</h1>
+          <p>Plante, cuide, colha e entregue à cooperativa. Cada decisão faz sua fazenda crescer.</p>
+          <button class="btn btn--primary farm-start" id="farmStart" type="button">🌱 Começar a jogar</button>
+        </div>
+        <div class="farm-intro__mascot farm-intro__mascot--toninho"><img src="assets/mascote_toninho_pose2.png" alt="Toninho"><span>Eu te ajudo a planejar a produção!</span></div>
+        <div class="farm-intro__mascot farm-intro__mascot--aroldinho"><img src="assets/mascote_aroldinho.png" alt="Aroldinho"><span>Vamos colher e cumprir os pedidos!</span></div>
+      </section>
+
+      <section class="farm-game" id="farmGame" hidden aria-live="polite">
+        <div class="farm-hud" id="farmHud"></div>
+        <div class="farm-message" id="farmMessage"></div>
+
+        <div class="farm-world">
+          <section class="farm-main-panel">
+            <div class="farm-scene-head">
+              <img src="assets/games/farm/farm_landscape_v40.png" alt="Paisagem agrícola com lavoura e estruturas de armazenagem">
+              <div class="farm-scene-head__overlay"></div>
+              <div class="farm-scene-head__copy"><small>FAZENDA COAMO</small><strong>Do campo à cooperativa</strong><span>Toque nos canteiros para plantar, cuidar e colher.</span></div>
+              <div class="farm-weather" id="farmWeather"></div>
+            </div>
+
+            <div class="farm-tool-row" id="farmTools"></div>
+            <div class="farm-plot-grid" id="farmPlots"></div>
+          </section>
+
+          <aside class="farm-side-panel">
+            <div class="farm-guide-card" id="farmGuide"></div>
+            <div class="farm-panel-card">
+              <div class="farm-panel-card__head"><div><small>SILO</small><strong>Estoque da fazenda</strong></div><button id="farmUpgrade" class="farm-mini-btn" type="button">⬆ Melhorar</button></div>
+              <div class="farm-inventory" id="farmInventory"></div>
+            </div>
+            <div class="farm-panel-card">
+              <div class="farm-panel-card__head"><div><small>COOPERATIVA</small><strong>Pedidos do dia</strong></div><span id="farmOrderCount"></span></div>
+              <div class="farm-orders" id="farmOrders"></div>
+            </div>
+            <div class="farm-panel-card farm-tasks-card">
+              <div class="farm-panel-card__head"><div><small>MISSÕES</small><strong>Objetivos da fazenda</strong></div></div>
+              <div class="farm-tasks" id="farmTasks"></div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="farm-bottom-bar">
+          <button class="farm-bottom-action" type="button" id="farmCollectBonus"><span>🎁</span><strong>Bônus diário</strong><small id="farmBonusLabel">Disponível</small></button>
+          <button class="farm-bottom-action" type="button" id="farmRest"><span>⚡</span><strong>Recuperar energia</strong><small>+4 energia · 120 moedas</small></button>
+          <button class="farm-bottom-action" type="button" id="farmReset"><span>↻</span><strong>Recomeçar</strong><small>Nova fazenda</small></button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="game-confetti" id="gameConfetti" aria-hidden="true"></div>
+  <script src="app.v40.js?v=40.0"></script>
+</body>
+</html>
