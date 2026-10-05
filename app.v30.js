@@ -1,9 +1,9 @@
 (() => {
   "use strict";
-  document.documentElement.dataset.totemBuild = "v18";
+  document.documentElement.dataset.totemBuild = "v27";
 
   const STORAGE_KEY = "coamoTotemSettingsV3";
-  const BUILD_VERSION = "v18";
+  const BUILD_VERSION = "v27";
   const DEFAULT_SETTINGS = {
     slideSeconds: 9,
     inactivitySeconds: 60,
@@ -20,6 +20,7 @@
     gameProfileEnabled: true,
     gameMemoryEnabled: true,
     gameChainEnabled: true,
+    gameMissionEnabled: true,
   };
 
   const API_ENDPOINT = "/api/vagas";
@@ -63,12 +64,19 @@
     $$('[data-feature="game-chain"]').forEach(el => {
       el.classList.toggle("is-feature-hidden", !settings.gameChainEnabled || !settings.gamesEnabled);
     });
+    $$('[data-feature="game-mission"]').forEach(el => {
+      el.classList.toggle("is-feature-hidden", !settings.gameMissionEnabled || !settings.gamesEnabled);
+    });
     if (page === "raffle" && !settings.raffleEnabled) {
       window.location.replace("index.html?interactive=1");
     }
-    if (page === "games" && !settings.gamesEnabled) {
+    if ((page === "games" || page.startsWith("game-")) && !settings.gamesEnabled) {
       window.location.replace("index.html?interactive=1");
     }
+    if (page === "game-profile" && !settings.gameProfileEnabled) window.location.replace("jogos.html");
+    if (page === "game-memory" && !settings.gameMemoryEnabled) window.location.replace("jogos.html");
+    if (page === "game-chain" && !settings.gameChainEnabled) window.location.replace("jogos.html");
+    if (page === "game-mission" && !settings.gameMissionEnabled) window.location.replace("jogos.html");
   }
 
   function normalizeText(value) {
@@ -1100,7 +1108,7 @@
 
   const PROFILE_AREAS = {
     campo: { title: "Campo & Cooperado", text: "Você demonstra afinidade com relacionamento, orientação e proximidade com a produção. Na Coamo, essa área conecta conhecimento técnico e cooperados.", image: "assets/agro_01.jpg", icon: "🌾", accent: "campo" },
-    operacoes: { title: "Armazenagem & Operações", text: "Seu perfil combina com ambientes dinâmicos, processos e execução. Essa área conecta recebimento, movimentação, conservação e expedição.", image: "assets/estruturas/estrutura_unidade_aerea.jpg", icon: "🏗", accent: "operacoes" },
+    operacoes: { title: "Armazenagem & Operações", text: "Seu perfil combina com ambientes dinâmicos, processos e execução. Essa área conecta recebimento, movimentação, conservação e expedição.", image: "assets/mission/scene_arrival.webp", icon: "🏗", accent: "operacoes" },
     industria: { title: "Indústria & Produção", text: "Você se identifica com produção, qualidade, manutenção e eficiência. A indústria transforma matéria-prima em novas possibilidades.", image: "assets/industria_05.jpg", icon: "⚙", accent: "industria" },
     tecnologia: { title: "Tecnologia & Dados", text: "Seu perfil aponta para soluções digitais, análise e inovação. Na Coamo, a tecnologia ajuda uma grande operação a continuar conectada.", image: "assets/admin_04.jpg", icon: "💻", accent: "tecnologia" },
     gestao: { title: "Gestão & Áreas Corporativas", text: "Você demonstra afinidade com planejamento, análise, organização e suporte à operação. Essa estrutura sustenta as decisões do negócio.", image: "assets/admin_01.jpg", icon: "👥", accent: "gestao" },
@@ -1109,34 +1117,34 @@
 
   const PROFILE_QUESTIONS = [
     { question: "Em qual ambiente você mais se imagina trabalhando?", options: [
-      { label: "Próximo ao campo e ao produtor", area: "campo" },
-      { label: "Em uma operação dinâmica", area: "operacoes" },
-      { label: "Com análise, gestão ou pessoas", area: "gestao" },
+      { label: "Próximo ao campo e ao produtor", primary: "campo", scores: { campo: 3 } },
+      { label: "Em uma operação dinâmica", primary: "operacoes", scores: { operacoes: 2, industria: 1 } },
+      { label: "Com análise, gestão ou pessoas", primary: "gestao", scores: { gestao: 2, pessoas: 1 } },
     ]},
     { question: "Qual atividade parece mais interessante para você?", options: [
-      { label: "Orientar e gerar relacionamento", area: "campo" },
-      { label: "Resolver problemas com tecnologia", area: "tecnologia" },
-      { label: "Acompanhar produção e qualidade", area: "industria" },
+      { label: "Orientar e gerar relacionamento", primary: "campo", scores: { campo: 2, pessoas: 1 } },
+      { label: "Resolver problemas com tecnologia", primary: "tecnologia", scores: { tecnologia: 3 } },
+      { label: "Acompanhar produção e qualidade", primary: "industria", scores: { industria: 2, operacoes: 1 } },
     ]},
     { question: "O que mais chama sua atenção em um trabalho?", options: [
-      { label: "Organização e ritmo da operação", area: "operacoes" },
-      { label: "Aprendizado e desenvolvimento de pessoas", area: "pessoas" },
-      { label: "Planejamento e estratégia", area: "gestao" },
+      { label: "Organização e ritmo da operação", primary: "operacoes", scores: { operacoes: 2, industria: 1 } },
+      { label: "Aprendizado e desenvolvimento de pessoas", primary: "pessoas", scores: { pessoas: 3 } },
+      { label: "Planejamento e estratégia", primary: "gestao", scores: { gestao: 3 } },
     ]},
     { question: "Qual frase combina mais com você?", options: [
-      { label: "Gosto de ver o resultado prático do que faço", area: "industria" },
-      { label: "Gosto de conectar sistemas, dados e soluções", area: "tecnologia" },
-      { label: "Gosto de estar próximo das pessoas", area: "pessoas" },
+      { label: "Gosto de ver o resultado prático do que faço", primary: "industria", scores: { industria: 2, operacoes: 1 } },
+      { label: "Gosto de conectar sistemas, dados e soluções", primary: "tecnologia", scores: { tecnologia: 3 } },
+      { label: "Gosto de estar próximo das pessoas", primary: "pessoas", scores: { pessoas: 2, campo: 1 } },
     ]},
     { question: "Qual cenário desperta mais interesse?", options: [
-      { label: "Lavoura, produção e assistência", area: "campo" },
-      { label: "Silos, recebimento e movimentação", area: "operacoes" },
-      { label: "Projetos, números e decisões", area: "gestao" },
+      { label: "Lavoura, produção e assistência", primary: "campo", scores: { campo: 3 } },
+      { label: "Silos, recebimento e movimentação", primary: "operacoes", scores: { operacoes: 3 } },
+      { label: "Projetos, números e decisões", primary: "gestao", scores: { gestao: 3 } },
     ]},
     { question: "Escolha a área que mais desperta curiosidade.", options: [
-      { label: "Tecnologia e dados", area: "tecnologia" },
-      { label: "Indústria e processos", area: "industria" },
-      { label: "Pessoas e desenvolvimento", area: "pessoas" },
+      { label: "Tecnologia e dados", primary: "tecnologia", scores: { tecnologia: 3 } },
+      { label: "Indústria e processos", primary: "industria", scores: { industria: 3 } },
+      { label: "Pessoas e desenvolvimento", primary: "pessoas", scores: { pessoas: 3 } },
     ]},
   ];
 
@@ -1153,19 +1161,19 @@
     { pairId: "func", type: "fact", image: "assets/img_carreira.jpg", title: "funcionários", subtitle: "" },
     { pairId: "coop", type: "fact", image: "assets/agro_01.jpg", title: "+32 mil", subtitle: "" },
     { pairId: "coop", type: "fact", image: "assets/agro_01.jpg", title: "cooperados", subtitle: "" },
-    { pairId: "pr", type: "fact", image: "assets/estruturas/estrutura_campo_mourao_aerea.jpg", title: "A maior empresa", subtitle: "do Paraná" },
-    { pairId: "pr", type: "fact", image: "assets/estruturas/estrutura_campo_mourao_aerea.jpg", title: "COAMO", subtitle: "" },
-    { pairId: "latam", type: "fact", image: "assets/estruturas/estrutura_terminal_paranagua.jpg", title: "A maior cooperativa agrícola", subtitle: "da América Latina" },
-    { pairId: "latam", type: "fact", image: "assets/estruturas/estrutura_terminal_paranagua.jpg", title: "COAMO", subtitle: "" },
+    { pairId: "pr", type: "fact", image: "assets/mission/scene_storage.webp", title: "A maior empresa", subtitle: "do Paraná" },
+    { pairId: "pr", type: "fact", image: "assets/mission/scene_arrival.webp", title: "A maior empresa", subtitle: "do Paraná" },
+    { pairId: "latam", type: "fact", image: "assets/mission/scene_logistics.webp", title: "A maior cooperativa agrícola", subtitle: "da América Latina" },
+    { pairId: "latam", type: "fact", image: "assets/mission/scene_logistics.webp", title: "A maior cooperativa agrícola", subtitle: "da América Latina" },
   ];
 
   const CHAIN_STEPS = [
     { id: "campo", title: "Campo", text: "Origem da produção e relacionamento com o cooperado.", image: "assets/agro_01.jpg", icon: "🌾", theme: "campo" },
-    { id: "recebimento", title: "Recebimento", text: "Chegada, conferência e início do fluxo operacional.", image: "assets/estruturas/estrutura_unidade_aerea.jpg", icon: "⬇", theme: "recebimento" },
+    { id: "recebimento", title: "Recebimento", text: "Chegada, conferência e início do fluxo operacional.", image: "assets/mission/scene_arrival.webp", icon: "⬇", theme: "recebimento" },
     { id: "armazenagem", title: "Armazenagem", text: "Conservação, controle e organização dos produtos.", image: "assets/estruturas/estrutura_parque_industrial.jpg", icon: "◫", theme: "armazenagem" },
     { id: "industria", title: "Indústria", text: "Transformação da matéria-prima em novos produtos.", image: "assets/industria_05.jpg", icon: "⚙", theme: "industria" },
     { id: "logistica", title: "Logística", text: "Movimentação e conexão entre unidades e mercados.", image: "assets/vaga_fotos/mecanico_de_veiculos.jpg", icon: "🚚", theme: "logistica" },
-    { id: "mercado", title: "Mercado", text: "Entrega final e presença no Brasil e no exterior.", image: "assets/estruturas/estrutura_terminal_paranagua.jpg", icon: "🌎", theme: "mercado" },
+    { id: "mercado", title: "Mercado", text: "Entrega final e presença no Brasil e no exterior.", image: "assets/mission/scene_logistics.webp", icon: "🌎", theme: "mercado" },
   ];
 
   function shuffle(list) {
@@ -1227,37 +1235,16 @@
   }
 
   function initGamesPage() {
-    if (page !== "games") return;
-    const panels = { profile: $("#gameProfile"), memory: $("#gameMemory"), chain: $("#gameChain") };
-    const menu = $("#gamesMenu");
-    const hero = $("#gamesHero");
-    let cleanupCurrentGame = null;
+    if (page === "game-profile") { startProfileGame(); return; }
+    if (page === "game-memory") { startMemoryGame(); return; }
+    if (page === "game-chain") { startChainGame(); return; }
+  }
 
-    const showMenu = () => {
-      if (typeof cleanupCurrentGame === "function") cleanupCurrentGame();
-      cleanupCurrentGame = null;
-      if (hero) hero.hidden = false;
-      if (menu) menu.hidden = false;
-      Object.values(panels).forEach(panel => { if (panel) panel.hidden = true; });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
-    const showPanel = (key) => {
-      if (typeof cleanupCurrentGame === "function") cleanupCurrentGame();
-      cleanupCurrentGame = null;
-      if (hero) hero.hidden = true;
-      if (menu) menu.hidden = true;
-      Object.entries(panels).forEach(([name, panel]) => { if (panel) panel.hidden = name !== key; });
-      playGameTone("tap");
-      if (key === "profile") cleanupCurrentGame = startProfileGame();
-      if (key === "memory") cleanupCurrentGame = startMemoryGame();
-      if (key === "chain") cleanupCurrentGame = startChainGame();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
-    $$('[data-game-launch]').forEach(btn => btn.addEventListener("click", () => showPanel(btn.dataset.gameLaunch)));
-    $$(".js-back-games").forEach(btn => btn.addEventListener("click", () => { playGameTone("tap"); showMenu(); }));
-    showMenu();
+  function updateGameSpeech(left, right) {
+    const leftEl = $("#leftMascotSpeech");
+    const rightEl = $("#rightMascotSpeech");
+    if (left && leftEl) leftEl.textContent = left;
+    if (right && rightEl) rightEl.textContent = right;
   }
 
   function startProfileGame() {
@@ -1266,28 +1253,46 @@
     if (!root) return null;
     let step = 0;
     let xp = 0;
+    let choiceSequence = 0;
     const scores = { campo: 0, operacoes: 0, industria: 0, tecnologia: 0, gestao: 0, pessoas: 0 };
+    const directHits = { campo: 0, operacoes: 0, industria: 0, tecnologia: 0, gestao: 0, pessoas: 0 };
+    const lastChosen = { campo: -1, operacoes: -1, industria: -1, tecnologia: -1, gestao: -1, pessoas: -1 };
 
     const render = () => {
       if (progress) progress.style.width = `${(step / PROFILE_QUESTIONS.length) * 100}%`;
       if (step >= PROFILE_QUESTIONS.length) {
-        const winner = Object.entries(scores).sort((a,b) => b[1]-a[1])[0]?.[0] || "gestao";
+        const ranking = Object.keys(scores).sort((a, b) => {
+          if (scores[b] !== scores[a]) return scores[b] - scores[a];
+          if (directHits[b] !== directHits[a]) return directHits[b] - directHits[a];
+          return lastChosen[b] - lastChosen[a];
+        });
+        const winner = ranking[0] || "gestao";
+        const runnerUp = ranking[1] || winner;
         const area = PROFILE_AREAS[winner];
-        root.innerHTML = `<div class="profile-result profile-result--game"><div class="profile-result__media"><img src="${area.image}" alt="${escapeHtml(area.title)}"><div class="profile-result__stamp">${area.icon}</div></div><div class="profile-result__content"><span class="game-result-kicker">MISSÃO CONCLUÍDA</span><h3>Seu perfil combina com<br>${escapeHtml(area.title)}</h3><p>${escapeHtml(area.text)}</p><div class="profile-result__chips"><span>⭐ ${xp} XP</span><span>✓ ${PROFILE_QUESTIONS.length} respostas</span><span>🎮 Perfil descoberto</span></div><div class="hero-actions"><button class="btn btn--soft" type="button" id="profileRestart">Jogar novamente</button><a class="btn btn--primary" href="vagas.html">Ver vagas</a></div></div></div>`;
+        const secondArea = PROFILE_AREAS[runnerUp];
+        root.innerHTML = `<div class="profile-result profile-result--game"><div class="profile-result__media"><img src="${area.image}" alt="${escapeHtml(area.title)}"><div class="profile-result__stamp">${area.icon}</div></div><div class="profile-result__content"><span class="game-result-kicker">MISSÃO CONCLUÍDA</span><h3>Seu perfil combina com<br>${escapeHtml(area.title)}</h3><p>${escapeHtml(area.text)}</p><div class="profile-result__match"><strong>Suas maiores afinidades</strong><span>${area.icon} ${escapeHtml(area.title)} · ${scores[winner]} pts</span>${runnerUp !== winner ? `<span>${secondArea.icon} ${escapeHtml(secondArea.title)} · ${scores[runnerUp]} pts</span>` : ""}</div><div class="profile-result__chips"><span>⭐ ${xp} XP</span><span>✓ ${PROFILE_QUESTIONS.length} respostas</span><span>🎮 Perfil descoberto</span></div><div class="hero-actions"><button class="btn btn--soft" type="button" id="profileRestart">Jogar novamente</button><a class="btn btn--primary" href="vagas.html">Ver vagas</a></div></div></div>`;
         $("#profileRestart")?.addEventListener("click", () => { playGameTone("tap"); startProfileGame(); });
         if (progress) progress.style.width = "100%";
-        playGameTone("success"); burstConfetti(); pulseMascots("#gameProfile");
+        playGameTone("success"); burstConfetti(); pulseMascots("#gameProfile"); updateGameSpeech("Ótimo! Encontramos uma área que combina com você!", "Confira o resultado e explore as oportunidades!");
         return;
       }
 
       const item = PROFILE_QUESTIONS[step];
-      root.innerHTML = `<div class="profile-question profile-question--game"><div class="profile-question__top"><div class="profile-question__count">Pergunta ${step + 1} de ${PROFILE_QUESTIONS.length}</div><div class="profile-question__score">⭐ ${xp} XP</div></div><h3>${escapeHtml(item.question)}</h3><p class="profile-question__helper">Escolha a opção que mais representa você no dia a dia.</p><div class="profile-options">${item.options.map((opt, idx) => { const meta = PROFILE_AREAS[opt.area] || {}; return `<button class="profile-option profile-option--${meta.accent || opt.area}" type="button" data-area="${opt.area}"><span class="profile-option__visual"><img src="${meta.image}" alt=""><i>${meta.icon}</i></span><span class="profile-option__body"><b>0${idx + 1}</b><strong>${escapeHtml(opt.label)}</strong><small>Toque para escolher</small></span></button>`; }).join("")}</div></div>`;
+      root.innerHTML = `<div class="profile-question profile-question--game"><div class="profile-question__top"><div class="profile-question__count">Pergunta ${step + 1} de ${PROFILE_QUESTIONS.length}</div><div class="profile-question__score">⭐ ${xp} XP</div></div><h3>${escapeHtml(item.question)}</h3><p class="profile-question__helper">Escolha a opção que mais representa você no dia a dia.</p><div class="profile-options">${item.options.map((opt, idx) => { const meta = PROFILE_AREAS[opt.primary] || {}; return `<button class="profile-option profile-option--${meta.accent || opt.primary}" type="button" data-option="${idx}"><div class="profile-option__visual"><img src="${meta.image}" alt=""><i>${meta.icon}</i></div><div class="profile-option__body"><b>0${idx + 1}</b><strong>${escapeHtml(opt.label)}</strong><small>Toque para escolher</small></div></button>`; }).join("")}</div></div>`;
       $$(".profile-option", root).forEach(btn => btn.addEventListener("click", () => {
-        scores[btn.dataset.area] = (scores[btn.dataset.area] || 0) + 1;
+        const selected = item.options[Number(btn.dataset.option)];
+        if (!selected) return;
+        Object.entries(selected.scores || {}).forEach(([areaKey, points]) => {
+          scores[areaKey] = (scores[areaKey] || 0) + Number(points || 0);
+        });
+        directHits[selected.primary] = (directHits[selected.primary] || 0) + 1;
+        choiceSequence += 1;
+        lastChosen[selected.primary] = choiceSequence;
         xp += 100;
         btn.classList.add("is-selected");
         playGameTone("success");
         pulseMascots("#gameProfile");
+        updateGameSpeech("Boa escolha!", `Pergunta ${Math.min(step + 2, PROFILE_QUESTIONS.length)} de ${PROFILE_QUESTIONS.length}: vamos continuar!`);
         step += 1;
         window.setTimeout(render, 260);
       }));
@@ -1329,8 +1334,8 @@
     };
 
     const renderBack = (card) => {
-      if (card.type === "logo") return `<img class="memory-card__logo" src="${card.image}" alt="${escapeHtml(card.label)}"><small>${escapeHtml(card.label)}</small>`;
-      return `<img class="memory-card__photo" src="${card.image}" alt=""><span class="memory-card__factText"><strong>${escapeHtml(card.title || "")}</strong>${card.subtitle ? `<small>${escapeHtml(card.subtitle)}</small>` : ""}</span>`;
+      if (card.type === "logo") return `<div class="memory-card__logoWrap"><img class="memory-card__logo" src="${card.image}" alt="${escapeHtml(card.label)}"><small>${escapeHtml(card.label)}</small></div>`;
+      return `<div class="memory-card__factFill"><img class="memory-card__photo" src="${card.image}" alt=""><span class="memory-card__shade"></span><span class="memory-card__factBadge">CURIOSIDADE COAMO</span><span class="memory-card__factText"><strong>${escapeHtml(card.title || "")}</strong>${card.subtitle ? `<small>${escapeHtml(card.subtitle)}</small>` : ""}</span></div>`;
     };
 
     const render = () => {
@@ -1350,7 +1355,7 @@
       result.hidden = false;
       result.innerHTML = `<div class="game-result__card is-success game-result__card--celebrate"><span class="game-result-kicker">DESAFIO COMPLETO</span><h3>Você encontrou todos os pares!</h3><p>Excelente! Agora você conhece ainda mais a Coamo.</p><div class="game-result__stats"><span><strong>${matches}</strong> pares</span><span><strong>${moves}</strong> tentativas</span><span><strong>${formatTime(Date.now() - startedAt)}</strong> tempo</span></div><button class="btn btn--primary" type="button" id="memoryRestart">Jogar novamente</button></div>`;
       $("#memoryRestart")?.addEventListener("click", () => { playGameTone("tap"); startMemoryGame(); });
-      playGameTone("success"); burstConfetti(); pulseMascots("#gameMemory");
+      playGameTone("success"); burstConfetti(); pulseMascots("#gameMemory"); updateGameSpeech("Desafio concluído!", "Você encontrou todos os pares!");
     };
 
     const reveal = (uid) => {
@@ -1375,6 +1380,7 @@
         result.innerHTML = `<div class="game-result__card is-success"><strong>✨ Par encontrado!</strong><p>Boa! Combo x${streak}.</p></div>`;
         playGameTone("success");
         pulseMascots("#gameMemory");
+        updateGameSpeech("Par encontrado!", `Combo x${streak}! Continue assim!`);
         setTimeout(() => {
           render();
           if (matches === MEMORY_BASE_CARDS.length / 2) finish();
@@ -1386,6 +1392,7 @@
         result.innerHTML = `<div class="game-result__card is-error"><strong>Quase!</strong><p>Essas cartas não formam um par. Tente outra combinação.</p></div>`;
         playGameTone("error");
         pulseMascots("#gameMemory", "error");
+        updateGameSpeech("Quase! Tente outra combinação.", "Observe bem as cartas e tente novamente!");
         setTimeout(() => {
           first.flipped = false;
           second.flipped = false;
@@ -1436,7 +1443,7 @@
         result.hidden = false;
         result.innerHTML = `<div class="game-result__card is-error game-result__card--celebrate"><span class="game-result-kicker">FIM DE JOGO</span><h3>Suas vidas acabaram.</h3><p>Que tal tentar novamente e completar toda a cadeia?</p><button class="btn btn--primary" type="button" id="chainRestart">Jogar novamente</button></div>`;
         $("#chainRestart")?.addEventListener("click", () => { playGameTone("tap"); startChainGame(); });
-        pulseMascots("#gameChain", "error");
+        pulseMascots("#gameChain", "error"); updateGameSpeech("Vamos tentar de novo!", "Você consegue completar a cadeia!");
         return;
       }
 
@@ -1445,7 +1452,7 @@
         result.hidden = false;
         result.innerHTML = `<div class="game-result__card is-success game-result__card--celebrate"><span class="game-result-kicker">CADEIA COMPLETA</span><h3>Você conectou a jornada Coamo!</h3><p>Do campo ao mercado, todas as etapas foram colocadas na ordem correta.</p><div class="game-result__stats"><span><strong>${score}</strong> pontos</span><span><strong>${hearts}</strong> vidas restantes</span></div><button class="btn btn--primary" type="button" id="chainRestart">Jogar novamente</button></div>`;
         $("#chainRestart")?.addEventListener("click", () => { playGameTone("tap"); startChainGame(); });
-        playGameTone("success"); burstConfetti(); pulseMascots("#gameChain");
+        playGameTone("success"); burstConfetti(); pulseMascots("#gameChain"); updateGameSpeech("Cadeia completa!", "Do campo ao mercado: missão cumprida!");
         return;
       }
 
@@ -1465,6 +1472,7 @@
           result.innerHTML = `<div class="game-result__card is-success"><strong>✓ Acertou!</strong><p>${escapeHtml(expected.title)} entrou na posição ${step + 1}. +100 pontos.</p></div>`;
           playGameTone("success");
           pulseMascots("#gameChain");
+          updateGameSpeech("Acertou a etapa!", "Muito bem! Continue avançando.");
           step += 1;
           available = shuffle(CHAIN_STEPS.filter(item => !CHAIN_STEPS.slice(0, step).some(done => done.id === item.id)));
           setTimeout(render, 600);
@@ -1474,6 +1482,7 @@
           result.innerHTML = `<div class="game-result__card is-error"><strong>✕ Não foi dessa vez!</strong><p>Essa não é a próxima etapa. Você perdeu 1 vida.</p></div>`;
           playGameTone("error");
           pulseMascots("#gameChain", "error");
+          updateGameSpeech("Essa não é a próxima etapa.", "Você perdeu uma vida. Tente outra opção!");
           setTimeout(() => { btn.classList.remove("is-wrong"); render(); }, 720);
         }
       }));
@@ -1481,6 +1490,314 @@
 
     render();
     return null;
+  }
+
+
+  /* =========================
+     MISSÃO COAMO — OPERAÇÃO SAFRA
+  ========================== */
+  const MISSION_BASE_PHASES = [
+    {
+      id: "chegada",
+      kicker: "FASE 1 · CHEGADA À UNIDADE",
+      title: "A safra começou e o movimento aumentou.",
+      scene: "Três caminhões chegam quase ao mesmo tempo. O pátio começa a ficar movimentado e os cooperados aguardam orientação.",
+      prompt: "Qual decisão ajuda a iniciar a operação de forma organizada?",
+      image: "assets/mission/v29/scene_campus.png",
+      options: [
+        { icon: "🧭", label: "Organizar a chegada e orientar o fluxo", desc: "Recepcionar, direcionar e manter a movimentação organizada.", points: 320, impact: { safety: 6, quality: 1, efficiency: 7, service: 8 }, tone: "best", feedback: "Excelente decisão. Organização e orientação ajudam a operação a começar bem e melhoram a experiência de quem chega." },
+        { icon: "⏩", label: "Liberar todos o mais rápido possível", desc: "Priorizar velocidade, mesmo com a área ficando mais congestionada.", points: 80, impact: { safety: -8, quality: 0, efficiency: -3, service: -2 }, tone: "risk", feedback: "A pressa pode aumentar o congestionamento e reduzir a segurança. Em uma operação intensa, organização é parte da eficiência." },
+        { icon: "⌛", label: "Esperar o movimento diminuir sozinho", desc: "Não mudar o fluxo e aguardar a fila se resolver.", points: 120, impact: { safety: 0, quality: 0, efficiency: -7, service: -7 }, tone: "warn", feedback: "A operação continua, mas a espera sem orientação piora a experiência e reduz a eficiência do fluxo." },
+      ]
+    },
+    {
+      id: "classificacao",
+      kicker: "FASE 2 · RECEBIMENTO",
+      title: "A carga chegou ao ponto de recebimento.",
+      scene: "Antes de seguir para armazenagem, é preciso considerar as características do produto e manter o fluxo com qualidade.",
+      prompt: "Qual caminho faz mais sentido nesta etapa?",
+      image: "assets/mission/scene_classification.webp",
+      options: [
+        { icon: "🔎", label: "Conferir e classificar antes de direcionar", desc: "Usar as informações da carga para definir o próximo passo.", points: 340, impact: { safety: 2, quality: 9, efficiency: 4, service: 3 }, tone: "best", feedback: "Muito bem. Conhecer as condições do produto antes do direcionamento protege a qualidade e melhora a tomada de decisão." },
+        { icon: "🚛", label: "Enviar direto para qualquer estrutura disponível", desc: "Evitar a etapa de conferência para ganhar tempo.", points: 70, impact: { safety: -2, quality: -10, efficiency: -4, service: -2 }, tone: "risk", feedback: "Pular a avaliação pode comprometer a qualidade e criar retrabalho mais adiante." },
+        { icon: "📋", label: "Registrar a chegada e deixar a decisão para depois", desc: "Manter a carga aguardando sem definir o destino.", points: 150, impact: { safety: 0, quality: 1, efficiency: -6, service: -5 }, tone: "warn", feedback: "Registrar é importante, mas a operação precisa avançar com informação e direcionamento." },
+      ]
+    },
+    {
+      id: "armazenagem",
+      kicker: "FASE 3 · ARMAZENAGEM",
+      title: "Agora é hora de escolher o destino da carga.",
+      scene: "Há estruturas disponíveis, mas o produto deve seguir para um local compatível com suas condições e com o planejamento da unidade.",
+      prompt: "Como você conduz essa decisão?",
+      image: "assets/mission/v29/scene_complex.png",
+      options: [
+        { icon: "🏬", label: "Direcionar conforme classificação e planejamento", desc: "Usar qualidade, capacidade e fluxo para escolher a estrutura adequada.", points: 360, impact: { safety: 2, quality: 8, efficiency: 7, service: 2 }, tone: "best", feedback: "Boa! Uma decisão integrada preserva a qualidade e evita movimentações desnecessárias." },
+        { icon: "🎯", label: "Escolher apenas o espaço mais próximo", desc: "Priorizar distância, sem considerar as demais informações.", points: 100, impact: { safety: 0, quality: -7, efficiency: -3, service: 0 }, tone: "risk", feedback: "O espaço mais próximo nem sempre é o destino mais adequado. A decisão precisa considerar o conjunto da operação." },
+        { icon: "🔄", label: "Movimentar primeiro e decidir depois", desc: "Levar a carga para uma área temporária e reorganizar posteriormente.", points: 140, impact: { safety: -2, quality: -2, efficiency: -8, service: -1 }, tone: "warn", feedback: "Movimentações extras aumentam o esforço da operação e podem gerar retrabalho." },
+      ]
+    },
+    {
+      id: "expedicao",
+      kicker: "FASE 5 · EXPEDIÇÃO E LOGÍSTICA",
+      title: "A operação está chegando à etapa final.",
+      scene: "Uma carga está pronta para seguir ao destino. Antes da saída, ainda há uma última decisão importante.",
+      prompt: "O que você prioriza antes da liberação?",
+      image: "assets/mission/v29/scene_complex.png",
+      options: [
+        { icon: "✅", label: "Conferir carga, destino e liberação", desc: "Validar as informações antes de concluir a expedição.", points: 350, impact: { safety: 4, quality: 4, efficiency: 5, service: 7 }, tone: "best", feedback: "Missão quase concluída! Conferência final ajuda a conectar operação, logística e destino com segurança." },
+        { icon: "🏁", label: "Liberar assim que o caminhão estiver pronto", desc: "Evitar nova conferência para ganhar alguns minutos.", points: 80, impact: { safety: -5, quality: -3, efficiency: -2, service: -6 }, tone: "risk", feedback: "Ganhar alguns minutos não compensa o risco de uma informação ou destino incorreto." },
+        { icon: "📞", label: "Esperar alguém confirmar tudo novamente", desc: "Paralisar a liberação mesmo com as informações disponíveis.", points: 160, impact: { safety: 1, quality: 1, efficiency: -6, service: -4 }, tone: "warn", feedback: "Confirmar é útil quando há dúvida. Sem uma necessidade real, a espera pode reduzir a fluidez da operação." },
+      ]
+    }
+  ];
+
+  const MISSION_SURPRISES = [
+    {
+      id: "alerta",
+      kicker: "FASE 4 · IMPREVISTO",
+      title: "Um equipamento apresentou um alerta.",
+      scene: "O fluxo está intenso, mas um equipamento importante indica uma condição fora do normal.",
+      prompt: "Como você reage ao imprevisto?",
+      image: "assets/mission/scene_maintenance.webp",
+      options: [
+        { icon: "🛠", label: "Interromper a condição de risco e acionar suporte", desc: "Proteger pessoas e operação antes de retomar o fluxo.", points: 380, impact: { safety: 10, quality: 2, efficiency: 1, service: 1 }, tone: "best", feedback: "Ótima escolha. Segurança vem antes da velocidade. Depois de controlada a situação, a operação pode ser reorganizada." },
+        { icon: "⚡", label: "Continuar até aparecer uma falha maior", desc: "Manter o ritmo para não perder produtividade.", points: 40, impact: { safety: -14, quality: -4, efficiency: -6, service: -3 }, tone: "risk", feedback: "Essa é uma decisão de alto risco. Um alerta não deve ser ignorado em nome da velocidade." },
+        { icon: "🔀", label: "Redirecionar o fluxo e verificar a situação", desc: "Reduzir a pressão naquele ponto enquanto a condição é avaliada.", points: 280, impact: { safety: 6, quality: 1, efficiency: 4, service: 2 }, tone: "good", feedback: "Boa decisão. Redirecionar pode preservar o fluxo, desde que a condição seja avaliada e tratada corretamente." },
+      ]
+    },
+    {
+      id: "chuva",
+      kicker: "FASE 4 · IMPREVISTO",
+      title: "Uma chuva forte se aproxima da unidade.",
+      scene: "Ainda há movimentação no pátio e cargas em processo. O tempo muda rapidamente e exige reorganização.",
+      prompt: "Qual é a melhor resposta para o momento?",
+      image: "assets/mission/scene_arrival.webp",
+      options: [
+        { icon: "🌧", label: "Reavaliar o fluxo e proteger produto e pessoas", desc: "Ajustar prioridades considerando segurança e qualidade.", points: 370, impact: { safety: 8, quality: 8, efficiency: 1, service: 2 }, tone: "best", feedback: "Excelente. Mudanças de condição exigem adaptação rápida sem perder segurança e qualidade." },
+        { icon: "🚀", label: "Acelerar tudo antes da chuva chegar", desc: "Aumentar o ritmo para finalizar o máximo possível.", points: 70, impact: { safety: -10, quality: -5, efficiency: -2, service: 0 }, tone: "risk", feedback: "Acelerar indiscriminadamente pode aumentar o risco justamente quando as condições estão mudando." },
+        { icon: "⏸", label: "Parar toda a unidade imediatamente", desc: "Interromper qualquer atividade, mesmo as que continuam seguras.", points: 170, impact: { safety: 5, quality: 3, efficiency: -9, service: -4 }, tone: "warn", feedback: "Proteger a operação é importante, mas a resposta pode ser proporcional ao risco e às atividades em andamento." },
+      ]
+    },
+    {
+      id: "fila",
+      kicker: "FASE 4 · IMPREVISTO",
+      title: "A fila aumentou de repente.",
+      scene: "O volume de chegada supera o ritmo previsto e o tempo de espera começa a crescer.",
+      prompt: "Como equilibrar atendimento e operação?",
+      image: "assets/mission/scene_arrival.webp",
+      options: [
+        { icon: "📣", label: "Reorganizar o fluxo e manter todos orientados", desc: "Ajustar prioridades e comunicar o que está acontecendo.", points: 360, impact: { safety: 4, quality: 1, efficiency: 7, service: 9 }, tone: "best", feedback: "Muito bem. Informação e organização ajudam a reduzir a percepção de espera e melhoram o fluxo." },
+        { icon: "🤐", label: "Evitar comunicar para não gerar preocupação", desc: "Manter a fila sem novas orientações.", points: 80, impact: { safety: 0, quality: 0, efficiency: -4, service: -10 }, tone: "risk", feedback: "Sem orientação, a experiência piora e a fila pode ficar ainda mais difícil de organizar." },
+        { icon: "🔢", label: "Atender apenas pela ordem de chegada", desc: "Manter a sequência sem reavaliar o fluxo.", points: 180, impact: { safety: 1, quality: 0, efficiency: -2, service: -2 }, tone: "warn", feedback: "É uma solução simples, mas uma operação intensa pode exigir reorganização e comunicação ativa." },
+      ]
+    }
+  ];
+
+  function clampMissionMetric(value) {
+    return Math.max(0, Math.min(100, Math.round(value)));
+  }
+
+
+  const MISSION_VISUALS = {
+    chegada: { actor: "assets/mission/v29/toninho_point.png", actorName: "Toninho", actorClass: "mission-actor--traffic", fx: "arrival", speech: "Vou organizar esse fluxo com você!" },
+    classificacao: { actor: "assets/mission/aroldinho_inspect.webp", actorName: "Aroldinho", actorClass: "mission-actor--inspect", fx: "lab", speech: "Vamos observar os detalhes da carga." },
+    armazenagem: { actor: "assets/mission/v29/toninho_point.png", actorName: "Toninho", actorClass: "mission-actor--storage", fx: "storage", speech: "Agora precisamos escolher o destino certo." },
+    alerta: { actor: "assets/mission/toninho_maintenance.webp", actorName: "Toninho", actorClass: "mission-actor--maintenance", fx: "maintenance", speech: "Alerta na operação. Segurança primeiro!" },
+    chuva: { actor: "assets/mission/v29/toninho_wave.png", actorName: "Toninho", actorClass: "mission-actor--weather", fx: "weather", speech: "O tempo mudou. Vamos reorganizar a operação." },
+    fila: { actor: "assets/mission/v29/toninho_point.png", actorName: "Toninho", actorClass: "mission-actor--queue", fx: "queue", speech: "A fila cresceu. Organização e comunicação!" },
+    expedicao: { actor: "assets/mission/v29/aroldinho_welcome.png", actorName: "Aroldinho", actorClass: "mission-actor--logistics", fx: "dispatch", speech: "Última etapa: vamos liberar a carga com atenção." },
+  };
+
+  function missionVisual(phase) {
+    return MISSION_VISUALS[phase.id] || MISSION_VISUALS.chegada;
+  }
+
+  function missionDecisionVisual(phase, option, optionIndex) {
+    const base = missionVisual(phase);
+    const tone = option.tone || "warn";
+    let action = "Analisando a decisão...";
+    if (phase.id === "chegada") action = optionIndex === 0 ? "Toninho sinaliza a entrada e organiza o fluxo." : optionIndex === 1 ? "O fluxo acelera e exige ainda mais atenção." : "A fila aumenta enquanto a operação aguarda.";
+    else if (phase.id === "classificacao") action = optionIndex === 0 ? "Aroldinho confere a amostra e registra a classificação." : optionIndex === 1 ? "A carga segue sem conferência e acende um alerta de qualidade." : "A chegada é registrada, mas a carga permanece aguardando.";
+    else if (phase.id === "armazenagem") action = optionIndex === 0 ? "Toninho direciona o produto para a estrutura adequada." : optionIndex === 1 ? "A carga vai ao espaço mais próximo sem considerar todos os dados." : "A carga é movimentada para uma área temporária, gerando retrabalho.";
+    else if (phase.id === "alerta") action = optionIndex === 0 ? "Toninho sinaliza a parada e aciona a manutenção." : optionIndex === 1 ? "O equipamento continua operando com o alerta ativo." : "O fluxo é redirecionado enquanto o equipamento é verificado.";
+    else if (phase.id === "chuva") action = optionIndex === 0 ? "A operação é reorganizada para proteger produto e pessoas." : optionIndex === 1 ? "O ritmo aumenta justamente quando as condições ficam mais críticas." : "Parte da operação para, inclusive atividades que ainda estavam seguras.";
+    else if (phase.id === "fila") action = optionIndex === 0 ? "A fila é reorganizada e todos permanecem orientados." : optionIndex === 1 ? "Sem comunicação, a fila cresce e o atendimento fica confuso." : "A sequência é mantida, mas sem adaptação ao pico de movimento.";
+    else if (phase.id === "expedicao") action = optionIndex === 0 ? "Carga, destino e liberação são confirmados: missão quase concluída!" : optionIndex === 1 ? "A carga parte sem uma última conferência." : "A carga fica aguardando uma confirmação desnecessária.";
+    return { ...base, tone, action };
+  }
+
+  function missionFxMarkup(type) {
+    if (type === "arrival") return `<div class="mission-fx mission-fx--arrival"><span class="motion-signal"></span><img class="motion-truck" src="assets/mission/coamo_truck.png" alt="" aria-hidden="true"><span class="motion-dust motion-dust--1"></span><span class="motion-dust motion-dust--2"></span></div>`;
+    if (type === "lab") return `<div class="mission-fx mission-fx--lab"><span class="lab-scanner"><i></i><b>QUALIDADE</b></span><span class="lab-grain lab-grain--1"></span><span class="lab-grain lab-grain--2"></span><span class="lab-grain lab-grain--3"></span></div>`;
+    if (type === "storage") return `<div class="mission-fx mission-fx--storage"><span class="motion-conveyor"><i></i><b></b><em></em></span><span class="motion-grainfall">${Array.from({length:14},(_,i)=>`<i style="--i:${i}"></i>`).join("")}</span><span class="motion-gear">⚙</span><span class="motion-steam motion-steam--1"></span><span class="motion-steam motion-steam--2"></span></div>`;
+    if (type === "maintenance") return `<div class="mission-fx mission-fx--maintenance"><span class="motion-alarm">!</span><span class="motion-wrench">🔧</span><span class="motion-steam motion-steam--3"></span><span class="motion-spark motion-spark--1"></span><span class="motion-spark motion-spark--2"></span></div>`;
+    if (type === "weather") return `<div class="mission-fx mission-fx--weather"><span class="motion-cloud"></span><span class="motion-lightning">ϟ</span><span class="motion-rain">${Array.from({length:24},(_,i)=>`<i style="--i:${i}"></i>`).join("")}</span><span class="motion-leaf motion-leaf--1">◆</span><span class="motion-leaf motion-leaf--2">◆</span></div>`;
+    if (type === "queue") return `<div class="mission-fx mission-fx--queue"><span class="queue-vehicle queue-vehicle--1"><i></i><b></b></span><span class="queue-vehicle queue-vehicle--2"><i></i><b></b></span><span class="queue-vehicle queue-vehicle--3"><i></i><b></b></span><span class="motion-signal motion-signal--queue"></span></div>`;
+    if (type === "dispatch") return `<div class="mission-fx mission-fx--dispatch"><span class="motion-forklift"><i></i><b></b><em></em><strong></strong></span><span class="motion-crate motion-crate--1"></span><span class="motion-crate motion-crate--2"></span><span class="motion-gate"><i></i><b></b></span><span class="dispatch-check">✓</span></div>`;
+    return "";
+  }
+
+  function startMissionGame() {
+    if (page !== "game-mission") return null;
+    const root = $("#missionGame");
+    const intro = $("#missionIntro");
+    const startBtn = $("#missionStart");
+    if (!root || !intro || !startBtn) return null;
+
+    let phases = [];
+    let phaseIndex = 0;
+    let metrics = { safety: 82, quality: 82, efficiency: 82, service: 82 };
+    let score = 0;
+    let decisions = [];
+    let locked = false;
+
+    const labels = { safety: "Segurança", quality: "Qualidade", efficiency: "Eficiência", service: "Atendimento" };
+    const icons = { safety: "🛡", quality: "⭐", efficiency: "⚙", service: "🤝" };
+
+    const reset = () => {
+      phases = [MISSION_BASE_PHASES[0], MISSION_BASE_PHASES[1], MISSION_BASE_PHASES[2], MISSION_SURPRISES[Math.floor(Math.random() * MISSION_SURPRISES.length)], MISSION_BASE_PHASES[3]];
+      phaseIndex = 0;
+      metrics = { safety: 82, quality: 82, efficiency: 82, service: 82 };
+      score = 0;
+      decisions = [];
+      locked = false;
+      intro.hidden = false;
+      root.innerHTML = "";
+      updateGameSpeech("Preparado para a safra?", "Aroldinho: suas decisões vão mudar o resultado da missão!");
+    };
+
+    const metricsHtml = () => Object.entries(metrics).map(([key, value]) => `
+      <div class="mission-metric mission-metric--${key}">
+        <div class="mission-metric__head"><span>${icons[key]} ${labels[key]}</span><strong>${value}%</strong></div>
+        <div class="mission-metric__bar"><i style="width:${value}%"></i></div>
+      </div>`).join("");
+
+    const applyImpact = (impact = {}) => {
+      Object.keys(metrics).forEach(key => {
+        metrics[key] = clampMissionMetric(metrics[key] + (Number(impact[key]) || 0));
+      });
+    };
+
+    const rating = () => {
+      const avg = Object.values(metrics).reduce((a, b) => a + b, 0) / 4;
+      if (avg >= 93) return { title: "Operação de excelência", badge: "OURO", icon: "🏆", text: "Você equilibrou segurança, qualidade, eficiência e atendimento em alto nível." };
+      if (avg >= 84) return { title: "Missão cumprida", badge: "VERDE", icon: "🥇", text: "A operação chegou ao fim com decisões consistentes e bons indicadores." };
+      if (avg >= 72) return { title: "Boa operação", badge: "PRATA", icon: "🥈", text: "Você completou a jornada, mas ainda há espaço para melhorar alguns indicadores." };
+      return { title: "Safra desafiadora", badge: "DESAFIO", icon: "🎯", text: "A missão foi concluída, mas algumas escolhas reduziram o desempenho da operação." };
+    };
+
+    const renderFinal = () => {
+      const result = rating();
+      root.innerHTML = `
+        <div class="mission-final mission-final--premium">
+          <div class="mission-final__hero">
+            <img class="mission-final__mascot" src="assets/mission/v29/duo_highfive.png" alt="Toninho e Aroldinho comemorando">
+            <div class="mission-final__medal">${result.icon}</div>
+            <span>MISSÃO CONCLUÍDA · ${result.badge}</span>
+            <h2>${result.title}</h2>
+            <p>${result.text}</p>
+            <strong class="mission-final__score">${score.toLocaleString("pt-BR")} pontos</strong>
+          </div>
+          <div class="mission-final__metrics">${metricsHtml()}</div>
+          <div class="mission-final__decisions">
+            <h3>Suas decisões na operação</h3>
+            ${decisions.map((d, idx) => `<div class="mission-decision-row"><b>${String(idx + 1).padStart(2, "0")}</b><span><strong>${escapeHtml(d.phase)}</strong><small>${escapeHtml(d.choice)}</small></span><i class="mission-tone mission-tone--${d.tone}">${d.tone === "best" ? "+" : d.tone === "risk" ? "!" : "✓"}</i></div>`).join("")}
+          </div>
+          <div class="mission-final__actions"><button class="btn btn--primary" type="button" id="missionRestart">Jogar novamente</button><a class="btn btn--soft" href="jogos.html">Voltar aos jogos</a></div>
+          <p class="mission-disclaimer">Simulação educativa e institucional. As situações do jogo não representam procedimentos operacionais oficiais.</p>
+        </div>`;
+      playGameTone("win");
+      launchGameConfetti();
+      pulseMascots("#gameMission", "success");
+      updateGameSpeech("Missão cumprida!", "Aroldinho: quer tentar de novo e superar sua pontuação?");
+      $("#missionRestart")?.addEventListener("click", reset);
+    };
+
+    const renderPhase = () => {
+      if (phaseIndex >= phases.length) return renderFinal();
+      const phase = phases[phaseIndex];
+      locked = false;
+      root.innerHTML = `
+        <div class="mission-hud">
+          <div class="mission-hud__phase"><small>FASE</small><strong>${phaseIndex + 1}<span>/5</span></strong></div>
+          <div class="mission-hud__score"><small>PONTOS</small><strong>${score.toLocaleString("pt-BR")}</strong></div>
+          <div class="mission-hud__metrics">${metricsHtml()}</div>
+        </div>
+        <div class="mission-scene mission-scene--premium">
+          <div class="mission-cinematic mission-cinematic--${phase.id}" id="missionCinematic">
+            <img class="mission-cinematic__bg" src="${phase.image}" alt="Cenário ilustrado da fase">
+            <div class="mission-cinematic__parallax"></div>
+            <div class="mission-cinematic__shade"></div>
+            <img class="mission-cinematic__brand" src="assets/logo.png" alt="Coamo">
+            <div class="mission-cinematic__phase"><span>${phase.kicker}</span><b>CENA INTERATIVA</b></div>
+            <div class="mission-cinematic__fx" id="missionCinematicFx">${missionFxMarkup(missionVisual(phase).fx)}</div>
+            <div class="mission-cinematic__actor ${missionVisual(phase).actorClass}" id="missionActor">
+              <div class="mission-cinematic__speech" id="missionActorSpeech">${escapeHtml(missionVisual(phase).speech)}</div>
+              <img class="mission-actor-pose mission-actor-pose--single" id="missionActorImg" src="${missionVisual(phase).actor}" alt="${missionVisual(phase).actorName}">
+            </div>
+            <div class="mission-cinematic__caption">
+              <small>${phase.kicker}</small>
+              <h2>${phase.title}</h2>
+              <p>${phase.scene}</p>
+            </div>
+            <div class="mission-cinematic__impact" id="missionCinematicImpact" hidden></div>
+          </div>
+          <div class="mission-scene__challenge">
+            <div class="mission-challenge__head"><span>DECISÃO ${phaseIndex + 1}</span><h3>${phase.prompt}</h3><p>Toque na decisão que você tomaria. Cada escolha altera os indicadores da sua operação.</p></div>
+            <div class="mission-options">
+              ${phase.options.map((opt, idx) => `<button class="mission-option" type="button" data-mission-option="${idx}"><i>${opt.icon}</i><span><b>${escapeHtml(opt.label)}</b><small>${escapeHtml(opt.desc)}</small></span><em>Escolher →</em></button>`).join("")}
+            </div>
+            <div class="mission-feedback" id="missionFeedback" hidden></div>
+          </div>
+        </div>`;
+
+      updateGameSpeech(`Fase ${phaseIndex + 1}: atenção à decisão!`, phaseIndex === 3 ? "Aroldinho: imprevisto na operação! Pense rápido." : "Aroldinho: equilíbrio vale mais que pressa.");
+
+      $$("[data-mission-option]", root).forEach(btn => btn.addEventListener("click", () => {
+        if (locked) return;
+        locked = true;
+        const option = phase.options[Number(btn.dataset.missionOption)];
+        applyImpact(option.impact);
+        score += option.points;
+        decisions.push({ phase: phase.title, choice: option.label, tone: option.tone });
+        $$("[data-mission-option]", root).forEach(item => { item.disabled = true; item.classList.toggle("is-selected", item === btn); });
+        btn.classList.add(`is-${option.tone}`);
+        const feedback = $("#missionFeedback");
+        feedback.hidden = false;
+        feedback.innerHTML = `<div class="mission-feedback__icon">${option.tone === "best" ? "✓" : option.tone === "risk" ? "!" : "↗"}</div><div><strong>${option.tone === "best" ? "Excelente decisão" : option.tone === "risk" ? "Decisão arriscada" : option.tone === "good" ? "Boa decisão" : "Decisão possível"}</strong><p>${escapeHtml(option.feedback)}</p><div class="mission-impact">${Object.entries(option.impact).map(([key, value]) => `<span class="${value >= 0 ? "is-positive" : "is-negative"}">${labels[key]} ${value >= 0 ? "+" : ""}${value}</span>`).join("")}</div></div><button class="btn btn--primary" type="button" id="missionNext">${phaseIndex === phases.length - 1 ? "Ver resultado" : "Próxima fase"} →</button>`;
+
+        const visual = missionDecisionVisual(phase, option, Number(btn.dataset.missionOption));
+        const cinematic = $("#missionCinematic");
+        const actorImg = $("#missionActorImg");
+        const actorSpeech = $("#missionActorSpeech");
+        const cinematicFx = $("#missionCinematicFx");
+        const cinematicImpact = $("#missionCinematicImpact");
+        if (cinematic) {
+          cinematic.classList.remove("is-best", "is-good", "is-warn", "is-risk", "is-decided");
+          cinematic.classList.add("is-decided", `is-${option.tone}`);
+        }
+        if (actorImg) actorImg.src = visual.actor;
+        if (actorSpeech) actorSpeech.textContent = visual.action;
+        if (cinematicFx) cinematicFx.innerHTML = missionFxMarkup(visual.fx);
+        if (cinematicImpact) {
+          cinematicImpact.hidden = false;
+          cinematicImpact.innerHTML = `<strong>${option.tone === "risk" ? "ATENÇÃO" : option.tone === "best" ? "DECISÃO DE EXCELÊNCIA" : "DECISÃO REGISTRADA"}</strong><span>${Object.entries(option.impact).map(([key,value]) => `${icons[key]} ${value >= 0 ? "+" : ""}${value}`).join("  ·  ")}</span>`;
+        }
+
+        playGameTone(option.tone === "risk" ? "error" : "success");
+        pulseMascots("#gameMission", option.tone === "risk" ? "error" : "success");
+        updateGameSpeech(option.tone === "risk" ? "Essa escolha trouxe riscos." : "Boa leitura da situação!", option.feedback);
+        $("#missionNext")?.addEventListener("click", () => { phaseIndex += 1; renderPhase(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+      }));
+    };
+
+    startBtn.addEventListener("click", () => {
+      intro.hidden = true;
+      playGameTone("tap");
+      renderPhase();
+    });
+    reset();
+    return () => {};
   }
 
   /* =========================
@@ -1525,6 +1842,7 @@
             <label class="admin-toggle"><span><strong>Descubra sua área</strong><small>Questionário de perfil</small></span><input id="adminGameProfile" type="checkbox"><i></i></label>
             <label class="admin-toggle"><span><strong>Desafio Coamo</strong><small>Jogo da memória</small></span><input id="adminGameMemory" type="checkbox"><i></i></label>
             <label class="admin-toggle"><span><strong>Monte a cadeia Coamo</strong><small>Fluxo da cooperativa</small></span><input id="adminGameChain" type="checkbox"><i></i></label>
+            <label class="admin-toggle"><span><strong>Missão Coamo — Operação Safra</strong><small>Simulação de decisões em 5 fases</small></span><input id="adminGameMission" type="checkbox"><i></i></label>
           </div>
         </div>
         <div class="admin-api-panel">
@@ -1557,6 +1875,7 @@
         gameProfileEnabled: !!$("#adminGameProfile")?.checked,
         gameMemoryEnabled: !!$("#adminGameMemory")?.checked,
         gameChainEnabled: !!$("#adminGameChain")?.checked,
+        gameMissionEnabled: !!$("#adminGameMission")?.checked,
       });
       close();
     });
@@ -1568,7 +1887,7 @@
     const active = ids.filter(id => $("#" + id)?.checked).length;
     const el = $("#adminContentCount");
     if (el) el.textContent = `${active} ativo${active === 1 ? "" : "s"}`;
-    const gameIds = ["adminGameProfile","adminGameMemory","adminGameChain"];
+    const gameIds = ["adminGameProfile","adminGameMemory","adminGameChain","adminGameMission"];
     const activeGames = gameIds.filter(id => $("#" + id)?.checked).length;
     const gamesEl = $("#adminGamesCount");
     if (gamesEl) gamesEl.textContent = `${activeGames} ativo${activeGames === 1 ? "" : "s"}`;
@@ -1597,6 +1916,7 @@
     $("#adminGameProfile").checked = settings.gameProfileEnabled !== false;
     $("#adminGameMemory").checked = settings.gameMemoryEnabled !== false;
     $("#adminGameChain").checked = settings.gameChainEnabled !== false;
+    $("#adminGameMission").checked = settings.gameMissionEnabled !== false;
     $$(".admin-toggle input[type=checkbox]").forEach(el => el.onchange = updateAdminContentCount);
     updateAdminContentCount();
     updateAdminApiStatus();
@@ -1636,6 +1956,7 @@
     initRaffleForm();
     initVacanciesPage();
     initGamesPage();
+    startMissionGame();
     initIdleTracking();
     enrichPresentationWithVacancies();
     maybeAutoStartPresentation();
