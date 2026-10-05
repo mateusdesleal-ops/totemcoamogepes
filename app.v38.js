@@ -1113,9 +1113,9 @@
     campo: { title: "Campo & Cooperado", text: "Você demonstra afinidade com relacionamento, orientação e proximidade com a produção. Na Coamo, essa área conecta conhecimento técnico e cooperados.", image: "assets/quiz/v34/campo.png", icon: "🌾", accent: "campo" },
     operacoes: { title: "Armazenagem & Operações", text: "Seu perfil combina com ambientes dinâmicos, processos e execução. Essa área conecta recebimento, movimentação, conservação e expedição.", image: "assets/quiz/v34/operacao.png", icon: "🏗", accent: "operacoes" },
     industria: { title: "Indústria & Produção", text: "Você se identifica com produção, qualidade, manutenção e eficiência. A indústria transforma matéria-prima em novas possibilidades.", image: "assets/quiz/v34/operacao.png", icon: "⚙", accent: "industria" },
-    tecnologia: { title: "Tecnologia & Dados", text: "Seu perfil aponta para soluções digitais, análise e inovação. Na Coamo, a tecnologia ajuda uma grande operação a continuar conectada.", image: "assets/quiz/v34/gestao.png", icon: "💻", accent: "tecnologia" },
+    tecnologia: { title: "Tecnologia & Dados", text: "Seu perfil aponta para soluções digitais, análise e inovação. Na Coamo, a tecnologia ajuda uma grande operação a continuar conectada.", image: "assets/quiz/v34/tecnologia.png", icon: "💻", accent: "tecnologia" },
     gestao: { title: "Gestão & Áreas Corporativas", text: "Você demonstra afinidade com planejamento, análise, organização e suporte à operação. Essa estrutura sustenta as decisões do negócio.", image: "assets/quiz/v34/gestao.png", icon: "👥", accent: "gestao" },
-    pessoas: { title: "Pessoas & Desenvolvimento", text: "Seu perfil combina com relações humanas, cuidado, desenvolvimento e apoio às pessoas. É um universo importante para fortalecer cultura e crescimento.", image: "assets/quiz/v34/gestao.png", icon: "🤝", accent: "pessoas" },
+    pessoas: { title: "Pessoas & Desenvolvimento", text: "Seu perfil combina com relações humanas, cuidado, desenvolvimento e apoio às pessoas. É um universo importante para fortalecer cultura e crescimento.", image: "assets/quiz/v34/pessoas.png", icon: "🤝", accent: "pessoas" },
   };
 
   const PROFILE_QUESTIONS = [
