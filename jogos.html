@@ -4,63 +4,378 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b4d2b">
+
   <title>Coamo • Coamo Games</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
   <link rel="stylesheet" href="styles.v42.css?v=42.0">
+  <link rel="stylesheet" href="styles.v43.css?v=43.0">
 </head>
+
 <body data-page="games">
+
   <div class="kiosk-shell">
+
     <header class="topbar">
-      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início"><img src="assets/logo_verde.png" alt="Coamo"></a>
-      <div class="topbar__context"><span class="topbar__eyebrow">GEPES</span><span class="topbar__label">Coamo Games</span></div>
+
+      <a
+        class="topbar__brand js-admin-trigger"
+        href="index.html?interactive=1"
+        aria-label="Coamo - início"
+      >
+        <img src="assets/logo_verde.png" alt="Coamo">
+      </a>
+
+      <div class="topbar__context">
+        <span class="topbar__eyebrow">GEPES</span>
+        <span class="topbar__label">Coamo Games</span>
+      </div>
+
       <nav class="topnav" aria-label="Navegação principal">
-        <a class="topnav__item" href="index.html?interactive=1">Início</a>
-        <a class="topnav__item" href="vagas.html">Vagas</a>
-        <a class="topnav__item" href="apresentacao.html">Conheça a Coamo</a>
-        <a class="topnav__item is-active" data-feature="games" href="jogos.html">Coamo Games</a>
-        <a class="topnav__item" data-feature="raffle" href="sorteio.html">Sorteio</a>
-        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
+
+        <a class="topnav__item" href="index.html?interactive=1">
+          Início
+        </a>
+
+        <a class="topnav__item" href="vagas.html">
+          Vagas
+        </a>
+
+        <a class="topnav__item" href="apresentacao.html">
+          Conheça a Coamo
+        </a>
+
+        <a
+          class="topnav__item is-active"
+          data-feature="games"
+          href="jogos.html"
+        >
+          Coamo Games
+        </a>
+
+        <a
+          class="topnav__item"
+          data-feature="raffle"
+          href="sorteio.html"
+        >
+          Sorteio
+        </a>
+
+        <button
+          class="topnav__item topnav__item--presentation js-start-presentation"
+          type="button"
+        >
+          ▶ Apresentação
+        </button>
+
       </nav>
+
     </header>
+
     <main class="games-page games-page--v22">
-      <section class="games-hero-v31" id="gamesHero" aria-label="Coamo Games">
-        <img class="games-hero-v31__poster" src="assets/games/v34/hero_coamo_games.png" alt="Coamo Games com Toninho e Aroldinho apresentando as experiências interativas">
+
+      <section
+        class="games-hero-v31"
+        id="gamesHero"
+        aria-label="Coamo Games"
+      >
+        <img
+          class="games-hero-v31__poster"
+          src="assets/games/v34/hero_coamo_games.png"
+          alt="Coamo Games com Toninho e Aroldinho"
+        >
       </section>
 
-      <section class="games-menu games-menu--v22" id="gamesMenu">
-        <a class="game-menu-card game-menu-card--farm game-menu-card--featured" href="jogo-fazenda.html" data-feature="game-farm">
-          <span class="game-menu-card__preview game-menu-card__preview--poster game-menu-card__preview--farm"><img class="game-menu-card__poster" src="assets/games/farm/farm_landscape_v40.png" alt="Fazenda Coamo — Missão da Safra"></span>
-          <span class="game-menu-card__content"><small class="game-menu-card__label">NOVO · MISSÃO DE 2–3 MINUTOS</small><strong>Fazenda Coamo — Missão da Safra</strong><span>Conduza uma safra em cinco decisões. Cada visitante começa do zero e recebe um cenário diferente.</span><b>Entrar na fazenda <i>→</i></b></span>
-        </a>
-        <a class="game-menu-card game-menu-card--grain game-menu-card--featured" href="jogo-classificacao.html" data-feature="game-grain">
-          <span class="game-menu-card__preview grain-menu-preview" aria-hidden="true">
-            <span class="grain-menu-preview__belt"><i>🫘</i><i>🌽</i><i>🌾</i><i>🪨</i></span>
-            <span class="grain-menu-preview__bins"><b>SOJA</b><b>MILHO</b><b>TRIGO</b><b>IMPUREZAS</b></span>
+      <section
+        class="games-menu games-menu--v22 games-menu--v43"
+        id="gamesMenu"
+      >
+
+        <!-- 01 -->
+        <a
+          class="game-menu-card game-menu-card--profile"
+          href="jogo-area.html"
+          data-feature="game-profile"
+        >
+
+          <span
+            class="game-menu-card__preview game-menu-card__preview--poster"
+          >
+            <img
+              class="game-menu-card__poster"
+              src="assets/games/v34/area_banner.png"
+              alt="Descubra sua área na Coamo"
+            >
           </span>
-          <span class="game-menu-card__content"><small class="game-menu-card__label">NOVO · ARCADE DE 75 SEGUNDOS</small><strong>Desafio da Classificação</strong><span>Arraste soja, milho, trigo e impurezas para o destino correto antes que a esteira acelere.</span><b>Classificar agora <i>→</i></b></span>
-        </a>
-        <a class="game-menu-card game-menu-card--profile" href="jogo-area.html" data-feature="game-profile">
-          <span class="game-menu-card__preview game-menu-card__preview--poster"><img class="game-menu-card__poster" src="assets/games/v34/area_banner.png" alt="Descubra sua área na Coamo Games"></span>
-          <span class="game-menu-card__content"><small class="game-menu-card__label">QUIZ</small><strong>Descubra sua área na Coamo Games</strong><span>Responda perguntas e descubra qual universo profissional mais combina com você.</span><b>Jogar agora <i>→</i></b></span>
-        </a>
-        <a class="game-menu-card game-menu-card--memory" href="jogo-memoria.html" data-feature="game-memory">
-          <span class="game-menu-card__preview game-menu-card__preview--poster"><img class="game-menu-card__poster" src="assets/games/v34/memory_banner.png" alt="Desafio Coamo - jogo da memória"></span>
-          <span class="game-menu-card__content"><small class="game-menu-card__label">JOGO DA MEMÓRIA</small><strong>Desafio Coamo</strong><span>Encontre os pares e conheça programas, números e curiosidades da cooperativa.</span><b>Jogar agora <i>→</i></b></span>
-        </a>
-        <a class="game-menu-card game-menu-card--chain" href="jogo-cadeia.html" data-feature="game-chain">
-          <span class="game-menu-card__preview game-menu-card__preview--poster"><img class="game-menu-card__poster" src="assets/games/v34/chain_banner.png" alt="Monte a cadeia Coamo"></span>
-          <span class="game-menu-card__content"><small class="game-menu-card__label">MONTE A SEQUÊNCIA</small><strong>Monte a cadeia Coamo</strong><span>Descubra a ordem correta da jornada, do campo até o mercado.</span><b>Jogar agora <i>→</i></b></span>
+
+          <span class="game-menu-card__content">
+
+            <small class="game-menu-card__label">
+              QUIZ
+            </small>
+
+            <strong>
+              Descubra sua área na Coamo
+            </strong>
+
+            <span>
+              Descubra qual universo profissional mais combina com você.
+            </span>
+
+            <b>
+              Jogar agora <i>→</i>
+            </b>
+
+          </span>
+
         </a>
 
-        <a class="game-menu-card game-menu-card--mission" href="jogo-missao.html" data-feature="game-mission">
-          <span class="game-menu-card__preview game-menu-card__preview--poster"><img class="game-menu-card__poster" src="assets/games/v34/mission_banner.png" alt="Missão Coamo - Operação Safra"></span>
-          <span class="game-menu-card__content"><small class="game-menu-card__label">SIMULAÇÃO · 5 FASES</small><strong>Missão Coamo — Operação Safra</strong><span>Tome decisões, enfrente um imprevisto surpresa e equilibre segurança, qualidade, eficiência e atendimento.</span><b>Iniciar missão <i>→</i></b></span>
+        <!-- 02 -->
+        <a
+          class="game-menu-card game-menu-card--memory"
+          href="jogo-memoria.html"
+          data-feature="game-memory"
+        >
+
+          <span
+            class="game-menu-card__preview game-menu-card__preview--poster"
+          >
+            <img
+              class="game-menu-card__poster"
+              src="assets/games/v34/memory_banner.png"
+              alt="Desafio Coamo"
+            >
+          </span>
+
+          <span class="game-menu-card__content">
+
+            <small class="game-menu-card__label">
+              JOGO DA MEMÓRIA
+            </small>
+
+            <strong>
+              Desafio Coamo
+            </strong>
+
+            <span>
+              Encontre os pares e conheça curiosidades da cooperativa.
+            </span>
+
+            <b>
+              Jogar agora <i>→</i>
+            </b>
+
+          </span>
+
         </a>
+
+        <!-- 03 -->
+        <a
+          class="game-menu-card game-menu-card--chain"
+          href="jogo-cadeia.html"
+          data-feature="game-chain"
+        >
+
+          <span
+            class="game-menu-card__preview game-menu-card__preview--poster"
+          >
+            <img
+              class="game-menu-card__poster"
+              src="assets/games/v34/chain_banner.png"
+              alt="Monte a cadeia Coamo"
+            >
+          </span>
+
+          <span class="game-menu-card__content">
+
+            <small class="game-menu-card__label">
+              MONTE A SEQUÊNCIA
+            </small>
+
+            <strong>
+              Monte a cadeia Coamo
+            </strong>
+
+            <span>
+              Complete a jornada do campo ao mercado.
+            </span>
+
+            <b>
+              Jogar agora <i>→</i>
+            </b>
+
+          </span>
+
+        </a>
+
+        <!-- 04 -->
+        <a
+          class="game-menu-card game-menu-card--mission"
+          href="jogo-missao.html"
+          data-feature="game-mission"
+        >
+
+          <span
+            class="game-menu-card__preview game-menu-card__preview--poster"
+          >
+            <img
+              class="game-menu-card__poster"
+              src="assets/games/v34/mission_banner.png"
+              alt="Missão Coamo - Operação Safra"
+            >
+          </span>
+
+          <span class="game-menu-card__content">
+
+            <small class="game-menu-card__label">
+              SIMULAÇÃO · 5 FASES
+            </small>
+
+            <strong>
+              Missão Coamo — Operação Safra
+            </strong>
+
+            <span>
+              Tome decisões e equilibre diferentes resultados da operação.
+            </span>
+
+            <b>
+              Iniciar missão <i>→</i>
+            </b>
+
+          </span>
+
+        </a>
+
+        <!-- 05 -->
+        <a
+          class="game-menu-card game-menu-card--grain"
+          href="jogo-classificacao.html"
+          data-feature="game-grain"
+        >
+
+          <span
+            class="game-menu-card__preview grain-menu-preview"
+            aria-hidden="true"
+          >
+
+            <span class="grain-menu-preview__belt">
+              <i>🫘</i>
+              <i>🌽</i>
+              <i>🌾</i>
+              <i>🪨</i>
+            </span>
+
+            <span class="grain-menu-preview__bins">
+              <b>SOJA</b>
+              <b>MILHO</b>
+              <b>TRIGO</b>
+              <b>IMPUREZAS</b>
+            </span>
+
+          </span>
+
+          <span class="game-menu-card__content">
+
+            <small class="game-menu-card__label">
+              ARCADE · 75 SEGUNDOS
+            </small>
+
+            <strong>
+              Desafio da Classificação
+            </strong>
+
+            <span>
+              Classifique grãos e impurezas antes que a esteira acelere.
+            </span>
+
+            <b>
+              Classificar agora <i>→</i>
+            </b>
+
+          </span>
+
+        </a>
+
+        <!-- 06 -->
+        <a
+          class="game-menu-card game-menu-card--silo"
+          href="jogo-silo.html"
+        >
+
+          <span
+            class="game-menu-card__preview silo-menu-preview"
+            aria-hidden="true"
+          >
+
+            <span class="silo-menu-preview__sky"></span>
+
+            <span class="silo-menu-preview__row">
+
+              <i
+                class="silo-menu-preview__unit"
+                style="--fill:58%"
+              ></i>
+
+              <i
+                class="silo-menu-preview__unit"
+                style="--fill:74%"
+              ></i>
+
+              <i
+                class="silo-menu-preview__unit"
+                style="--fill:42%"
+              ></i>
+
+              <i
+                class="silo-menu-preview__unit"
+                style="--fill:66%"
+              ></i>
+
+            </span>
+
+            <span class="silo-menu-preview__truck">
+              🚚
+            </span>
+
+          </span>
+
+          <span class="game-menu-card__content">
+
+            <small class="game-menu-card__label">
+              NOVO · ARCADE
+            </small>
+
+            <strong>
+              Silo em Equilíbrio
+            </strong>
+
+            <span>
+              Distribua as cargas e mantenha os quatro silos sob controle.
+            </span>
+
+            <b>
+              Equilibrar silos <i>→</i>
+            </b>
+
+          </span>
+
+        </a>
+
       </section>
+
     </main>
+
   </div>
+
   <script src="app.v42.js?v=42.0"></script>
+
 </body>
 </html>

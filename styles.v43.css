@@ -1,0 +1,1962 @@
+/* =========================================================
+   COAMO GAMES — V43
+   Ajustes de layout + Silo em Equilíbrio
+   ========================================================= */
+
+
+/* =========================================================
+   MENU DOS JOGOS
+   ========================================================= */
+
+.games-menu--v43{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:22px!important;
+  align-items:stretch!important;
+}
+
+
+.games-menu--v43 .game-menu-card{
+  grid-column:auto!important;
+  width:auto!important;
+  height:100%!important;
+  min-width:0!important;
+}
+
+
+.games-menu--v43 .game-menu-card--featured{
+  grid-column:auto!important;
+}
+
+
+.games-menu--v43 .game-menu-card__preview{
+  min-height:260px;
+}
+
+
+.games-menu--v43 .game-menu-card__content{
+  min-height:250px;
+}
+
+
+/* =========================================================
+   CLASSIFICAÇÃO — INTRO
+   ========================================================= */
+
+.grain-intro--v43{
+  grid-template-columns:minmax(0,1.15fr) minmax(370px,.85fr)!important;
+  grid-template-rows:auto 190px!important;
+  min-height:0!important;
+}
+
+
+.grain-intro--v43 .grain-intro__visual{
+  grid-column:1;
+  grid-row:1;
+}
+
+
+.grain-intro--v43 .grain-intro__copy{
+  grid-column:2;
+  grid-row:1;
+}
+
+
+.grain-intro__mascots{
+  grid-column:1 / -1;
+  grid-row:2;
+
+  display:grid;
+  grid-template-columns:1fr 1fr;
+
+  gap:30px;
+
+  align-items:end;
+
+  border-top:1px solid rgba(11,77,43,.10);
+
+  padding-top:8px;
+}
+
+
+.grain-guide{
+  margin:0;
+
+  display:flex;
+
+  align-items:flex-end;
+
+  gap:16px;
+
+  min-width:0;
+
+  overflow:visible;
+}
+
+
+.grain-guide--aroldinho{
+  justify-content:flex-end;
+}
+
+
+.grain-guide img{
+  height:170px;
+
+  width:auto;
+
+  flex:0 0 auto;
+
+  object-fit:contain;
+
+  filter:
+    drop-shadow(
+      0 9px 12px
+      rgba(0,0,0,.15)
+    );
+}
+
+
+.grain-guide figcaption{
+  max-width:300px;
+
+  margin-bottom:52px;
+
+  padding:13px 16px;
+
+  background:#fff;
+
+  border:3px solid #e8b41e;
+
+  border-radius:20px;
+
+  color:#164d31;
+
+  font-size:12px;
+
+  line-height:1.3;
+
+  font-weight:800;
+
+  box-shadow:
+    0 10px 20px
+    rgba(20,65,40,.12);
+}
+
+
+/* garante que o CSS antigo não mostre os
+   personagens absolutos antigos */
+
+.grain-intro--v43 > .grain-mascot{
+  display:none!important;
+}
+
+
+/* =========================================================
+   CLASSIFICAÇÃO — PARTIDA
+   ========================================================= */
+
+.grain-stage{
+  overflow:hidden!important;
+  padding-bottom:0!important;
+}
+
+
+.grain-conveyor{
+  overflow:hidden!important;
+}
+
+
+.grain-mascot-strip{
+  display:grid!important;
+
+  grid-template-columns:1fr 1fr!important;
+
+  gap:20px!important;
+
+  height:auto!important;
+
+  min-height:160px!important;
+
+  margin:12px 0 0!important;
+
+  padding:8px 14px 0!important;
+
+  align-items:end!important;
+
+  overflow:visible!important;
+}
+
+
+.grain-mascot-strip figure{
+  margin:0!important;
+
+  display:flex!important;
+
+  align-items:flex-end!important;
+
+  gap:14px!important;
+
+  min-width:0!important;
+}
+
+
+.grain-mascot-strip figure:last-child{
+  justify-content:flex-end!important;
+}
+
+
+.grain-mascot-strip img{
+  height:150px!important;
+
+  width:auto!important;
+
+  max-width:140px!important;
+
+  object-fit:contain!important;
+
+  flex:0 0 auto!important;
+}
+
+
+.grain-mascot-strip figcaption{
+  max-width:270px!important;
+
+  margin-bottom:42px!important;
+
+  font-size:11px!important;
+
+  line-height:1.3!important;
+}
+
+
+/* =========================================================
+   SILO — CARD DO MENU
+   ========================================================= */
+
+.silo-menu-preview{
+  position:relative;
+
+  display:block;
+
+  width:100%;
+
+  height:100%;
+
+  min-height:260px;
+
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #cdefff 0%,
+      #e9f8ff 34%,
+      #b6d7bc 34%,
+      #82ac7d 100%
+    );
+}
+
+
+.silo-menu-preview__sky{
+  position:absolute;
+
+  left:0;
+  right:0;
+  top:0;
+
+  height:40%;
+
+  background:
+    radial-gradient(
+      circle at 74% 26%,
+      rgba(255,255,255,.95) 0 5%,
+      transparent 6%
+    );
+}
+
+
+.silo-menu-preview__row{
+  position:absolute;
+
+  left:8%;
+  right:8%;
+  bottom:12%;
+
+  height:68%;
+
+  display:flex;
+
+  align-items:flex-end;
+
+  gap:10px;
+}
+
+
+.silo-menu-preview__unit{
+  position:relative;
+
+  flex:1;
+
+  height:88%;
+
+  overflow:hidden;
+
+  border:4px solid #84948b;
+
+  border-radius:23px 23px 8px 8px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #eef3f0,
+      #aab8b0 48%,
+      #f3f6f4
+    );
+
+  box-shadow:
+    0 9px 18px
+    rgba(20,60,40,.18);
+}
+
+
+.silo-menu-preview__unit::before{
+  content:"";
+
+  position:absolute;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  height:var(--fill);
+
+  background:
+    linear-gradient(
+      180deg,
+      #f0d778,
+      #c79a28
+    );
+}
+
+
+.silo-menu-preview__unit::after{
+  content:"";
+
+  position:absolute;
+
+  left:8%;
+  right:8%;
+
+  top:42%;
+
+  height:27%;
+
+  border-top:
+    2px dashed
+    rgba(11,77,43,.55);
+
+  border-bottom:
+    2px dashed
+    rgba(11,77,43,.55);
+}
+
+
+.silo-menu-preview__truck{
+  position:absolute;
+
+  right:5%;
+  bottom:4%;
+
+  z-index:5;
+
+  font-size:38px;
+}
+
+
+/* =========================================================
+   SILO — PÁGINA
+   ========================================================= */
+
+.silo-page{
+  padding:18px 22px 36px;
+
+  min-width:0;
+}
+
+
+.silo-intro,
+.silo-game,
+.silo-result{
+  max-width:1500px;
+
+  margin:0 auto;
+}
+
+
+/* =========================================================
+   SILO — INTRO
+   ========================================================= */
+
+.silo-intro{
+  display:grid;
+
+  grid-template-columns:
+    minmax(0,1.15fr)
+    minmax(380px,.85fr);
+
+  grid-template-areas:
+    "visual copy"
+    "guides guides";
+
+  gap:22px;
+
+  padding:28px;
+
+  border:
+    1px solid
+    rgba(11,77,43,.12);
+
+  border-radius:32px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f8fff9,
+      #eaf4ed
+    );
+
+  overflow:hidden;
+}
+
+
+.silo-intro__visual{
+  grid-area:visual;
+
+  min-height:480px;
+
+  border-radius:26px;
+
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #bce9ff 0%,
+      #eaf8ff 38%,
+      #cce2ce 38%,
+      #83ad7d 100%
+    );
+
+  position:relative;
+}
+
+
+.silo-yard{
+  position:absolute;
+
+  inset:0;
+
+  display:flex;
+
+  align-items:flex-end;
+
+  justify-content:center;
+
+  gap:18px;
+
+  padding:
+    70px
+    44px
+    72px;
+}
+
+
+.silo-yard::before{
+  content:"";
+
+  position:absolute;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  height:90px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #65736b,
+      #404b45
+    );
+}
+
+
+.silo-yard__unit{
+  position:relative;
+
+  z-index:2;
+
+  width:20%;
+
+  height:74%;
+
+  overflow:hidden;
+
+  border:
+    5px solid
+    #839189;
+
+  border-radius:
+    30px
+    30px
+    10px
+    10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #eef3f0,
+      #afbdb5 50%,
+      #f4f7f5
+    );
+
+  box-shadow:
+    0 12px 22px
+    rgba(20,60,40,.18);
+}
+
+
+.silo-yard__unit::before{
+  content:"";
+
+  position:absolute;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  height:var(--fill);
+
+  background:
+    linear-gradient(
+      180deg,
+      #f1d878,
+      #c89b2b
+    );
+}
+
+
+.silo-yard__unit::after{
+  content:"";
+
+  position:absolute;
+
+  left:8%;
+  right:8%;
+
+  top:42%;
+
+  height:28%;
+
+  border-top:
+    3px dashed
+    rgba(11,77,43,.55);
+
+  border-bottom:
+    3px dashed
+    rgba(11,77,43,.55);
+
+  background:
+    rgba(56,145,84,.05);
+}
+
+
+.silo-yard__unit span{
+  position:absolute;
+
+  left:50%;
+  bottom:14px;
+
+  transform:
+    translateX(-50%);
+
+  z-index:4;
+
+  background:#fff;
+
+  border-radius:999px;
+
+  padding:6px 10px;
+
+  color:#0b4d2b;
+
+  font-size:11px;
+
+  font-weight:900;
+}
+
+
+.silo-yard__road{
+  position:absolute;
+
+  left:5%;
+  bottom:14px;
+
+  z-index:5;
+
+  font-size:52px;
+
+  animation:
+    siloTruckMove
+    6s ease-in-out
+    infinite alternate;
+}
+
+
+@keyframes siloTruckMove{
+
+  from{
+    transform:
+      translateX(0);
+  }
+
+  to{
+    transform:
+      translateX(110px);
+  }
+
+}
+
+
+.silo-intro__copy{
+  grid-area:copy;
+
+  align-self:center;
+
+  padding:10px 8px;
+}
+
+
+.silo-kicker{
+  display:inline-flex;
+
+  padding:8px 12px;
+
+  border-radius:999px;
+
+  background:#e5f1e8;
+
+  color:#0b4d2b;
+
+  font-size:12px;
+
+  font-weight:900;
+
+  letter-spacing:.12em;
+}
+
+
+.silo-intro h1{
+  margin:
+    18px
+    0
+    18px;
+
+  color:#0b4d2b;
+
+  font-size:
+    clamp(
+      46px,
+      5vw,
+      76px
+    );
+
+  line-height:.98;
+
+  font-weight:900;
+}
+
+
+.silo-intro h1 em{
+  color:#d39b00;
+
+  font-style:normal;
+}
+
+
+.silo-intro__copy > p{
+  margin:
+    0
+    0
+    24px;
+
+  color:#52695a;
+
+  font-size:18px;
+
+  line-height:1.55;
+}
+
+
+.silo-intro__rules{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap:10px;
+
+  margin:
+    18px
+    0
+    24px;
+}
+
+
+.silo-intro__rules span{
+  padding:
+    14px
+    8px;
+
+  border:
+    1px solid
+    rgba(11,77,43,.13);
+
+  border-radius:16px;
+
+  background:#fff;
+
+  text-align:center;
+}
+
+
+.silo-intro__rules b{
+  display:block;
+
+  color:#0b4d2b;
+
+  font-size:23px;
+}
+
+
+.silo-intro__rules small{
+  display:block;
+
+  margin-top:2px;
+
+  color:#74857b;
+
+  font-size:9px;
+
+  font-weight:900;
+
+  text-transform:uppercase;
+}
+
+
+.silo-start{
+  min-height:58px;
+
+  font-size:17px;
+}
+
+
+.silo-intro__guides{
+  grid-area:guides;
+
+  display:grid;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap:24px;
+
+  padding-top:8px;
+
+  border-top:
+    1px solid
+    rgba(11,77,43,.10);
+}
+
+
+.silo-guide{
+  margin:0;
+
+  display:flex;
+
+  align-items:flex-end;
+
+  gap:14px;
+
+  min-width:0;
+}
+
+
+.silo-guide:last-child{
+  justify-content:flex-end;
+}
+
+
+.silo-guide img{
+  height:165px;
+
+  width:auto;
+
+  object-fit:contain;
+
+  filter:
+    drop-shadow(
+      0 9px 12px
+      rgba(0,0,0,.14)
+    );
+}
+
+
+.silo-guide figcaption{
+  max-width:315px;
+
+  margin-bottom:48px;
+
+  padding:12px 15px;
+
+  border:
+    3px solid
+    #e5b31d;
+
+  border-radius:20px;
+
+  background:#fff;
+
+  color:#174c32;
+
+  font-size:12px;
+
+  line-height:1.3;
+
+  font-weight:800;
+}
+
+
+/* =========================================================
+   SILO — HUD
+   ========================================================= */
+
+.silo-game{
+  display:flex;
+
+  flex-direction:column;
+
+  gap:16px;
+}
+
+
+.silo-hud{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap:12px;
+}
+
+
+.silo-hud > div{
+  padding:
+    13px
+    16px;
+
+  border:
+    1px solid
+    rgba(11,77,43,.12);
+
+  border-radius:18px;
+
+  background:#fff;
+
+  box-shadow:
+    0 8px 20px
+    rgba(20,65,40,.06);
+}
+
+
+.silo-hud small{
+  display:block;
+
+  color:#76877d;
+
+  font-size:10px;
+
+  font-weight:900;
+
+  letter-spacing:.1em;
+}
+
+
+.silo-hud strong{
+  display:block;
+
+  margin-top:4px;
+
+  color:#0b4d2b;
+
+  font-size:28px;
+}
+
+
+/* =========================================================
+   SILO — ÁREA DO JOGO
+   ========================================================= */
+
+.silo-stage{
+  display:flex;
+
+  flex-direction:column;
+
+  gap:16px;
+
+  padding:18px;
+
+  border:
+    1px solid
+    rgba(11,77,43,.12);
+
+  border-radius:28px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f1f8f3,
+      #e6f0e8
+    );
+}
+
+
+.silo-stage__header{
+  display:flex;
+
+  justify-content:
+    space-between;
+
+  align-items:center;
+
+  gap:18px;
+}
+
+
+.silo-stage__header strong{
+  display:block;
+
+  color:#0b4d2b;
+
+  font-size:15px;
+}
+
+
+.silo-stage__header span{
+  display:block;
+
+  margin-top:3px;
+
+  color:#687a70;
+
+  font-size:12px;
+}
+
+
+.silo-stage__header > b{
+  padding:
+    9px
+    13px;
+
+  border:
+    1px solid
+    #d9e5dd;
+
+  border-radius:999px;
+
+  background:#fff;
+
+  color:#315743;
+
+  font-size:11px;
+}
+
+
+.silo-load-row{
+  display:grid;
+
+  grid-template-columns:
+    240px
+    1fr;
+
+  gap:16px;
+}
+
+
+.silo-load{
+  position:relative;
+
+  display:grid;
+
+  grid-template-columns:
+    60px
+    1fr;
+
+  align-items:center;
+
+  gap:12px;
+
+  overflow:hidden;
+
+  padding:
+    15px
+    16px
+    18px;
+
+  border:
+    2px solid
+    #d6e3da;
+
+  border-radius:22px;
+
+  background:#fff;
+}
+
+
+.silo-load.is-urgent{
+  border-color:#d8a213;
+
+  background:#fff9e7;
+}
+
+
+.silo-load__icon{
+  display:grid;
+
+  place-items:center;
+
+  width:60px;
+
+  height:60px;
+
+  border-radius:18px;
+
+  background:#edf5ef;
+
+  font-size:34px;
+}
+
+
+.silo-load small{
+  display:block;
+
+  color:#78897f;
+
+  font-size:9px;
+
+  font-weight:900;
+
+  letter-spacing:.12em;
+}
+
+
+.silo-load strong{
+  display:block;
+
+  margin-top:2px;
+
+  color:#0b4d2b;
+
+  font-size:22px;
+}
+
+
+.silo-load b{
+  display:block;
+
+  margin-top:2px;
+
+  color:#aa7700;
+
+  font-size:16px;
+}
+
+
+.silo-load > i{
+  position:absolute;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  height:7px;
+
+  background:#e7eee9;
+}
+
+
+.silo-load > i > u{
+  display:block;
+
+  width:100%;
+
+  height:100%;
+
+  text-decoration:none;
+
+  background:
+    linear-gradient(
+      90deg,
+      #e4ad14,
+      #0c7040
+    );
+
+  transition:
+    width .25s linear;
+}
+
+
+.silo-tip{
+  display:flex;
+
+  align-items:center;
+
+  gap:14px;
+
+  padding:
+    16px
+    20px;
+
+  border-radius:22px;
+
+  background:#0b4d2b;
+
+  color:#fff;
+}
+
+
+.silo-tip > span{
+  font-size:32px;
+}
+
+
+.silo-tip strong{
+  display:block;
+
+  font-size:15px;
+}
+
+
+.silo-tip small{
+  display:block;
+
+  margin-top:4px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      .78
+    );
+
+  font-size:11px;
+
+  line-height:1.4;
+}
+
+
+/* =========================================================
+   SILOS INTERATIVOS
+   ========================================================= */
+
+.silo-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0,1fr)
+    );
+
+  gap:14px;
+}
+
+
+.silo-unit{
+  display:grid;
+
+  grid-template-rows:
+    auto
+    1fr
+    auto;
+
+  gap:10px;
+
+  min-height:420px;
+
+  padding:
+    16px
+    14px
+    14px;
+
+  border:
+    2px solid
+    #cad8cf;
+
+  border-radius:24px;
+
+  background:#fff;
+
+  cursor:pointer;
+
+  color:#174c32;
+
+  box-shadow:
+    0 9px 22px
+    rgba(20,60,40,.07);
+
+  transition:
+    transform .15s ease,
+    border-color .15s ease,
+    background .15s ease;
+}
+
+
+.silo-unit:active:not(:disabled){
+  transform:
+    scale(.985);
+}
+
+
+.silo-unit__title{
+  display:flex;
+
+  align-items:center;
+
+  justify-content:
+    space-between;
+
+  gap:8px;
+}
+
+
+.silo-unit__title strong{
+  font-size:16px;
+}
+
+
+.silo-unit__title b{
+  color:#0b4d2b;
+
+  font-size:22px;
+}
+
+
+.silo-unit__body{
+  position:relative;
+
+  width:72%;
+
+  height:285px;
+
+  margin:auto;
+
+  overflow:hidden;
+
+  border:
+    7px solid
+    #89968f;
+
+  border-radius:
+    35px
+    35px
+    12px
+    12px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #eef3f0,
+      #b9c5be 50%,
+      #f4f7f5
+    );
+}
+
+
+.silo-unit__ideal{
+  position:absolute;
+
+  left:0;
+  right:0;
+
+  bottom:30%;
+
+  height:52%;
+
+  z-index:3;
+
+  border-top:
+    3px dashed
+    rgba(11,77,43,.55);
+
+  border-bottom:
+    3px dashed
+    rgba(11,77,43,.55);
+
+  background:
+    rgba(54,151,82,.07);
+
+  pointer-events:none;
+}
+
+
+.silo-unit__fill{
+  position:absolute;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  height:50%;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f1d979,
+      #c79b2c
+    );
+
+  transition:
+    height .35s ease;
+}
+
+
+.silo-unit > span{
+  display:block;
+
+  min-height:34px;
+
+  padding:9px 7px;
+
+  border-radius:999px;
+
+  background:#edf5ef;
+
+  color:#0b6b3d;
+
+  font-size:9px;
+
+  font-weight:900;
+
+  letter-spacing:.05em;
+
+  text-align:center;
+}
+
+
+.silo-unit.is-good{
+  border-color:#5fa974;
+}
+
+
+.silo-unit.is-warning{
+  border-color:#deb032;
+}
+
+
+.silo-unit.is-warning > span{
+  background:#fff6d9;
+
+  color:#906300;
+}
+
+
+.silo-unit.is-danger{
+  border-color:#d75743;
+
+  background:#fff5f2;
+}
+
+
+.silo-unit.is-danger > span{
+  background:#ffe0da;
+
+  color:#a83322;
+}
+
+
+.silo-unit.is-low{
+  border-color:#9eadA4;
+}
+
+
+.silo-unit.is-maintenance{
+  opacity:.55;
+
+  filter:grayscale(.3);
+
+  border-color:#6c7972;
+}
+
+
+.silo-unit.is-maintenance > span{
+  background:#35483e;
+
+  color:#fff;
+}
+
+
+/* =========================================================
+   MASCOTES DURANTE O JOGO
+   ========================================================= */
+
+.silo-coaches{
+  display:grid;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap:18px;
+
+  align-items:end;
+
+  padding:
+    0
+    8px;
+}
+
+
+.silo-coaches figure{
+  margin:0;
+
+  display:flex;
+
+  align-items:flex-end;
+
+  gap:14px;
+
+  min-width:0;
+}
+
+
+.silo-coaches figure:last-child{
+  justify-content:flex-end;
+}
+
+
+.silo-coaches img{
+  height:150px;
+
+  width:auto;
+
+  max-width:140px;
+
+  object-fit:contain;
+}
+
+
+.silo-coaches figcaption{
+  max-width:290px;
+
+  margin-bottom:42px;
+
+  padding:
+    10px
+    13px;
+
+  border:
+    2px solid
+    #e4b01d;
+
+  border-radius:18px;
+
+  background:#fff;
+
+  color:#164d31;
+
+  font-size:11px;
+
+  line-height:1.3;
+
+  font-weight:800;
+}
+
+
+/* =========================================================
+   RESULTADO
+   ========================================================= */
+
+.silo-result{
+  display:grid;
+
+  grid-template-columns:
+    minmax(0,1fr)
+    380px;
+
+  gap:28px;
+
+  align-items:center;
+
+  min-height:700px;
+
+  padding:42px;
+
+  overflow:hidden;
+
+  border:
+    1px solid
+    rgba(11,77,43,.12);
+
+  border-radius:32px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f8fff9,
+      #eaf4ed
+    );
+}
+
+
+.silo-result__badge{
+  font-size:68px;
+}
+
+
+.silo-result h2{
+  margin:
+    12px
+    0;
+
+  color:#0b4d2b;
+
+  font-size:
+    clamp(
+      48px,
+      5vw,
+      74px
+    );
+
+  line-height:1;
+}
+
+
+.silo-result__content > p{
+  max-width:760px;
+
+  color:#52675a;
+
+  font-size:18px;
+
+  line-height:1.5;
+}
+
+
+.silo-result__score{
+  display:flex;
+
+  align-items:baseline;
+
+  gap:10px;
+
+  margin:
+    22px
+    0;
+}
+
+
+.silo-result__score strong{
+  color:#0b4d2b;
+
+  font-size:68px;
+
+  line-height:1;
+}
+
+
+.silo-result__score span{
+  color:#78877e;
+
+  font-weight:800;
+}
+
+
+.silo-result__stats{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap:10px;
+
+  margin:
+    18px
+    0
+    25px;
+}
+
+
+.silo-result__stats span{
+  padding:13px;
+
+  border:
+    1px solid
+    rgba(11,77,43,.12);
+
+  border-radius:16px;
+
+  background:#fff;
+
+  text-align:center;
+}
+
+
+.silo-result__stats b{
+  display:block;
+
+  color:#0b4d2b;
+
+  font-size:24px;
+}
+
+
+.silo-result__stats small{
+  color:#76867c;
+
+  font-size:9px;
+
+  font-weight:900;
+
+  text-transform:uppercase;
+}
+
+
+.silo-result__actions{
+  display:flex;
+
+  gap:12px;
+
+  flex-wrap:wrap;
+}
+
+
+.silo-result__content > small{
+  display:block;
+
+  margin-top:16px;
+
+  color:#7c8c82;
+}
+
+
+.silo-result__mascots{
+  position:relative;
+
+  height:460px;
+}
+
+
+.silo-result__mascots img{
+  position:absolute;
+
+  bottom:0;
+
+  width:auto;
+
+  object-fit:contain;
+
+  filter:
+    drop-shadow(
+      0 14px 18px
+      rgba(0,0,0,.14)
+    );
+}
+
+
+.silo-result__mascots img:first-child{
+  left:-28px;
+
+  height:390px;
+}
+
+
+.silo-result__mascots img:last-child{
+  right:-40px;
+
+  height:370px;
+}
+
+
+/* =========================================================
+   TOTEM VERTICAL
+   ========================================================= */
+
+@media
+(orientation:portrait)
+and
+(max-width:1250px){
+
+  .games-menu--v43{
+    grid-template-columns:1fr!important;
+
+    gap:20px!important;
+  }
+
+
+  .grain-intro--v43{
+    grid-template-columns:1fr!important;
+
+    grid-template-rows:
+      auto
+      auto
+      auto!important;
+
+    gap:16px!important;
+  }
+
+
+  .grain-intro--v43
+  .grain-intro__visual{
+    grid-column:1!important;
+
+    grid-row:1!important;
+  }
+
+
+  .grain-intro--v43
+  .grain-intro__copy{
+    grid-column:1!important;
+
+    grid-row:2!important;
+
+    padding:
+      0
+      6px
+      8px!important;
+  }
+
+
+  .grain-intro__mascots{
+    grid-column:1!important;
+
+    grid-row:3!important;
+
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+
+  .grain-guide img{
+    height:160px;
+  }
+
+
+  .grain-guide figcaption{
+    font-size:11px;
+
+    margin-bottom:42px;
+  }
+
+
+  .grain-conveyor{
+    height:360px!important;
+  }
+
+
+  .grain-mascot-strip{
+    min-height:175px!important;
+  }
+
+
+  .grain-mascot-strip img{
+    height:160px!important;
+
+    max-width:145px!important;
+  }
+
+
+  .grain-mascot-strip figcaption{
+    font-size:12px!important;
+  }
+
+
+  .silo-page{
+    padding:
+      14px
+      16px
+      28px;
+  }
+
+
+  .silo-intro{
+    grid-template-columns:1fr;
+
+    grid-template-areas:
+      "visual"
+      "copy"
+      "guides";
+
+    padding:18px;
+  }
+
+
+  .silo-intro__visual{
+    min-height:530px;
+  }
+
+
+  .silo-intro h1{
+    font-size:58px;
+  }
+
+
+  .silo-grid{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+
+  .silo-unit{
+    min-height:400px;
+  }
+
+
+  .silo-unit__body{
+    height:260px;
+  }
+
+
+  .silo-result{
+    grid-template-columns:1fr;
+
+    min-height:0;
+
+    padding:30px;
+  }
+
+
+  .silo-result__mascots{
+    height:330px;
+  }
+
+
+  .silo-result__mascots
+  img:first-child{
+    height:300px;
+  }
+
+
+  .silo-result__mascots
+  img:last-child{
+    height:285px;
+  }
+
+}
+
+
+/* =========================================================
+   TELAS MENORES
+   ========================================================= */
+
+@media
+(max-width:760px){
+
+  .grain-intro__mascots{
+    grid-template-columns:1fr;
+  }
+
+
+  .grain-guide,
+  .grain-guide--aroldinho{
+    justify-content:center;
+  }
+
+
+  .grain-mascot-strip{
+    grid-template-columns:1fr!important;
+  }
+
+
+  .grain-mascot-strip figure,
+  .grain-mascot-strip figure:last-child{
+    justify-content:center!important;
+  }
+
+
+  .silo-intro__rules{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+
+  .silo-intro__guides{
+    grid-template-columns:1fr;
+  }
+
+
+  .silo-guide,
+  .silo-guide:last-child{
+    justify-content:center;
+  }
+
+
+  .silo-hud{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+
+  .silo-load-row{
+    grid-template-columns:1fr;
+  }
+
+
+  .silo-grid{
+    grid-template-columns:1fr;
+  }
+
+
+  .silo-unit{
+    min-height:340px;
+  }
+
+
+  .silo-unit__body{
+    height:220px;
+  }
+
+
+  .silo-coaches{
+    grid-template-columns:1fr;
+  }
+
+
+  .silo-result__stats{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+
+  .silo-result__mascots{
+    display:none;
+  }
+
+}
+
+
+/* =========================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================= */
+
+@media
+(prefers-reduced-motion:reduce){
+
+  .silo-yard__road{
+    animation:none;
+  }
+
+}
