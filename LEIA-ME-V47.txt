@@ -1,0 +1,8 @@
+COAMO GAMES V47
+
+Pacote completo pronto para subir no GitHub.
+Principais ajustes:
+- banners atualizados com a identidade Coamo Games;
+- correção visual do arraste no jogo de classificação;
+- nova lógica do jogo Silo em Equilíbrio: a primeira carga define o produto do silo;
+- jogo Fazenda Coamo removido do menu.
