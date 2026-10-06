@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
 
   <meta charset="utf-8">
@@ -18,6 +19,7 @@
     Coamo • Silo em Equilíbrio
   </title>
 
+
   <link
     rel="preconnect"
     href="https://fonts.googleapis.com"
@@ -34,6 +36,7 @@
     rel="stylesheet"
   >
 
+
   <link
     rel="stylesheet"
     href="styles.v42.css?v=42.0"
@@ -44,23 +47,255 @@
     href="styles.v43.css?v=43.0"
   >
 
+
+  <style>
+
+    /*
+      Ajuste do caminhão Coamo
+    */
+
+    .silo-yard__road{
+      left:-5%;
+      bottom:8px;
+
+      width:165px;
+      height:auto;
+
+      font-size:0;
+
+      animation:
+        siloCoamoTruck
+        7s linear
+        infinite;
+    }
+
+
+    .silo-yard__road img{
+      display:block;
+
+      width:165px;
+      height:auto;
+
+      object-fit:contain;
+
+      filter:
+        drop-shadow(
+          0 8px 9px
+          rgba(0,0,0,.22)
+        );
+    }
+
+
+    @keyframes siloCoamoTruck{
+
+      from{
+        left:-20%;
+      }
+
+      to{
+        left:105%;
+      }
+
+    }
+
+
+    /*
+      Mensagem da mecânica secreta
+    */
+
+    .silo-secret-rule{
+      margin-top:18px;
+
+      display:flex;
+
+      align-items:center;
+
+      gap:12px;
+
+      padding:
+        13px
+        15px;
+
+      border:
+        1px solid
+        rgba(11,77,43,.12);
+
+      border-radius:18px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          .75
+        );
+
+      color:#345647;
+
+      font-size:12px;
+
+      font-weight:700;
+
+      line-height:1.35;
+    }
+
+
+    .silo-secret-rule strong{
+      color:#0b4d2b;
+    }
+
+
+    .silo-secret-rule__icon{
+      flex:0 0 auto;
+
+      display:grid;
+
+      place-items:center;
+
+      width:42px;
+      height:42px;
+
+      border-radius:14px;
+
+      background:#e8f2ea;
+
+      font-size:23px;
+    }
+
+
+    /*
+      Feedback visual de erro
+    */
+
+    .silo-unit.is-wrong-destination{
+      animation:
+        siloWrongDestination
+        .55s ease;
+    }
+
+
+    @keyframes siloWrongDestination{
+
+      0%,
+      100%{
+        transform:
+          translateX(0);
+      }
+
+      20%{
+        transform:
+          translateX(-10px);
+      }
+
+      40%{
+        transform:
+          translateX(10px);
+      }
+
+      60%{
+        transform:
+          translateX(-7px);
+      }
+
+      80%{
+        transform:
+          translateX(7px);
+      }
+
+    }
+
+
+    /*
+      Pista após erro:
+      mostra somente um brilho.
+      Não mostra o nome do produto.
+    */
+
+    .silo-unit.is-correct-hint{
+      animation:
+        siloCorrectHint
+        .85s ease
+        2;
+    }
+
+
+    @keyframes siloCorrectHint{
+
+      0%,
+      100%{
+        box-shadow:
+          0 9px 22px
+          rgba(20,60,40,.07);
+      }
+
+      50%{
+        border-color:#e5b217;
+
+        box-shadow:
+          0 0 0 7px
+          rgba(
+            229,
+            178,
+            23,
+            .22
+          ),
+          0 12px 24px
+          rgba(
+            20,
+            60,
+            40,
+            .12
+          );
+      }
+
+    }
+
+
+    @media
+    (prefers-reduced-motion:reduce){
+
+      .silo-yard__road{
+        animation:none;
+
+        left:50%;
+
+        transform:
+          translateX(-50%);
+      }
+
+    }
+
+  </style>
+
 </head>
+
 
 <body data-page="game-silo">
 
+
   <div class="kiosk-shell">
 
+
+    <!-- =======================================
+         CABEÇALHO
+         ======================================= -->
+
     <header class="topbar">
+
 
       <a
         class="topbar__brand js-admin-trigger"
         href="index.html?interactive=1"
+        aria-label="Coamo - início"
       >
+
         <img
           src="assets/logo_verde.png"
           alt="Coamo"
         >
+
       </a>
+
 
       <div class="topbar__context">
 
@@ -74,7 +309,12 @@
 
       </div>
 
-      <nav class="topnav">
+
+      <nav
+        class="topnav"
+        aria-label="Navegação principal"
+      >
+
 
         <a
           class="topnav__item"
@@ -83,12 +323,14 @@
           Início
         </a>
 
+
         <a
           class="topnav__item"
           href="vagas.html"
         >
           Vagas
         </a>
+
 
         <a
           class="topnav__item"
@@ -97,12 +339,14 @@
           Conheça a Coamo
         </a>
 
+
         <a
           class="topnav__item is-active"
           href="jogos.html"
         >
           Coamo Games
         </a>
+
 
         <a
           class="topnav__item"
@@ -111,6 +355,7 @@
           Sorteio
         </a>
 
+
         <button
           class="topnav__item topnav__item--presentation js-start-presentation"
           type="button"
@@ -118,11 +363,19 @@
           ▶ Apresentação
         </button>
 
+
       </nav>
+
 
     </header>
 
+
+    <!-- =======================================
+         CONTEÚDO
+         ======================================= -->
+
     <main class="silo-page">
+
 
       <div class="game-single-toolbar">
 
@@ -139,93 +392,192 @@
 
       </div>
 
+
+      <!-- =====================================
+           INTRODUÇÃO
+           ===================================== -->
+
       <section
         class="silo-intro"
         id="siloIntro"
       >
 
+
+        <!-- CENA DOS SILOS -->
+
         <div class="silo-intro__visual">
 
           <div class="silo-yard">
 
+
             <div
               class="silo-yard__unit"
-              style="--fill:58%"
+              style="--fill:52%"
             >
               <span>A</span>
             </div>
 
+
             <div
               class="silo-yard__unit"
-              style="--fill:74%"
+              style="--fill:67%"
             >
               <span>B</span>
             </div>
 
+
             <div
               class="silo-yard__unit"
-              style="--fill:42%"
+              style="--fill:43%"
             >
               <span>C</span>
             </div>
 
+
             <div
               class="silo-yard__unit"
-              style="--fill:66%"
+              style="--fill:61%"
             >
               <span>D</span>
             </div>
 
+
+            <!-- CAMINHÃO COAMO -->
+
             <div class="silo-yard__road">
-              🚚
+
+              <img
+                src="assets/mission/coamo_truck.png"
+                alt=""
+                aria-hidden="true"
+              >
+
             </div>
+
 
           </div>
 
         </div>
 
+
+        <!-- TEXTO -->
+
         <div class="silo-intro__copy">
 
+
           <span class="silo-kicker">
-            COAMO GAMES · CONTROLE DE FLUXO
+            COAMO GAMES · MEMÓRIA E OPERAÇÃO
           </span>
 
+
           <h1>
+
             Silo em
+
             <br>
-            <em>Equilíbrio</em>
+
+            <em>
+              Equilíbrio
+            </em>
+
           </h1>
 
+
           <p>
-            As cargas continuam chegando enquanto
-            os silos liberam produto. Distribua cada
-            carga, acompanhe os níveis e evite
-            transbordos.
+
+            Cada silo recebe apenas um tipo de produto.
+
+            Descubra os destinos, memorize os silos
+            e mantenha a operação funcionando
+            sem deixar nenhuma carga ir para
+            o lugar errado.
+
           </p>
+
 
           <div class="silo-intro__rules">
 
-            <span>
-              <b>75 s</b>
-              <small>partida</small>
-            </span>
 
             <span>
-              <b>4</b>
-              <small>silos</small>
+
+              <b>
+                75 s
+              </b>
+
+              <small>
+                por partida
+              </small>
+
             </span>
 
-            <span>
-              <b>3</b>
-              <small>vidas</small>
-            </span>
 
             <span>
-              <b>0</b>
-              <small>progresso salvo</small>
+
+              <b>
+                4
+              </b>
+
+              <small>
+                silos secretos
+              </small>
+
             </span>
+
+
+            <span>
+
+              <b>
+                5
+              </b>
+
+              <small>
+                vidas
+              </small>
+
+            </span>
+
+
+            <span>
+
+              <b>
+                1
+              </b>
+
+              <small>
+                produto por silo
+              </small>
+
+            </span>
+
 
           </div>
+
+
+          <div class="silo-secret-rule">
+
+            <span class="silo-secret-rule__icon">
+              🧠
+            </span>
+
+            <div>
+
+              <strong>
+                Memorize os destinos.
+              </strong>
+
+              <br>
+
+              Os produtos dos silos não ficam
+              identificados. Errar o destino
+              custa uma vida.
+
+            </div>
+
+          </div>
+
+
+          <br>
+
 
           <button
             id="siloStart"
@@ -235,9 +587,16 @@
             ▶ Iniciar operação
           </button>
 
+
         </div>
 
+
+        <!-- MASCOTES -->
+
         <div class="silo-intro__guides">
+
+
+          <!-- TONINHO -->
 
           <figure class="silo-guide">
 
@@ -247,17 +606,31 @@
             >
 
             <figcaption>
-              Observe os quatro níveis antes
-              de escolher o destino.
+
+              Cada silo recebe apenas
+              um produto.
+
+              Preste atenção e memorize
+              os destinos!
+
             </figcaption>
 
           </figure>
 
+
+          <!-- AROLDINHO -->
+
           <figure class="silo-guide">
 
             <figcaption>
-              Não concentre tudo no mesmo silo.
-              O equilíbrio vale mais pontos!
+
+              Mandou para o silo errado?
+
+              Você perde uma vida.
+
+              Vamos ver quantos destinos
+              consegue memorizar!
+
             </figcaption>
 
             <img
@@ -267,66 +640,127 @@
 
           </figure>
 
+
         </div>
 
+
       </section>
+
+
+      <!-- =====================================
+           JOGO
+           ===================================== -->
 
       <section
         class="silo-game"
         id="siloGame"
         hidden
+        aria-live="polite"
       >
+
+
+        <!-- HUD -->
 
         <div class="silo-hud">
 
-          <div>
-            <small>TEMPO</small>
-            <strong id="siloTimer">01:15</strong>
-          </div>
 
           <div>
-            <small>PONTOS</small>
-            <strong id="siloScore">0</strong>
+
+            <small>
+              TEMPO
+            </small>
+
+            <strong id="siloTimer">
+              01:15
+            </strong>
+
           </div>
 
-          <div>
-            <small>COMBO</small>
-            <strong id="siloCombo">x0</strong>
-          </div>
 
           <div>
-            <small>VIDAS</small>
-            <strong id="siloLives">❤❤❤</strong>
+
+            <small>
+              PONTOS
+            </small>
+
+            <strong id="siloScore">
+              0
+            </strong>
+
           </div>
+
+
+          <div>
+
+            <small>
+              COMBO
+            </small>
+
+            <strong id="siloCombo">
+              x0
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <small>
+              VIDAS
+            </small>
+
+            <strong id="siloLives">
+              ❤❤❤❤❤
+            </strong>
+
+          </div>
+
 
         </div>
 
+
+        <!-- PALCO -->
+
         <section class="silo-stage">
+
 
           <div class="silo-stage__header">
 
+
             <div>
+
               <strong>
-                Escolha o silo que receberá a carga
+                Para qual silo essa carga deve ir?
               </strong>
 
               <span>
-                Mantenha os níveis entre 30% e 82%.
+
+                Descubra os destinos e
+                memorize cada silo.
+
               </span>
+
             </div>
 
+
             <b id="siloEvent">
-              Operação estável
+              Operação iniciada
             </b>
+
 
           </div>
 
+
+          <!-- CARGA -->
+
           <div class="silo-load-row">
+
 
             <div
               class="silo-load"
               id="siloLoad"
             >
+
 
               <span
                 class="silo-load__icon"
@@ -335,7 +769,9 @@
                 🌽
               </span>
 
+
               <div>
+
                 <small>
                   CARGA CHEGANDO
                 </small>
@@ -347,34 +783,63 @@
                 <b id="siloLoadAmount">
                   +14%
                 </b>
+
               </div>
+
 
               <i>
                 <u id="siloLoadTime"></u>
               </i>
 
+
             </div>
+
 
             <div class="silo-tip">
 
-              <span>⚖️</span>
+
+              <span>
+                🧠
+              </span>
+
 
               <div>
+
                 <strong>
-                  O equilíbrio vale mais
+                  Memorize os destinos
                 </strong>
 
                 <small>
-                  Evite deixar um silo muito cheio
-                  enquanto outros ficam vazios.
+
+                  Cada silo recebe somente
+                  um produto.
+
+                  Se errar, você perde
+                  uma vida.
+
                 </small>
+
               </div>
+
 
             </div>
 
+
           </div>
 
+
+          <!-- =================================
+               SILOS
+
+               IMPORTANTE:
+               Não existe nenhuma identificação
+               visual do produto.
+               ================================= -->
+
           <div class="silo-grid">
+
+
+            <!-- SILO A -->
 
             <button
               class="silo-unit"
@@ -382,24 +847,40 @@
               type="button"
             >
 
+
               <div class="silo-unit__title">
-                <strong>SILO A</strong>
-                <b>50%</b>
+
+                <strong>
+                  SILO A
+                </strong>
+
+                <b>
+                  50%
+                </b>
+
               </div>
+
 
               <div class="silo-unit__body">
 
-                <div class="silo-unit__ideal"></div>
+                <div class="silo-unit__ideal">
+                </div>
 
-                <div class="silo-unit__fill"></div>
+                <div class="silo-unit__fill">
+                </div>
 
               </div>
 
+
               <span>
-                FAIXA IDEAL
+                DISPONÍVEL
               </span>
 
+
             </button>
+
+
+            <!-- SILO B -->
 
             <button
               class="silo-unit"
@@ -407,24 +888,40 @@
               type="button"
             >
 
+
               <div class="silo-unit__title">
-                <strong>SILO B</strong>
-                <b>50%</b>
+
+                <strong>
+                  SILO B
+                </strong>
+
+                <b>
+                  50%
+                </b>
+
               </div>
+
 
               <div class="silo-unit__body">
 
-                <div class="silo-unit__ideal"></div>
+                <div class="silo-unit__ideal">
+                </div>
 
-                <div class="silo-unit__fill"></div>
+                <div class="silo-unit__fill">
+                </div>
 
               </div>
 
+
               <span>
-                FAIXA IDEAL
+                DISPONÍVEL
               </span>
 
+
             </button>
+
+
+            <!-- SILO C -->
 
             <button
               class="silo-unit"
@@ -432,24 +929,40 @@
               type="button"
             >
 
+
               <div class="silo-unit__title">
-                <strong>SILO C</strong>
-                <b>50%</b>
+
+                <strong>
+                  SILO C
+                </strong>
+
+                <b>
+                  50%
+                </b>
+
               </div>
+
 
               <div class="silo-unit__body">
 
-                <div class="silo-unit__ideal"></div>
+                <div class="silo-unit__ideal">
+                </div>
 
-                <div class="silo-unit__fill"></div>
+                <div class="silo-unit__fill">
+                </div>
 
               </div>
 
+
               <span>
-                FAIXA IDEAL
+                DISPONÍVEL
               </span>
 
+
             </button>
+
+
+            <!-- SILO D -->
 
             <button
               class="silo-unit"
@@ -457,68 +970,110 @@
               type="button"
             >
 
+
               <div class="silo-unit__title">
-                <strong>SILO D</strong>
-                <b>50%</b>
+
+                <strong>
+                  SILO D
+                </strong>
+
+                <b>
+                  50%
+                </b>
+
               </div>
+
 
               <div class="silo-unit__body">
 
-                <div class="silo-unit__ideal"></div>
+                <div class="silo-unit__ideal">
+                </div>
 
-                <div class="silo-unit__fill"></div>
+                <div class="silo-unit__fill">
+                </div>
 
               </div>
 
+
               <span>
-                FAIXA IDEAL
+                DISPONÍVEL
               </span>
+
 
             </button>
 
+
           </div>
+
+
+          <!-- MASCOTES DURANTE A PARTIDA -->
 
           <div class="silo-coaches">
 
+
             <figure>
+
 
               <img
                 src="assets/mascote_toninho.png"
                 alt="Toninho"
               >
 
+
               <figcaption id="siloToninho">
-                Observe todos os níveis.
+
+                Preste atenção:
+                cada silo tem um destino.
+
               </figcaption>
+
 
             </figure>
 
+
             <figure>
 
+
               <figcaption id="siloAroldinho">
-                Vamos manter tudo equilibrado!
+
+                Memorize os acertos
+                para não perder vidas!
+
               </figcaption>
+
 
               <img
                 src="assets/mascote_aroldinho_pose2.png"
                 alt="Aroldinho"
               >
 
+
             </figure>
+
 
           </div>
 
+
         </section>
 
+
       </section>
+
+
+      <!-- =====================================
+           RESULTADO
+           ===================================== -->
 
       <section
         class="silo-result"
         id="siloResult"
         hidden
+        aria-live="polite"
       >
 
+
         <div class="silo-result__content">
+
 
           <div
             class="silo-result__badge"
@@ -527,71 +1082,103 @@
             🏆
           </div>
 
+
           <span class="silo-kicker">
             OPERAÇÃO CONCLUÍDA
           </span>
 
+
           <h2 id="siloResultTitle">
-            Equilíbrio Ouro
+            Memória Operacional Ouro
           </h2>
 
+
           <p id="siloResultText">
-            Excelente controle dos silos.
+
+            Excelente desempenho.
+
+            Você memorizou os destinos
+            e manteve a operação funcionando.
+
           </p>
 
+
           <div class="silo-result__score">
+
 
             <strong id="siloFinalScore">
               0
             </strong>
 
+
             <span>
               pontos
             </span>
 
+
           </div>
+
 
           <div class="silo-result__stats">
 
-            <span>
-              <b id="siloBalance">
-                0%
-              </b>
-              <small>
-                equilíbrio
-              </small>
-            </span>
 
             <span>
+
+              <b id="siloAccuracy">
+                0%
+              </b>
+
+              <small>
+                precisão
+              </small>
+
+            </span>
+
+
+            <span>
+
               <b id="siloBestCombo">
                 x0
               </b>
+
               <small>
-                combo
+                melhor combo
               </small>
+
             </span>
 
+
             <span>
+
               <b id="siloLoads">
                 0
               </b>
+
               <small>
-                cargas
+                cargas corretas
               </small>
+
             </span>
 
+
             <span>
-              <b id="siloIdealTime">
-                0s
+
+              <b id="siloErrors">
+                0
               </b>
+
               <small>
-                equilíbrio total
+                erros
               </small>
+
             </span>
+
 
           </div>
 
+
           <div class="silo-result__actions">
+
 
             <button
               class="btn btn--primary"
@@ -601,6 +1188,7 @@
               ↻ Jogar novamente
             </button>
 
+
             <a
               class="btn btn--soft"
               href="jogos.html"
@@ -608,37 +1196,60 @@
               Voltar aos jogos
             </a>
 
+
           </div>
 
+
           <small id="siloReset">
+
             Reinício automático para
             o próximo visitante.
+
           </small>
+
 
         </div>
 
+
+        <!-- MASCOTES DO RESULTADO -->
+
         <div class="silo-result__mascots">
+
 
           <img
             src="assets/mascote_toninho_pose2.png"
             alt="Toninho"
           >
 
+
           <img
             src="assets/mascote_aroldinho_pose2.png"
             alt="Aroldinho"
           >
 
+
         </div>
+
 
       </section>
 
+
     </main>
+
 
   </div>
 
+
+  <!-- SCRIPT PRINCIPAL DO SITE -->
+
   <script src="app.v42.js?v=42.0"></script>
-  <script src="silo.v43.js?v=43.0"></script>
+
+
+  <!-- NOVA LÓGICA DO SILO -->
+
+  <script src="silo.v44.js?v=44.0"></script>
+
 
 </body>
+
 </html>
