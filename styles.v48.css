@@ -474,3 +474,41 @@ and
   }
 
 }
+
+/* =========================================================
+   COAMO GAMES — CORREÇÃO CAPA V49
+   A nova capa tem proporção 4:3.
+   Esta regra final prevalece sobre os breakpoints V48.
+   ========================================================= */
+.games-hero-v31{
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  aspect-ratio:4 / 3 !important;
+  overflow:hidden !important;
+  background:#eef5ef !important;
+}
+
+.games-hero-v31__poster{
+  position:static !important;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  margin:0 !important;
+  transform:none !important;
+}
+
+@media (orientation:portrait) and (max-width:1250px){
+  .games-hero-v31{
+    aspect-ratio:4 / 3 !important;
+  }
+}
+
+@media (max-width:760px){
+  .games-hero-v31{
+    aspect-ratio:4 / 3 !important;
+  }
+}
