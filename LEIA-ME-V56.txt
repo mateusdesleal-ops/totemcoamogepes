@@ -1,0 +1,13 @@
+COAMO TOTEM — V56
+
+Ajuste solicitado:
+- Ranking removido da parte superior do Desafio da Classificação.
+- Ranking removido da parte superior do Silo em Equilíbrio.
+- O TOP 5 permanece somente na tela de resultado, na parte inferior, após o término da partida.
+- O gatilho oculto de administração/reinício do ranking continua no título TOP 5 da parte inferior.
+- Links dos dois jogos atualizados para ?v=56.0 para evitar versão antiga em cache.
+
+Arquivos para substituir na raiz do projeto:
+- jogos.html
+- jogo-classificacao.html
+- jogo-silo.html
