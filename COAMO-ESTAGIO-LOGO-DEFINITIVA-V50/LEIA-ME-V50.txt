@@ -1,0 +1,20 @@
+COAMO — CORREÇÃO DEFINITIVA DA LOGO DO PROGRAMA DE ESTÁGIO — V50
+
+Arquivos para upload:
+- app.v48.js
+- assets/logo_programa_estagios_v11.png
+- assets/logo_programa_estagios_v12.png
+
+O que esta correção faz:
+1. Mantém a logo do Programa de Estágio permanentemente ativa.
+2. Ignora preferências antigas do navegador/totem que tenham salvo a logo como desligada.
+3. Atualiza automaticamente a preferência local para ativa assim que o novo JavaScript carregar.
+4. Remove do painel administrativo a opção de desligar a logo; agora ela aparece como "Ativa".
+5. Os dois slides do Programa de Estágio deixam de depender da configuração local para mostrar a marca.
+6. Mantém fallback entre logo v12 e v11 caso uma das imagens falhe.
+
+IMPORTANTE:
+- Suba o app.v48.js na raiz, substituindo o atual.
+- Suba as duas imagens dentro de /assets/, substituindo as existentes se solicitado.
+- Como o HTML atual já referencia app.v48.js, não é necessário trocar páginas do site.
+- Depois do deploy, recarregue a página do totem uma vez para o novo JavaScript entrar em execução.
