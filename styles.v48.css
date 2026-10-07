@@ -476,39 +476,27 @@ and
 }
 
 /* =========================================================
-   COAMO GAMES — CORREÇÃO CAPA V49
-   A nova capa tem proporção 4:3.
-   Esta regra final prevalece sobre os breakpoints V48.
+   V53 — ÍCONE REAL DE SOJA NO DESAFIO DA CLASSIFICAÇÃO
    ========================================================= */
-.games-hero-v31{
-  width:100% !important;
-  height:auto !important;
-  min-height:0 !important;
-  aspect-ratio:4 / 3 !important;
-  overflow:hidden !important;
-  background:#eef5ef !important;
-}
-
-.games-hero-v31__poster{
-  position:static !important;
+.grain-soy-icon{
   display:block !important;
-  width:100% !important;
-  height:100% !important;
+  width:1.35em !important;
+  height:1.35em !important;
   max-width:none !important;
   object-fit:contain !important;
-  object-position:center center !important;
-  margin:0 !important;
-  transform:none !important;
+  pointer-events:none !important;
+  user-select:none !important;
 }
-
-@media (orientation:portrait) and (max-width:1250px){
-  .games-hero-v31{
-    aspect-ratio:4 / 3 !important;
-  }
+.grain-bin__icon{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
 }
-
-@media (max-width:760px){
-  .games-hero-v31{
-    aspect-ratio:4 / 3 !important;
-  }
+.grain-bin__icon .grain-soy-icon{
+  width:1.55em !important;
+  height:1.55em !important;
+}
+.grain-item__icon .grain-soy-icon{
+  width:1.28em !important;
+  height:1.28em !important;
 }

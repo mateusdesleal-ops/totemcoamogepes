@@ -1,0 +1,17 @@
+COAMO TOTEM — V54
+
+CORREÇÕES DESTA VERSÃO
+1. Os jogos agora navegam diretamente para seus HTMLs, sem fallback para o modo apresentação.
+2. O service worker não intercepta mais navegações nem redireciona falhas para index.html.
+3. Todos os HTMLs dos jogos estão na RAIZ do pacote.
+4. Foi incluído também o alias "área-do-jogo.html" por compatibilidade.
+5. A soja do Desafio da Classificação agora é um SVG INLINE de vagem de soja com 3 grãos.
+   Portanto, NÃO depende mais de assets/games/v53/soja.svg.
+6. app.v42.js e app.v48.js usam a mesma soja inline na esteira.
+7. O pacote ZIP não possui pasta externa: ao abrir o ZIP, index.html e jogos.html já aparecem na raiz.
+
+IMPORTANTE PARA PUBLICAÇÃO
+- Substitua os arquivos existentes.
+- Envie também TODOS os arquivos jogo-*.html da raiz.
+- Como a soja agora é inline, não existe mais arquivo externo de soja para esquecer de enviar.
+- Depois do deploy, feche o app do totem e abra novamente.

@@ -7,10 +7,11 @@
   syncTotemViewportMode();
   window.addEventListener("resize", syncTotemViewportMode, { passive:true });
 
-  document.documentElement.dataset.totemBuild = "v51-estagio-games";
+  document.documentElement.dataset.totemBuild = "v54-games-direct";
 
   const STORAGE_KEY = "coamoTotemSettingsV3";
-  const BUILD_VERSION = "v51-estagio-games";
+  const BUILD_VERSION = "v54-games-direct";
+  const GAME_ACCESS_MIGRATION_KEY = "coamoGamesAccessV54";
   const DEFAULT_SETTINGS = {
     slideSeconds: 9,
     inactivitySeconds: 60,
@@ -40,6 +41,21 @@
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
       const loaded = { ...DEFAULT_SETTINGS, ...saved, showInternshipLogo: true };
+
+      // V53: corrige totens que ficaram com jogos antigos desativados no localStorage.
+      // A migração roda somente uma vez neste equipamento; depois o painel volta a
+      // controlar normalmente as opções.
+      try {
+        if (localStorage.getItem(GAME_ACCESS_MIGRATION_KEY) !== BUILD_VERSION) {
+          loaded.gamesEnabled = true;
+          loaded.gameProfileEnabled = true;
+          loaded.gameMemoryEnabled = true;
+          loaded.gameChainEnabled = true;
+          loaded.gameGrainEnabled = true;
+          localStorage.setItem(GAME_ACCESS_MIGRATION_KEY, BUILD_VERSION);
+        }
+      } catch (_) {}
+
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(loaded)); } catch (_) {}
       return loaded;
     } catch (_) {
@@ -2016,7 +2032,7 @@
     if (!intro || !game || !result || !startBtn || !conveyor) return null;
 
     const TYPES = {
-      soja: { icon: "🫘", label: "Soja" },
+      soja: { icon: "<svg class=\"grain-soy-icon\" viewBox=\"0 0 96 96\" aria-hidden=\"true\" focusable=\"false\"><defs><linearGradient id=\"soyPod\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#8bc34a\"/><stop offset=\"1\" stop-color=\"#4f8f36\"/></linearGradient><radialGradient id=\"soyBean\" cx=\"35%\" cy=\"30%\" r=\"70%\"><stop offset=\"0\" stop-color=\"#f0e694\"/><stop offset=\"1\" stop-color=\"#c9c55f\"/></radialGradient></defs><path d=\"M18 66C29 77 54 82 72 66c14-13 13-34 3-45-3-3-8-3-11 0-5 5-10 8-17 10-10 3-21 6-28 14-7 8-7 15-1 21Z\" fill=\"url(#soyPod)\" stroke=\"#285d38\" stroke-width=\"4\" stroke-linejoin=\"round\"/><path d=\"M22 64c13 5 31 4 44-5 9-6 14-16 13-27\" fill=\"none\" stroke=\"#3c743e\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".75\"/><ellipse cx=\"35\" cy=\"57\" rx=\"10\" ry=\"9\" fill=\"url(#soyBean)\" stroke=\"#557b3e\" stroke-width=\"2\"/><ellipse cx=\"51\" cy=\"49\" rx=\"10\" ry=\"9\" fill=\"url(#soyBean)\" stroke=\"#557b3e\" stroke-width=\"2\"/><ellipse cx=\"65\" cy=\"39\" rx=\"9\" ry=\"8\" fill=\"url(#soyBean)\" stroke=\"#557b3e\" stroke-width=\"2\"/><path d=\"M72 22c4-6 8-9 14-11\" fill=\"none\" stroke=\"#285d38\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M83 12c-7 0-12 2-15 7 6 1 11 0 15-7Z\" fill=\"#6cab42\" stroke=\"#285d38\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>", label: "Soja" },
       milho: { icon: "🌽", label: "Milho" },
       trigo: { icon: "🌾", label: "Trigo" },
       impureza: { icon: "🪨", label: "Impureza" },
