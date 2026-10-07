@@ -671,7 +671,8 @@
       pill: "Programa de Estágio",
       title: "111 oportunidades para começar uma trajetória na Coamo.",
       sub: "O Programa de Estágio conecta aprendizado acadêmico, experiência prática e desenvolvimento profissional, criando oportunidades para estudantes de diferentes áreas construírem sua trajetória na Coamo.",
-      brand: "assets/logo_programa_estagios_v11.png",
+      brand: "assets/logo_programa_estagios_v12.png",
+      brandFallbackImage: "assets/logo_programa_estagios_v11.png",
       brandSetting: "showInternshipLogo",
       brandFallback: "Programa de Estágio",
       metric: { value: "111", label: "vagas de estágio" },
@@ -684,7 +685,8 @@
       pill: "Programa de Estágio",
       title: "Formações que encontram espaço na Coamo.",
       sub: "Há oportunidades para estudantes de Engenharias, Agronomia, Medicina Veterinária, Fisioterapia, Fonoaudiologia, Enfermagem, Psicologia, Tecnologia, Alimentos, Bioprocessos e Biotecnologia, entre outras formações ligadas ao desenvolvimento das operações e dos negócios da Coamo.",
-      brand: "assets/logo_programa_estagios_v11.png",
+      brand: "assets/logo_programa_estagios_v12.png",
+      brandFallbackImage: "assets/logo_programa_estagios_v11.png",
       brandSetting: "showInternshipLogo",
       brandFallback: "Programa de Estágio",
       tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
@@ -809,12 +811,43 @@
       brandStage.hidden = false;
       brandStage.style.display = "flex";
       if (showBrand) {
-        brandImage.style.display = "block";
-        brandImage.src = s.brand;
+        // Limpa o estado do slide anterior antes de trocar a marca.
+        // Isso evita que um erro de carregamento deixe o texto/alt da ARCAM
+        // visível no slide do Programa de Estágio.
+        brandImage.onerror = null;
+        brandImage.removeAttribute("src");
         brandImage.alt = s.pill || "Marca";
+        brandImage.style.display = "block";
+
         brandFallback.hidden = true;
         brandFallback.style.display = "none";
         brandFallback.textContent = "";
+
+        let triedFallbackImage = false;
+        brandImage.onerror = () => {
+          if (!triedFallbackImage && s.brandFallbackImage) {
+            triedFallbackImage = true;
+            brandImage.src = s.brandFallbackImage;
+            return;
+          }
+
+          // Última proteção: nunca deixa ícone de imagem quebrada na tela.
+          brandImage.onerror = null;
+          brandImage.style.display = "none";
+          brandImage.removeAttribute("src");
+          brandFallback.hidden = false;
+          brandFallback.style.display = "flex";
+          brandFallback.textContent = s.brandFallback || s.pill || "Coamo";
+        };
+
+        brandImage.onload = () => {
+          brandImage.onerror = null;
+          brandFallback.hidden = true;
+          brandFallback.style.display = "none";
+          brandFallback.textContent = "";
+        };
+
+        brandImage.src = s.brand;
       } else {
         brandImage.style.display = "none";
         brandImage.removeAttribute("src");
