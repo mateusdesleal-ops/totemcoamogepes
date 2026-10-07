@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Sorteio • Coamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.v42.css?v=42.0">
+
+  <!-- PWA / modo totem fullscreen V53 -->
+  <link rel="manifest" href="manifest.webmanifest?v=53.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="application-name" content="Coamo Totem">
+  <meta name="apple-mobile-web-app-title" content="Coamo Totem">
+  <link rel="apple-touch-icon" href="assets/pwa/icon-192.png?v=52.0">
+  <script src="pwa.v53.js?v=53.0" defer></script>
+</head>
+<body data-page="raffle">
+  <div class="kiosk-shell">
+    <header class="topbar">
+      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início"><img src="assets/logo_verde.png" alt="Coamo"></a>
+      <div class="topbar__context"><span class="topbar__eyebrow">GEPES</span><span class="topbar__label">Recrutamento e Seleção</span></div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__item" href="index.html?interactive=1">Início</a>
+        <a class="topnav__item" href="vagas.html">Vagas</a>
+        <a class="topnav__item" href="apresentacao.html">Conheça a Coamo</a>
+        <a class="topnav__item" data-feature="games" href="jogos.html">Coamo Games</a>
+        <a class="topnav__item is-active" data-feature="raffle" href="sorteio.html">Sorteio</a>
+        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
+      </nav>
+    </header>
+
+    <main class="page-main raffle-main">
+      <section class="raffle-heading">
+        <div><span class="section-kicker">#SomosCoamo</span><h1>Participe do sorteio.</h1><p>Assista ao vídeo e faça seu cadastro no próprio totem.</p></div>
+      </section>
+
+      <section class="raffle-layout">
+        <div class="raffle-video-card">
+          <div class="raffle-video-card__header"><span>Vídeo</span><strong>Conheça e participe</strong></div>
+          <div class="raffle-video-frame">
+            <iframe src="https://www.youtube.com/embed/FpTDQahbx8c?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1" title="Vídeo do sorteio #SomosCoamo" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="raffle-form-card">
+          <div class="raffle-form-card__head"><span class="section-kicker">Cadastro</span><h2>Preencha seus dados</h2><p>Os campos marcados são obrigatórios.</p></div>
+          <form id="sorteioForm" action="https://docs.google.com/forms/d/e/1FAIpQLSd1vR1Si2jTsZUZHwwxCnNH9ShEWjVRZ4Xr2HqXgxpiCEycOQ/formResponse" method="POST" target="hidden_iframe">
+            <label class="form-field" for="sorteioNome"><span>Nome completo *</span><input id="sorteioNome" name="entry.959601241" type="text" autocomplete="name" required placeholder="Digite seu nome"></label>
+            <label class="form-field" for="sorteioTel"><span>Telefone *</span><input id="sorteioTel" name="entry.1864990246" type="tel" inputmode="tel" autocomplete="tel" required placeholder="(DDD) 99999-9999"></label>
+            <button class="btn btn--primary btn--submit" type="submit">Quero participar</button>
+            <div class="form-success" id="sorteioSuccess" role="status" aria-live="polite">Cadastro enviado com sucesso. Boa sorte! ★</div>
+            <p class="form-note">Ao enviar, os dados informados serão registrados no formulário oficial do sorteio.</p>
+          </form>
+          <iframe name="hidden_iframe" title="Envio do formulário" class="hidden-frame"></iframe>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.v42.js?v=53.0"></script>
+</body>
+</html>

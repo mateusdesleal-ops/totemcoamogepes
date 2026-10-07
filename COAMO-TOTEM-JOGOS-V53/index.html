@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Coamo • Totem GEPES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.v42.css?v=42.0">
+
+  <!-- PWA / modo totem fullscreen V53 -->
+  <link rel="manifest" href="manifest.webmanifest?v=53.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="application-name" content="Coamo Totem">
+  <meta name="apple-mobile-web-app-title" content="Coamo Totem">
+  <link rel="apple-touch-icon" href="assets/pwa/icon-192.png?v=52.0">
+  <script src="pwa.v53.js?v=53.0" defer></script>
+</head>
+<body data-page="home">
+  <div class="kiosk-shell">
+    <header class="topbar">
+      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início">
+        <img src="assets/logo_verde.png" alt="Coamo">
+      </a>
+      <div class="topbar__context">
+        <span class="topbar__eyebrow">GEPES</span>
+        <span class="topbar__label">Recrutamento e Seleção</span>
+      </div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__item is-active" href="index.html?interactive=1">Início</a>
+        <a class="topnav__item" href="vagas.html">Vagas</a>
+        <a class="topnav__item" href="apresentacao.html">Conheça a Coamo</a>
+        <a class="topnav__item" data-feature="games" href="jogos.html">Coamo Games</a>
+        <a class="topnav__item" data-feature="raffle" href="sorteio.html">Sorteio</a>
+        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
+      </nav>
+    </header>
+
+    <main class="home-main">
+      <section class="home-hero" aria-label="Boas-vindas">
+        <img class="home-hero__image" src="assets/home_cover_v38.png" alt="Sede administrativa da Coamo">
+        <div class="home-hero__overlay"></div>
+        <div class="home-hero__content">
+          <span class="eyebrow-chip">Carreiras Coamo</span>
+          <h1>Encontre onde a sua experiência pode nos levar.</h1>
+          <p>Do campo à indústria, da tecnologia à gestão: conheça as áreas e oportunidades que mantêm uma grande operação conectada.</p>
+          <div class="hero-actions">
+            <a class="btn btn--light" href="vagas.html">Ver oportunidades</a>
+            <a class="btn btn--glass" href="apresentacao.html">Conheça a Coamo</a>
+          </div>
+        </div>
+      </section>
+
+      
+    </main>
+  </div>
+
+  <script src="app.v42.js?v=53.0"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+COAMO TOTEM — V53
+
+Correções desta versão:
+1. Todos os jogos passam a ser pré-carregados pelo PWA no totem.
+2. Falha de rede/404 em um jogo não manda mais para a tela de apresentação.
+3. Migração automática habilita uma vez os jogos que possam ter ficado desativados no localStorage do totem.
+4. Navegação dos cards de jogos é protegida para WebViews/totens Android.
+5. O ícone de SOJA no Desafio da Classificação foi trocado: não usa mais o emoji de feijão. Agora usa uma vagem de soja própria em SVG, inclusive nos itens que passam pela esteira.
+6. Cache do PWA atualizado para V53.
+
+IMPORTANTE:
+- Suba TODO o conteúdo deste ZIP, mantendo as pastas.
+- Depois do deploy, feche o app Coamo Totem e abra novamente.
+- Se ainda estiver com o PWA antigo instalado, abra uma vez com internet; a V53 atualiza o service worker automaticamente.
