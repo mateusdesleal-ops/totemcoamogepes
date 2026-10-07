@@ -1,836 +1,94 @@
 <!doctype html>
-
 <html lang="pt-BR">
-
 <head>
-
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
-
-  <meta
-    name="theme-color"
-    content="#0b4d2b"
-  >
-
-  <title>
-    Coamo • Desafio da Classificação
-  </title>
-
-
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
-
-
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  >
-
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  >
-
-
-  <link
-    rel="stylesheet"
-    href="styles.v48.css?v=48.1"
-  >
-
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Coamo • Desafio da Classificação</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.v48.css?v=48.0">
 </head>
-
-
 <body data-page="game-grain">
-
-
   <div class="kiosk-shell">
-
-
-    <!-- =====================================================
-         CABEÇALHO
-         ===================================================== -->
-
     <header class="topbar">
-
-
-      <a
-        class="topbar__brand js-admin-trigger"
-        href="index.html?interactive=1"
-        aria-label="Coamo - início"
-      >
-
-        <img
-          src="assets/logo_verde.png"
-          alt="Coamo"
-        >
-
-      </a>
-
-
-      <div class="topbar__context">
-
-        <span class="topbar__eyebrow">
-          GEPES
-        </span>
-
-        <span class="topbar__label">
-          Desafio da Classificação
-        </span>
-
-      </div>
-
-
-      <nav
-        class="topnav"
-        aria-label="Navegação principal"
-      >
-
-
-        <a
-          class="topnav__item"
-          href="index.html?interactive=1"
-        >
-          Início
-        </a>
-
-
-        <a
-          class="topnav__item"
-          href="vagas.html"
-        >
-          Vagas
-        </a>
-
-
-        <a
-          class="topnav__item"
-          href="apresentacao.html"
-        >
-          Conheça a Coamo
-        </a>
-
-
-        <a
-          class="topnav__item is-active"
-          data-feature="games"
-          href="jogos.html"
-        >
-          Coamo Games
-        </a>
-
-
-        <a
-          class="topnav__item"
-          data-feature="raffle"
-          href="sorteio.html"
-        >
-          Sorteio
-        </a>
-
-
-        <button
-          class="topnav__item topnav__item--presentation js-start-presentation"
-          type="button"
-        >
-          ▶ Apresentação
-        </button>
-
-
+      <a class="topbar__brand js-admin-trigger" href="index.html?interactive=1" aria-label="Coamo - início"><img src="assets/logo_verde.png" alt="Coamo"></a>
+      <div class="topbar__context"><span class="topbar__eyebrow">GEPES</span><span class="topbar__label">Desafio da Classificação</span></div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__item" href="index.html?interactive=1">Início</a>
+        <a class="topnav__item" href="vagas.html">Vagas</a>
+        <a class="topnav__item" href="apresentacao.html">Conheça a Coamo</a>
+        <a class="topnav__item is-active" data-feature="games" href="jogos.html">Coamo Games</a>
+        <a class="topnav__item" data-feature="raffle" href="sorteio.html">Sorteio</a>
+        <button class="topnav__item topnav__item--presentation js-start-presentation" type="button">▶ Apresentação</button>
       </nav>
-
-
     </header>
 
-
-    <!-- =====================================================
-         JOGO
-         ===================================================== -->
-
     <main class="grain-page">
+      <div class="game-single-toolbar"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>ARCADE · 75 SEGUNDOS</span></div>
 
-
-      <!-- ===================================================
-           VOLTAR
-           =================================================== -->
-
-      <div class="game-single-toolbar">
-
-
-        <a
-          class="game-back-link"
-          href="jogos.html"
-        >
-          ← Voltar aos jogos
-        </a>
-
-
-        <span>
-          ARCADE · 75 SEGUNDOS
-        </span>
-
-
-      </div>
-
-
-      <!-- ===================================================
-           APRESENTAÇÃO DO JOGO
-           =================================================== -->
-
-      <section
-        class="grain-intro grain-intro--v48-clean"
-        id="grainIntro"
-      >
-
-
-        <!--
-          SOMENTE O NOVO BANNER.
-
-          O CSS V48 remove qualquer background,
-          pseudo-elemento ou imagem da versão anterior.
-        -->
-
-        <div
-          class="grain-intro__visual grain-intro__visual--poster"
-        >
-
-          <img
-            src="assets/games/v48/classification_banner.png"
-            alt="Desafio da Classificação"
-            loading="eager"
-            decoding="async"
-          >
-
+      <section class="grain-intro" id="grainIntro">
+        <div class="grain-intro__visual grain-intro__visual--poster" aria-hidden="true">
+          <img src="assets/games/v48/classification_banner.png" alt="">
         </div>
-
-
-        <!-- =================================================
-             TEXTO
-             ================================================= -->
-
         <div class="grain-intro__copy">
-
-
-          <span class="grain-kicker">
-            COAMO GAMES · DESAFIO RÁPIDO
-          </span>
-
-
-          <h1>
-
-            Desafio da
-
-            <br>
-
-            <em>
-              Classificação
-            </em>
-
-          </h1>
-
-
-          <p>
-
-            Grãos e impurezas passam pela esteira
-            cada vez mais rápido.
-
-            Arraste cada item para o destino correto,
-            faça combos e evite perdas.
-
-          </p>
-
-
+          <span class="grain-kicker">COAMO GAMES · DESAFIO RÁPIDO</span>
+          <h1>Desafio da<br><em>Classificação</em></h1>
+          <p>Grãos e impurezas passam pela esteira cada vez mais rápido. Arraste cada item para o destino correto, faça combos e evite perdas.</p>
           <div class="grain-intro__rules">
-
-
-            <span>
-
-              <b>
-                75 s
-              </b>
-
-              <small>
-                por partida
-              </small>
-
-            </span>
-
-
-            <span>
-
-              <b>
-                4
-              </b>
-
-              <small>
-                categorias
-              </small>
-
-            </span>
-
-
-            <span>
-
-              <b>
-                5
-              </b>
-
-              <small>
-                vidas
-              </small>
-
-            </span>
-
-
-            <span>
-
-              <b>
-                0
-              </b>
-
-              <small>
-                progresso salvo
-              </small>
-
-            </span>
-
-
+            <span><b>75 s</b><small>por partida</small></span><span><b>4</b><small>categorias</small></span><span><b>5</b><small>vidas</small></span><span><b>0</b><small>progresso salvo</small></span>
           </div>
-
-
-          <button
-            class="btn btn--primary grain-start"
-            id="grainStart"
-            type="button"
-          >
-            ▶ Iniciar classificação
-          </button>
-
-
+          <button class="btn btn--primary grain-start" id="grainStart" type="button">▶ Iniciar classificação</button>
         </div>
-
-
-        <!-- =================================================
-             TONINHO
-             cabelo branco + óculos
-             ================================================= -->
-
-        <figure
-          class="grain-mascot grain-mascot--toninho"
-        >
-
-
-          <div class="grain-bubble">
-
-            Olho na qualidade!
-
-            Classifique cada item
-            no destino certo.
-
-          </div>
-
-
-          <img
-            src="assets/mascote_toninho_pose2.png"
-            alt="Toninho, mascote de cabelo branco e óculos"
-          >
-
-
-        </figure>
-
-
-        <!-- =================================================
-             AROLDINHO
-             cabelo castanho
-             ================================================= -->
-
-        <figure
-          class="grain-mascot grain-mascot--aroldinho"
-        >
-
-
-          <div class="grain-bubble">
-
-            Faça sequência de acertos
-            para aumentar o combo!
-
-          </div>
-
-
-          <img
-            src="assets/mascote_aroldinho.png"
-            alt="Aroldinho, mascote de cabelo castanho"
-          >
-
-
-        </figure>
-
-
+        <figure class="grain-mascot grain-mascot--toninho"><div class="grain-bubble">Olho na qualidade! Classifique cada item no destino certo.</div><img src="assets/mascote_toninho_pose2.png" alt="Toninho, mascote de cabelo branco e óculos"></figure>
+        <figure class="grain-mascot grain-mascot--aroldinho"><div class="grain-bubble">Faça sequência de acertos para aumentar o combo!</div><img src="assets/mascote_aroldinho.png" alt="Aroldinho, mascote de cabelo castanho"></figure>
       </section>
 
-
-      <!-- ===================================================
-           PARTIDA
-           =================================================== -->
-
-      <section
-        class="grain-game"
-        id="grainGame"
-        hidden
-        aria-live="polite"
-      >
-
-
-        <!-- =================================================
-             HUD
-             ================================================= -->
-
+      <section class="grain-game" id="grainGame" hidden aria-live="polite">
         <div class="grain-hud">
-
-
-          <div>
-
-            <small>
-              TEMPO
-            </small>
-
-            <strong id="grainTimer">
-              01:15
-            </strong>
-
-          </div>
-
-
-          <div>
-
-            <small>
-              PONTOS
-            </small>
-
-            <strong id="grainScore">
-              0
-            </strong>
-
-          </div>
-
-
-          <div>
-
-            <small>
-              COMBO
-            </small>
-
-            <strong id="grainCombo">
-              x0
-            </strong>
-
-          </div>
-
-
-          <div>
-
-            <small>
-              VIDAS
-            </small>
-
-            <strong id="grainLives">
-              ❤❤❤❤❤
-            </strong>
-
-          </div>
-
-
+          <div><small>TEMPO</small><strong id="grainTimer">01:15</strong></div>
+          <div><small>PONTOS</small><strong id="grainScore">0</strong></div>
+          <div><small>COMBO</small><strong id="grainCombo">x0</strong></div>
+          <div><small>VIDAS</small><strong id="grainLives">❤❤❤❤❤</strong></div>
         </div>
-
-
-        <!-- =================================================
-             ESTEIRA
-             ================================================= -->
 
         <section class="grain-stage">
-
-
-          <div class="grain-stage__head">
-
-
-            <span id="grainStageMessage">
-              Arraste os itens da esteira para o destino correto.
-            </span>
-
-
-            <b id="grainSpeedLabel">
-              Ritmo 1
-            </b>
-
-
+          <div class="grain-stage__head"><span id="grainStageMessage">Arraste os itens da esteira para o destino correto.</span><b id="grainSpeedLabel">Ritmo 1</b></div>
+          <div class="grain-conveyor" id="grainConveyor" aria-label="Esteira de classificação">
+            <div class="grain-conveyor__rollers" aria-hidden="true"></div>
+            <div class="grain-conveyor__end" aria-hidden="true">⚠</div>
           </div>
-
-
-          <div
-            class="grain-conveyor"
-            id="grainConveyor"
-            aria-label="Esteira de classificação"
-          >
-
-
-            <div
-              class="grain-conveyor__rollers"
-              aria-hidden="true"
-            >
-            </div>
-
-
-            <div
-              class="grain-conveyor__end"
-              aria-hidden="true"
-            >
-              ⚠
-            </div>
-
-
+          <div class="grain-mascot-strip" aria-hidden="true">
+            <figure><img src="assets/mascote_toninho.png" alt=""><figcaption id="grainToninhoSpeech">Qualidade começa na classificação.</figcaption></figure>
+            <figure><figcaption id="grainAroldinhoSpeech">Vamos buscar um combo alto!</figcaption><img src="assets/mascote_aroldinho_pose2.png" alt=""></figure>
           </div>
-
-
-          <!-- =================================================
-               MASCOTES DURANTE O JOGO
-               ================================================= -->
-
-          <div
-            class="grain-mascot-strip"
-            aria-hidden="true"
-          >
-
-
-            <figure>
-
-
-              <img
-                src="assets/mascote_toninho.png"
-                alt=""
-              >
-
-
-              <figcaption id="grainToninhoSpeech">
-                Qualidade começa na classificação.
-              </figcaption>
-
-
-            </figure>
-
-
-            <figure>
-
-
-              <figcaption id="grainAroldinhoSpeech">
-                Vamos buscar um combo alto!
-              </figcaption>
-
-
-              <img
-                src="assets/mascote_aroldinho_pose2.png"
-                alt=""
-              >
-
-
-            </figure>
-
-
-          </div>
-
-
         </section>
 
-
-        <!-- =================================================
-             DESTINOS
-             ================================================= -->
-
-        <section
-          class="grain-bins"
-          id="grainBins"
-          aria-label="Destinos de classificação"
-        >
-
-
-          <!-- SOJA -->
-
-          <button
-            class="grain-bin grain-bin--soja"
-            type="button"
-            data-bin="soja"
-          >
-
-            <span>
-              🫘
-            </span>
-
-            <strong>
-              SOJA
-            </strong>
-
-            <small>
-              grãos de soja
-            </small>
-
-          </button>
-
-
-          <!-- MILHO -->
-
-          <button
-            class="grain-bin grain-bin--milho"
-            type="button"
-            data-bin="milho"
-          >
-
-            <span>
-              🌽
-            </span>
-
-            <strong>
-              MILHO
-            </strong>
-
-            <small>
-              grãos de milho
-            </small>
-
-          </button>
-
-
-          <!-- TRIGO -->
-
-          <button
-            class="grain-bin grain-bin--trigo"
-            type="button"
-            data-bin="trigo"
-          >
-
-            <span>
-              🌾
-            </span>
-
-            <strong>
-              TRIGO
-            </strong>
-
-            <small>
-              grãos de trigo
-            </small>
-
-          </button>
-
-
-          <!-- IMPUREZAS -->
-
-          <button
-            class="grain-bin grain-bin--impureza"
-            type="button"
-            data-bin="impureza"
-          >
-
-            <span>
-              🪨
-            </span>
-
-            <strong>
-              IMPUREZAS
-            </strong>
-
-            <small>
-              folhas e materiais
-            </small>
-
-          </button>
-
-
+        <section class="grain-bins" id="grainBins" aria-label="Destinos de classificação">
+          <button class="grain-bin grain-bin--soja" type="button" data-bin="soja"><span>🫘</span><strong>SOJA</strong><small>grãos de soja</small></button>
+          <button class="grain-bin grain-bin--milho" type="button" data-bin="milho"><span>🌽</span><strong>MILHO</strong><small>grãos de milho</small></button>
+          <button class="grain-bin grain-bin--trigo" type="button" data-bin="trigo"><span>🌾</span><strong>TRIGO</strong><small>grãos de trigo</small></button>
+          <button class="grain-bin grain-bin--impureza" type="button" data-bin="impureza"><span>🪨</span><strong>IMPUREZAS</strong><small>folhas e materiais</small></button>
         </section>
-
-
-        <p class="grain-help">
-
-          Toque e arraste o item até a caixa correta.
-
-          Se preferir, toque no item e depois na caixa.
-
-        </p>
-
-
+        <p class="grain-help">Toque e arraste o item até a caixa correta. Se preferir, toque no item e depois na caixa.</p>
       </section>
 
-
-      <!-- ===================================================
-           RESULTADO
-           =================================================== -->
-
-      <section
-        class="grain-result"
-        id="grainResult"
-        hidden
-        aria-live="polite"
-      >
-
-
+      <section class="grain-result" id="grainResult" hidden aria-live="polite">
         <div class="grain-result__panel">
-
-
-          <div
-            class="grain-result__badge"
-            id="grainResultBadge"
-          >
-            🏆
-          </div>
-
-
-          <span class="grain-kicker">
-            CLASSIFICAÇÃO CONCLUÍDA
-          </span>
-
-
-          <h2 id="grainResultTitle">
-            Classificação Ouro
-          </h2>
-
-
-          <p id="grainResultText">
-            Ótimo ritmo e precisão.
-          </p>
-
-
-          <div class="grain-result__score">
-
-
-            <strong id="grainFinalScore">
-              0
-            </strong>
-
-
-            <span>
-              pontos
-            </span>
-
-
-          </div>
-
-
-          <div class="grain-result__stats">
-
-
-            <span>
-
-              <b id="grainAccuracy">
-                0%
-              </b>
-
-              <small>
-                precisão
-              </small>
-
-            </span>
-
-
-            <span>
-
-              <b id="grainBestCombo">
-                x0
-              </b>
-
-              <small>
-                melhor combo
-              </small>
-
-            </span>
-
-
-            <span>
-
-              <b id="grainSorted">
-                0
-              </b>
-
-              <small>
-                itens classificados
-              </small>
-
-            </span>
-
-
-          </div>
-
-
-          <div class="grain-result__actions">
-
-
-            <button
-              class="btn btn--primary"
-              id="grainPlayAgain"
-              type="button"
-            >
-              ↻ Jogar novamente
-            </button>
-
-
-            <a
-              class="btn btn--soft"
-              href="jogos.html"
-            >
-              Voltar aos jogos
-            </a>
-
-
-          </div>
-
-
-          <small id="grainResetCountdown">
-            A tela será reiniciada para o próximo visitante.
-          </small>
-
-
+          <div class="grain-result__badge" id="grainResultBadge">🏆</div>
+          <span class="grain-kicker">CLASSIFICAÇÃO CONCLUÍDA</span>
+          <h2 id="grainResultTitle">Classificação Ouro</h2>
+          <p id="grainResultText">Ótimo ritmo e precisão.</p>
+          <div class="grain-result__score"><strong id="grainFinalScore">0</strong><span>pontos</span></div>
+          <div class="grain-result__stats"><span><b id="grainAccuracy">0%</b><small>precisão</small></span><span><b id="grainBestCombo">x0</b><small>melhor combo</small></span><span><b id="grainSorted">0</b><small>itens classificados</small></span></div>
+          <div class="grain-result__actions"><button class="btn btn--primary" id="grainPlayAgain" type="button">↻ Jogar novamente</button><a class="btn btn--soft" href="jogos.html">Voltar aos jogos</a></div>
+          <small id="grainResetCountdown">A tela será reiniciada para o próximo visitante.</small>
         </div>
-
-
-        <!-- =================================================
-             MASCOTES DO RESULTADO
-             ================================================= -->
-
-        <figure class="grain-result__mascot">
-
-
-          <img
-            src="assets/mascote_toninho_pose2.png"
-            alt="Toninho"
-          >
-
-
-          <img
-            src="assets/mascote_aroldinho_pose2.png"
-            alt="Aroldinho"
-          >
-
-
-        </figure>
-
-
+        <figure class="grain-result__mascot"><img src="assets/mascote_toninho_pose2.png" alt="Toninho"><img src="assets/mascote_aroldinho_pose2.png" alt="Aroldinho"></figure>
       </section>
-
-
     </main>
-
-
   </div>
-
-
-  <script src="app.v48.js?v=48.0"></script>
-
-
+  <script src="app.v48.js?v=51.0"></script>
 </body>
-
 </html>

@@ -7,17 +7,17 @@
   syncTotemViewportMode();
   window.addEventListener("resize", syncTotemViewportMode, { passive:true });
 
-  document.documentElement.dataset.totemBuild = "v48";
+  document.documentElement.dataset.totemBuild = "v51-estagio-games";
 
   const STORAGE_KEY = "coamoTotemSettingsV3";
-  const BUILD_VERSION = "v48";
+  const BUILD_VERSION = "v51-estagio-games";
   const DEFAULT_SETTINGS = {
     slideSeconds: 9,
     inactivitySeconds: 60,
     raffleEnabled: true,
     autoPresentation: true,
     showInternship: true,
-    showInternshipLogo: false,
+    showInternshipLogo: true,
     showUnicoamo: true,
     showQualityOfLife: true,
     showCoamoSaude: true,
@@ -39,16 +39,18 @@
   function loadSettings() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-      return { ...DEFAULT_SETTINGS, ...saved };
+      const loaded = { ...DEFAULT_SETTINGS, ...saved, showInternshipLogo: true };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(loaded)); } catch (_) {}
+      return loaded;
     } catch (_) {
-      return { ...DEFAULT_SETTINGS };
+      return { ...DEFAULT_SETTINGS, showInternshipLogo: true };
     }
   }
 
   let settings = loadSettings();
 
   function saveSettings(next) {
-    settings = { ...settings, ...next };
+    settings = { ...settings, ...next, showInternshipLogo: true };
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(settings)); } catch (_) {}
     applyFeatureFlags();
     resetIdleTimers();
@@ -673,7 +675,6 @@
       sub: "O Programa de Estágio conecta aprendizado acadêmico, experiência prática e desenvolvimento profissional, criando oportunidades para estudantes de diferentes áreas construírem sua trajetória na Coamo.",
       brand: "assets/logo_programa_estagios_v12.png",
       brandFallbackImage: "assets/logo_programa_estagios_v11.png",
-      brandSetting: "showInternshipLogo",
       brandFallback: "Programa de Estágio",
       metric: { value: "111", label: "vagas de estágio" },
       tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
@@ -687,7 +688,6 @@
       sub: "Há oportunidades para estudantes de Engenharias, Agronomia, Medicina Veterinária, Fisioterapia, Fonoaudiologia, Enfermagem, Psicologia, Tecnologia, Alimentos, Bioprocessos e Biotecnologia, entre outras formações ligadas ao desenvolvimento das operações e dos negócios da Coamo.",
       brand: "assets/logo_programa_estagios_v12.png",
       brandFallbackImage: "assets/logo_programa_estagios_v11.png",
-      brandSetting: "showInternshipLogo",
       brandFallback: "Programa de Estágio",
       tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
     },
@@ -806,32 +806,31 @@
     const brandStage = $("#presentationBrandStage");
     const brandImage = $("#presentationBrandImage");
     const brandFallback = $("#presentationBrandFallback");
-    const showBrand = !!s.brand && (!s.brandSetting || settings[s.brandSetting] === true || !s.brandSetting);
+    const showBrand = !!s.brand;
     if (brandStage && brandImage && brandFallback && institutional) {
       brandStage.hidden = false;
       brandStage.style.display = "flex";
+
+      // V51: sempre limpa o estado do slide anterior antes de trocar a marca.
+      brandImage.onload = null;
+      brandImage.onerror = null;
+      brandImage.style.display = "none";
+      brandImage.removeAttribute("src");
+      brandFallback.hidden = true;
+      brandFallback.style.display = "none";
+      brandFallback.textContent = "";
+
       if (showBrand) {
-        // Limpa o estado do slide anterior antes de trocar a marca.
-        // Isso evita que um erro de carregamento deixe o texto/alt da ARCAM
-        // visível no slide do Programa de Estágio.
-        brandImage.onerror = null;
-        brandImage.removeAttribute("src");
+        let triedFallbackImage = false;
         brandImage.alt = s.pill || "Marca";
         brandImage.style.display = "block";
 
-        brandFallback.hidden = true;
-        brandFallback.style.display = "none";
-        brandFallback.textContent = "";
-
-        let triedFallbackImage = false;
         brandImage.onerror = () => {
           if (!triedFallbackImage && s.brandFallbackImage) {
             triedFallbackImage = true;
-            brandImage.src = s.brandFallbackImage;
+            brandImage.src = s.brandFallbackImage + "?v=51.0";
             return;
           }
-
-          // Última proteção: nunca deixa ícone de imagem quebrada na tela.
           brandImage.onerror = null;
           brandImage.style.display = "none";
           brandImage.removeAttribute("src");
@@ -841,16 +840,13 @@
         };
 
         brandImage.onload = () => {
-          brandImage.onerror = null;
           brandFallback.hidden = true;
           brandFallback.style.display = "none";
           brandFallback.textContent = "";
         };
 
-        brandImage.src = s.brand;
+        brandImage.src = s.brand + "?v=51.0";
       } else {
-        brandImage.style.display = "none";
-        brandImage.removeAttribute("src");
         brandFallback.hidden = false;
         brandFallback.style.display = "flex";
         brandFallback.textContent = s.brandFallback || s.pill || "Coamo";
@@ -858,6 +854,8 @@
     } else if (brandStage && brandImage && brandFallback) {
       brandStage.hidden = true;
       brandStage.style.display = "none";
+      brandImage.onload = null;
+      brandImage.onerror = null;
       brandImage.style.display = "none";
       brandImage.removeAttribute("src");
       brandFallback.hidden = true;
@@ -2563,7 +2561,7 @@
         autoPresentation: $("#adminAuto")?.value !== "0",
         gamesEnabled: $("#adminGames")?.value !== "0",
         showInternship: !!$("#adminShowInternship")?.checked,
-        showInternshipLogo: !!$("#adminShowInternshipLogo")?.checked,
+        showInternshipLogo: true,
         showUnicoamo: !!$("#adminShowUnicoamo")?.checked,
         showQualityOfLife: !!$("#adminShowQualityOfLife")?.checked,
         showCoamoSaude: !!$("#adminShowCoamoSaude")?.checked,
@@ -2604,7 +2602,7 @@
     $("#adminAuto").value = settings.autoPresentation ? "1" : "0";
     $("#adminGames").value = settings.gamesEnabled ? "1" : "0";
     $("#adminShowInternship").checked = settings.showInternship !== false;
-    $("#adminShowInternshipLogo").checked = settings.showInternshipLogo === true;
+    if ($("#adminShowInternshipLogo")) { $("#adminShowInternshipLogo").checked = true; $("#adminShowInternshipLogo").disabled = true; }
     $("#adminShowUnicoamo").checked = settings.showUnicoamo !== false;
     $("#adminShowQualityOfLife").checked = settings.showQualityOfLife !== false;
     $("#adminShowCoamoSaude").checked = settings.showCoamoSaude !== false;

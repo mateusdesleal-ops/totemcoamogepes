@@ -1,0 +1,18 @@
+COAMO — CORREÇÃO DEFINITIVA DO PROGRAMA DE ESTÁGIO — V51
+
+CAUSA ENCONTRADA:
+O ZIP V50 corrigia app.v48.js, porém a página principal do totem e o modo apresentação ainda carregavam app.v42.js.
+Por isso o computador podia mostrar a logo quando uma página mais nova estava carregando V48, enquanto o totem iniciado pela home continuava usando a regra antiga da V42, em que a logo do estágio podia ficar desativada.
+
+O QUE ESTA VERSÃO FAZ:
+- corrige app.v42.js (home/apresentação), que era o ponto faltante;
+- mantém a logo do estágio permanentemente ativa;
+- corrige app.v48.js para manter o mesmo comportamento nos jogos;
+- força cache-busting ?v=51.0 nos HTMLs incluídos;
+- limpa completamente a marca/texto do slide anterior;
+- tenta logo v12 e, se falhar, v11;
+- mantém fallback em texto apenas se ambas as imagens falharem.
+
+UPLOAD:
+Envie os arquivos mantendo a estrutura e substitua os existentes.
+Depois, feche e abra novamente o navegador do totem. Não é necessário alterar o painel administrativo.
