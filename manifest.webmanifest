@@ -1,10 +1,10 @@
 {
-  "id": "./?coamo-totem-v54",
+  "id": "./?coamo-totem-v55",
   "name": "Coamo GEPES Totem",
   "short_name": "Coamo Totem",
   "description": "Totem interativo de carreiras, vagas, programas e experiências da Coamo.",
   "lang": "pt-BR",
-  "start_url": "./index.html?interactive=1&source=pwa&v=54",
+  "start_url": "./index.html?interactive=1&source=pwa&v=55",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [

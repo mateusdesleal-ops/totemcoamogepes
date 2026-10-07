@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.v48.css?v=54.0">
+  <link rel="stylesheet" href="styles.v48.css?v=55.0">
 
   <!-- PWA / modo totem fullscreen V53 -->
   <link rel="manifest" href="manifest.webmanifest?v=53.0">
@@ -18,7 +18,7 @@
   <meta name="application-name" content="Coamo Totem">
   <meta name="apple-mobile-web-app-title" content="Coamo Totem">
   <link rel="apple-touch-icon" href="assets/pwa/icon-192.png?v=52.0">
-  <script src="pwa.v54.js?v=54.0" defer></script>
+  <script src="pwa.v55.js?v=55.0" defer></script>
 </head>
 <body data-page="game-silo">
   <div class="kiosk-shell">
@@ -61,6 +61,12 @@
           <figure class="silo-guide"><img src="assets/mascote_toninho_pose2.png" alt="Toninho"><figcaption>Cada silo recebe apenas um produto. Preste atenção e memorize os destinos!</figcaption></figure>
           <figure class="silo-guide"><figcaption>Mandou para o silo errado? Você perde uma vida. Use a pista e memorize!</figcaption><img src="assets/mascote_aroldinho.png" alt="Aroldinho"></figure>
         </div>
+      </section>
+      <section class="coamo-ranking-card" aria-label="Ranking do Silo em Equilíbrio">
+        <div class="coamo-ranking-card__head">
+          <div><span>RANKING DO EVENTO</span><h2 data-ranking-admin-trigger="silo">TOP 5 · Silo em Equilíbrio</h2></div><b aria-hidden="true">🏆</b>
+        </div>
+        <ol class="coamo-ranking-list" data-ranking-list="silo"></ol>
       </section>
 
       <section class="silo-game" id="siloGame" hidden aria-live="polite">
@@ -105,6 +111,11 @@
             <span><b id="siloLoads">0</b><small>cargas corretas</small></span>
             <span><b id="siloErrors">0</b><small>erros</small></span>
           </div>
+          <section class="coamo-ranking-card coamo-ranking-card--compact" aria-label="Ranking do Silo em Equilíbrio">
+            <div class="coamo-ranking-card__head"><div><span>RANKING DO EVENTO</span><h3 data-ranking-admin-trigger="silo">TOP 5 · Silo em Equilíbrio</h3></div><b aria-hidden="true">🏆</b></div>
+            <ol class="coamo-ranking-list" data-ranking-list="silo"></ol>
+          </section>
+
           <div class="silo-result__actions"><button class="btn btn--primary" id="siloPlayAgain" type="button">↻ Jogar novamente</button><a class="btn btn--soft" href="jogos.html">Voltar aos jogos</a></div>
           <small id="siloReset">Reinício automático para o próximo visitante.</small>
         </div>
@@ -113,7 +124,8 @@
     </main>
   </div>
 
-  <script src="app.v48.js?v=54.0"></script>
-  <script src="silo.v48.js?v=48.0"></script>
+  <script src="ranking.v55.js?v=55.0"></script>
+  <script src="app.v48.js?v=55.0"></script>
+  <script src="silo.v55.js?v=55.0"></script>
 </body>
 </html>

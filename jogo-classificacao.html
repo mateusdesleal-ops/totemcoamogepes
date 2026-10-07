@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.v48.css?v=54.0">
+  <link rel="stylesheet" href="styles.v48.css?v=55.0">
 
   <!-- PWA / modo totem fullscreen V53 -->
   <link rel="manifest" href="manifest.webmanifest?v=53.0">
@@ -18,7 +18,7 @@
   <meta name="application-name" content="Coamo Totem">
   <meta name="apple-mobile-web-app-title" content="Coamo Totem">
   <link rel="apple-touch-icon" href="assets/pwa/icon-192.png?v=52.0">
-  <script src="pwa.v54.js?v=54.0" defer></script>
+  <script src="pwa.v55.js?v=55.0" defer></script>
 </head>
 <body data-page="game-grain">
   <div class="kiosk-shell">
@@ -36,35 +36,42 @@
     </header>
 
     <main class="grain-page">
-      <div class="game-single-toolbar"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>ARCADE · 75 SEGUNDOS</span></div>
+      <div class="game-single-toolbar"><a class="game-back-link" href="jogos.html">← Voltar aos jogos</a><span>MODO SOBREVIVÊNCIA · 10 FASES</span></div>
 
       <section class="grain-intro" id="grainIntro">
         <div class="grain-intro__visual grain-intro__visual--poster" aria-hidden="true">
           <img src="assets/games/v48/classification_banner.png" alt="">
         </div>
         <div class="grain-intro__copy">
-          <span class="grain-kicker">COAMO GAMES · DESAFIO RÁPIDO</span>
+          <span class="grain-kicker">COAMO GAMES · DESAFIO DE SOBREVIVÊNCIA</span>
           <h1>Desafio da<br><em>Classificação</em></h1>
-          <p>Grãos e impurezas passam pela esteira cada vez mais rápido. Arraste cada item para o destino correto, faça combos e evite perdas.</p>
+          <p>O relógio começa em zero e mede quanto tempo você consegue permanecer na operação. São 10 fases de dificuldade: a esteira acelera progressivamente e, a partir da fase 5, o desafio fica extremo.</p>
           <div class="grain-intro__rules">
-            <span><b>75 s</b><small>por partida</small></span><span><b>4</b><small>categorias</small></span><span><b>5</b><small>vidas</small></span><span><b>0</b><small>progresso salvo</small></span>
+            <span><b>10</b><small>fases</small></span><span><b>4</b><small>categorias</small></span><span><b>5</b><small>vidas</small></span><span><b>∞</b><small>até perder as vidas</small></span>
           </div>
           <button class="btn btn--primary grain-start" id="grainStart" type="button">▶ Iniciar classificação</button>
         </div>
         <figure class="grain-mascot grain-mascot--toninho"><div class="grain-bubble">Olho na qualidade! Classifique cada item no destino certo.</div><img src="assets/mascote_toninho_pose2.png" alt="Toninho, mascote de cabelo branco e óculos"></figure>
         <figure class="grain-mascot grain-mascot--aroldinho"><div class="grain-bubble">Faça sequência de acertos para aumentar o combo!</div><img src="assets/mascote_aroldinho.png" alt="Aroldinho, mascote de cabelo castanho"></figure>
       </section>
+      <section class="coamo-ranking-card" aria-label="Ranking do Desafio da Classificação">
+        <div class="coamo-ranking-card__head">
+          <div><span>RANKING DO EVENTO</span><h2 data-ranking-admin-trigger="grain">TOP 5 · Classificação</h2></div><b aria-hidden="true">🏆</b>
+        </div>
+        <ol class="coamo-ranking-list" data-ranking-list="grain"></ol>
+      </section>
 
       <section class="grain-game" id="grainGame" hidden aria-live="polite">
         <div class="grain-hud">
-          <div><small>TEMPO</small><strong id="grainTimer">01:15</strong></div>
+          <div><small>TEMPO JOGADO</small><strong id="grainTimer">00:00</strong></div>
           <div><small>PONTOS</small><strong id="grainScore">0</strong></div>
           <div><small>COMBO</small><strong id="grainCombo">x0</strong></div>
           <div><small>VIDAS</small><strong id="grainLives">❤❤❤❤❤</strong></div>
+          <div><small>FASE</small><strong id="grainPhase">1/10</strong></div>
         </div>
 
         <section class="grain-stage">
-          <div class="grain-stage__head"><span id="grainStageMessage">Arraste os itens da esteira para o destino correto.</span><b id="grainSpeedLabel">Ritmo 1</b></div>
+          <div class="grain-stage__head"><span id="grainStageMessage">Arraste os itens da esteira para o destino correto.</span><b id="grainSpeedLabel">Fase 1 · Aquecimento</b></div>
           <div class="grain-conveyor" id="grainConveyor" aria-label="Esteira de classificação">
             <div class="grain-conveyor__rollers" aria-hidden="true"></div>
             <div class="grain-conveyor__end" aria-hidden="true">⚠</div>
@@ -76,7 +83,7 @@
         </section>
 
         <section class="grain-bins" id="grainBins" aria-label="Destinos de classificação">
-          <button class="grain-bin grain-bin--soja" type="button" data-bin="soja"><span class="grain-bin__icon"><svg class="grain-soy-icon" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><defs><linearGradient id="soyPod" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8bc34a"/><stop offset="1" stop-color="#4f8f36"/></linearGradient><radialGradient id="soyBean" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#f0e694"/><stop offset="1" stop-color="#c9c55f"/></radialGradient></defs><path d="M18 66C29 77 54 82 72 66c14-13 13-34 3-45-3-3-8-3-11 0-5 5-10 8-17 10-10 3-21 6-28 14-7 8-7 15-1 21Z" fill="url(#soyPod)" stroke="#285d38" stroke-width="4" stroke-linejoin="round"/><path d="M22 64c13 5 31 4 44-5 9-6 14-16 13-27" fill="none" stroke="#3c743e" stroke-width="3" stroke-linecap="round" opacity=".75"/><ellipse cx="35" cy="57" rx="10" ry="9" fill="url(#soyBean)" stroke="#557b3e" stroke-width="2"/><ellipse cx="51" cy="49" rx="10" ry="9" fill="url(#soyBean)" stroke="#557b3e" stroke-width="2"/><ellipse cx="65" cy="39" rx="9" ry="8" fill="url(#soyBean)" stroke="#557b3e" stroke-width="2"/><path d="M72 22c4-6 8-9 14-11" fill="none" stroke="#285d38" stroke-width="5" stroke-linecap="round"/><path d="M83 12c-7 0-12 2-15 7 6 1 11 0 15-7Z" fill="#6cab42" stroke="#285d38" stroke-width="2" stroke-linejoin="round"/></svg></span><strong>SOJA</strong><small>grãos de soja</small></button>
+          <button class="grain-bin grain-bin--soja" type="button" data-bin="soja"><span class="grain-bin__icon"><svg class="grain-soy-icon" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><path d="M18 66C29 77 54 82 72 66c14-13 13-34 3-45-3-3-8-3-11 0-5 5-10 8-17 10-10 3-21 6-28 14-7 8-7 15-1 21Z" fill="#6da843" stroke="#285d38" stroke-width="4" stroke-linejoin="round"/><path d="M22 64c13 5 31 4 44-5 9-6 14-16 13-27" fill="none" stroke="#3c743e" stroke-width="3" stroke-linecap="round" opacity=".75"/><ellipse cx="35" cy="57" rx="10" ry="9" fill="#e4df78" stroke="#557b3e" stroke-width="2"/><ellipse cx="51" cy="49" rx="10" ry="9" fill="#e4df78" stroke="#557b3e" stroke-width="2"/><ellipse cx="65" cy="39" rx="9" ry="8" fill="#e4df78" stroke="#557b3e" stroke-width="2"/><path d="M72 22c4-6 8-9 14-11" fill="none" stroke="#285d38" stroke-width="5" stroke-linecap="round"/><path d="M83 12c-7 0-12 2-15 7 6 1 11 0 15-7Z" fill="#79b84d" stroke="#285d38" stroke-width="2" stroke-linejoin="round"/></svg></span><strong>SOJA</strong><small>grãos de soja</small></button>
           <button class="grain-bin grain-bin--milho" type="button" data-bin="milho"><span>🌽</span><strong>MILHO</strong><small>grãos de milho</small></button>
           <button class="grain-bin grain-bin--trigo" type="button" data-bin="trigo"><span>🌾</span><strong>TRIGO</strong><small>grãos de trigo</small></button>
           <button class="grain-bin grain-bin--impureza" type="button" data-bin="impureza"><span>🪨</span><strong>IMPUREZAS</strong><small>folhas e materiais</small></button>
@@ -91,7 +98,12 @@
           <h2 id="grainResultTitle">Classificação Ouro</h2>
           <p id="grainResultText">Ótimo ritmo e precisão.</p>
           <div class="grain-result__score"><strong id="grainFinalScore">0</strong><span>pontos</span></div>
-          <div class="grain-result__stats"><span><b id="grainAccuracy">0%</b><small>precisão</small></span><span><b id="grainBestCombo">x0</b><small>melhor combo</small></span><span><b id="grainSorted">0</b><small>itens classificados</small></span></div>
+          <div class="grain-result__stats"><span><b id="grainDuration">00:00</b><small>tempo jogado</small></span><span><b id="grainReachedPhase">1/10</b><small>fase alcançada</small></span><span><b id="grainAccuracy">0%</b><small>precisão</small></span><span><b id="grainBestCombo">x0</b><small>melhor combo</small></span><span><b id="grainSorted">0</b><small>itens classificados</small></span></div>
+          <section class="coamo-ranking-card coamo-ranking-card--compact" aria-label="Ranking do Desafio da Classificação">
+            <div class="coamo-ranking-card__head"><div><span>RANKING DO EVENTO</span><h3 data-ranking-admin-trigger="grain">TOP 5 · Classificação</h3></div><b aria-hidden="true">🏆</b></div>
+            <ol class="coamo-ranking-list" data-ranking-list="grain"></ol>
+          </section>
+
           <div class="grain-result__actions"><button class="btn btn--primary" id="grainPlayAgain" type="button">↻ Jogar novamente</button><a class="btn btn--soft" href="jogos.html">Voltar aos jogos</a></div>
           <small id="grainResetCountdown">A tela será reiniciada para o próximo visitante.</small>
         </div>
@@ -99,6 +111,7 @@
       </section>
     </main>
   </div>
-  <script src="app.v48.js?v=54.0"></script>
+  <script src="ranking.v55.js?v=55.0"></script>
+  <script src="app.v48.js?v=55.0"></script>
 </body>
 </html>

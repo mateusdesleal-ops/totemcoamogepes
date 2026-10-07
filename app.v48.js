@@ -2031,19 +2031,35 @@
     const bins = $$(".grain-bin");
     if (!intro || !game || !result || !startBtn || !conveyor) return null;
 
+    const SOY_ICON = '<svg class="grain-soy-icon" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><path d="M18 66C29 77 54 82 72 66c14-13 13-34 3-45-3-3-8-3-11 0-5 5-10 8-17 10-10 3-21 6-28 14-7 8-7 15-1 21Z" fill="#6da843" stroke="#285d38" stroke-width="4" stroke-linejoin="round"/><path d="M22 64c13 5 31 4 44-5 9-6 14-16 13-27" fill="none" stroke="#3c743e" stroke-width="3" stroke-linecap="round" opacity=".75"/><ellipse cx="35" cy="57" rx="10" ry="9" fill="#e4df78" stroke="#557b3e" stroke-width="2"/><ellipse cx="51" cy="49" rx="10" ry="9" fill="#e4df78" stroke="#557b3e" stroke-width="2"/><ellipse cx="65" cy="39" rx="9" ry="8" fill="#e4df78" stroke="#557b3e" stroke-width="2"/><path d="M72 22c4-6 8-9 14-11" fill="none" stroke="#285d38" stroke-width="5" stroke-linecap="round"/><path d="M83 12c-7 0-12 2-15 7 6 1 11 0 15-7Z" fill="#79b84d" stroke="#285d38" stroke-width="2" stroke-linejoin="round"/></svg>';
     const TYPES = {
-      soja: { icon: "<svg class=\"grain-soy-icon\" viewBox=\"0 0 96 96\" aria-hidden=\"true\" focusable=\"false\"><defs><linearGradient id=\"soyPod\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#8bc34a\"/><stop offset=\"1\" stop-color=\"#4f8f36\"/></linearGradient><radialGradient id=\"soyBean\" cx=\"35%\" cy=\"30%\" r=\"70%\"><stop offset=\"0\" stop-color=\"#f0e694\"/><stop offset=\"1\" stop-color=\"#c9c55f\"/></radialGradient></defs><path d=\"M18 66C29 77 54 82 72 66c14-13 13-34 3-45-3-3-8-3-11 0-5 5-10 8-17 10-10 3-21 6-28 14-7 8-7 15-1 21Z\" fill=\"url(#soyPod)\" stroke=\"#285d38\" stroke-width=\"4\" stroke-linejoin=\"round\"/><path d=\"M22 64c13 5 31 4 44-5 9-6 14-16 13-27\" fill=\"none\" stroke=\"#3c743e\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".75\"/><ellipse cx=\"35\" cy=\"57\" rx=\"10\" ry=\"9\" fill=\"url(#soyBean)\" stroke=\"#557b3e\" stroke-width=\"2\"/><ellipse cx=\"51\" cy=\"49\" rx=\"10\" ry=\"9\" fill=\"url(#soyBean)\" stroke=\"#557b3e\" stroke-width=\"2\"/><ellipse cx=\"65\" cy=\"39\" rx=\"9\" ry=\"8\" fill=\"url(#soyBean)\" stroke=\"#557b3e\" stroke-width=\"2\"/><path d=\"M72 22c4-6 8-9 14-11\" fill=\"none\" stroke=\"#285d38\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M83 12c-7 0-12 2-15 7 6 1 11 0 15-7Z\" fill=\"#6cab42\" stroke=\"#285d38\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>", label: "Soja" },
+      soja: { icon: SOY_ICON, label: "Soja" },
       milho: { icon: "🌽", label: "Milho" },
       trigo: { icon: "🌾", label: "Trigo" },
       impureza: { icon: "🪨", label: "Impureza" },
     };
+
+    const PHASE_SECONDS = 20;
+    const PHASES = [
+      {name:"Aquecimento", speed:90,  spawn:1150},
+      {name:"Atenção",     speed:125, spawn:950},
+      {name:"Rápida",      speed:165, spawn:760},
+      {name:"Intensa",     speed:215, spawn:580},
+      {name:"Extrema",     speed:300, spawn:400},
+      {name:"Crítica",     speed:390, spawn:310},
+      {name:"Insana",      speed:480, spawn:240},
+      {name:"Caótica",     speed:590, spawn:185},
+      {name:"Limite",      speed:710, spawn:145},
+      {name:"Impossível",  speed:860, spawn:110},
+    ];
+
     let running = false;
     let rafId = 0;
     let spawnTimer = 0;
     let clockTimer = 0;
     let resetTimer = 0;
     let nextId = 1;
-    let secondsLeft = 75;
+    let elapsedSeconds = 0;
     let score = 0;
     let combo = 0;
     let bestCombo = 0;
@@ -2055,31 +2071,47 @@
     let items = new Map();
     let lastFrame = 0;
     let speechTick = 0;
+    let lastPhaseNumber = 1;
 
     const timerEl = $("#grainTimer");
     const scoreEl = $("#grainScore");
     const comboEl = $("#grainCombo");
     const livesEl = $("#grainLives");
+    const phaseEl = $("#grainPhase");
     const speedEl = $("#grainSpeedLabel");
     const messageEl = $("#grainStageMessage");
     const toninhoEl = $("#grainToninhoSpeech");
     const aroldinhoEl = $("#grainAroldinhoSpeech");
+    const resetTextEl = $("#grainResetCountdown");
 
     const formatTime = n => `${String(Math.floor(n/60)).padStart(2,"0")}:${String(n%60).padStart(2,"0")}`;
-    const pace = () => secondsLeft > 55 ? 1 : secondsLeft > 35 ? 2 : secondsLeft > 18 ? 3 : 4;
-    const speedPx = () => [0, 95, 120, 150, 185][pace()];
-    const spawnDelay = () => [0, 1250, 1050, 880, 720][pace()];
+    const phaseIndex = () => Math.min(PHASES.length - 1, Math.floor(elapsedSeconds / PHASE_SECONDS));
+    const phaseNumber = () => phaseIndex() + 1;
+    const phaseConfig = () => PHASES[phaseIndex()];
+    const speedPx = () => {
+      const base = phaseConfig().speed;
+      if (phaseNumber() < 10) return base;
+      return base + Math.max(0, elapsedSeconds - (PHASE_SECONDS * 9)) * 8;
+    };
+    const spawnDelay = () => {
+      const base = phaseConfig().spawn;
+      if (phaseNumber() < 10) return base;
+      return Math.max(70, base - Math.floor(Math.max(0, elapsedSeconds - (PHASE_SECONDS * 9)) / 4));
+    };
 
     const updateHud = () => {
-      if (timerEl) timerEl.textContent = formatTime(secondsLeft);
+      const phase = phaseNumber();
+      const cfg = phaseConfig();
+      if (timerEl) timerEl.textContent = formatTime(elapsedSeconds);
       if (scoreEl) scoreEl.textContent = String(score);
       if (comboEl) comboEl.textContent = `x${combo}`;
       if (livesEl) livesEl.textContent = "❤".repeat(Math.max(lives,0)) || "0";
-      if (speedEl) speedEl.textContent = `Ritmo ${pace()}`;
-      game.classList.toggle("is-final-sprint", secondsLeft <= 15);
+      if (phaseEl) phaseEl.textContent = `${phase}/10`;
+      if (speedEl) speedEl.textContent = `Fase ${phase} · ${cfg.name}`;
+      game.classList.toggle("is-final-sprint", phase >= 5);
     };
 
-    const say = (kind) => {
+    const say = kind => {
       speechTick += 1;
       if (kind === "hit") {
         if (combo >= 6) {
@@ -2090,7 +2122,7 @@
         } else if (aroldinhoEl) aroldinhoEl.textContent = "Acertou! Vamos manter a sequência.";
       } else if (kind === "miss") {
         if (toninhoEl) toninhoEl.textContent = "Atenção: item fora do destino correto.";
-        if (aroldinhoEl) aroldinhoEl.textContent = "Tudo bem. Recomece o combo no próximo item!";
+        if (aroldinhoEl) aroldinhoEl.textContent = "Recomece o combo no próximo item!";
       }
     };
 
@@ -2118,7 +2150,7 @@
         combo += 1;
         bestCombo = Math.max(bestCombo, combo);
         sorted += 1;
-        const gain = 100 + Math.min(combo, 10) * 15 + (pace() - 1) * 10;
+        const gain = 100 + Math.min(combo, 12) * 15 + (phaseNumber() - 1) * 35;
         score += gain;
         flashBin(binType, true);
         say("hit");
@@ -2167,8 +2199,8 @@
       el.setAttribute("aria-label", `${TYPES[type].label}. Arraste para classificar.`);
       el.innerHTML = itemMarkup(type);
       conveyor.appendChild(el);
-      const item = { id, type, el, x:-72, y:Math.max(18, rect.height * lane - 36), dragging:false, resolved:false, pointerId:null, startX:0, startY:0, moved:false };
-      items.set(id, item);
+      const item = {id,type,el,x:-72,y:Math.max(18,rect.height*lane-36),dragging:false,resolved:false,pointerId:null,startX:0,startY:0,moved:false};
+      items.set(id,item);
       el.style.left = `${item.x}px`;
       el.style.top = `${item.y}px`;
 
@@ -2186,7 +2218,6 @@
       });
       el.addEventListener("pointermove", e => {
         if (!item.dragging || item.pointerId !== e.pointerId) return;
-        const belt = conveyor.getBoundingClientRect();
         const dx = e.clientX - item.startX;
         const dy = e.clientY - item.startY;
         if (Math.hypot(dx,dy) > 8) item.moved = true;
@@ -2205,34 +2236,34 @@
         let hit = null;
         for (const bin of bins) {
           const r = bin.getBoundingClientRect();
-          if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) { hit = bin.dataset.bin; break; }
+          if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {hit = bin.dataset.bin; break;}
         }
-        if (hit) resolveItem(item, hit);
+        if (hit) resolveItem(item,hit);
         else if (!item.moved) {
-          $$(".grain-item.is-selected", conveyor).forEach(n => { if (n !== el) n.classList.remove("is-selected"); });
+          $$(".grain-item.is-selected",conveyor).forEach(n => {if (n !== el) n.classList.remove("is-selected");});
           selectedId = item.id;
         } else {
           const belt = conveyor.getBoundingClientRect();
-          item.y = Math.max(16, Math.min(belt.height - 82, item.y));
-          item.x = Math.max(0, Math.min(belt.width - 78, item.x));
+          item.y = Math.max(16,Math.min(belt.height-82,item.y));
+          item.x = Math.max(0,Math.min(belt.width-78,item.x));
           el.style.left = `${item.x}px`;
           el.style.top = `${item.y}px`;
         }
         e.preventDefault();
       };
-      el.addEventListener("pointerup", finishDrag);
-      el.addEventListener("pointercancel", finishDrag);
+      el.addEventListener("pointerup",finishDrag);
+      el.addEventListener("pointercancel",finishDrag);
     };
 
     bins.forEach(bin => bin.addEventListener("click", () => {
       if (!running || !selectedId) return;
       const item = items.get(selectedId);
-      if (item) resolveItem(item, bin.dataset.bin);
+      if (item) resolveItem(item,bin.dataset.bin);
     }));
 
     const animate = now => {
       if (!running) return;
-      const dt = Math.min(.04, Math.max(0, (now - (lastFrame || now)) / 1000));
+      const dt = Math.min(.04,Math.max(0,(now-(lastFrame||now))/1000));
       lastFrame = now;
       const width = conveyor.clientWidth;
       for (const item of [...items.values()]) {
@@ -2248,14 +2279,14 @@
       window.clearTimeout(spawnTimer);
       if (!running) return;
       spawn();
-      spawnTimer = window.setTimeout(scheduleSpawn, spawnDelay());
+      spawnTimer = window.setTimeout(scheduleSpawn,spawnDelay());
     };
 
     const clearTimers = () => {
       cancelAnimationFrame(rafId);
       window.clearTimeout(spawnTimer);
       window.clearInterval(clockTimer);
-      window.clearTimeout(resetTimer);
+      window.clearInterval(resetTimer);
       rafId = 0; spawnTimer = 0; clockTimer = 0; resetTimer = 0;
     };
 
@@ -2268,9 +2299,22 @@
       result.hidden = true;
       intro.hidden = false;
       selectedId = null;
+      window.CoamoLeaderboard?.render?.("grain");
+      window.scrollTo({top:0,behavior:"smooth"});
     };
 
-    const finishGame = survived => {
+    const beginResultCountdown = () => {
+      let countdown = 25;
+      const draw = () => { if (resetTextEl) resetTextEl.textContent = `Nova partida automática em ${countdown}s.`; };
+      draw();
+      resetTimer = window.setInterval(() => {
+        countdown -= 1;
+        draw();
+        if (countdown <= 0) resetIntro();
+      },1000);
+    };
+
+    const finishGame = async () => {
       if (!running) return;
       running = false;
       clearTimers();
@@ -2278,52 +2322,78 @@
       items.clear();
       game.hidden = true;
       result.hidden = false;
-      const accuracy = attempts ? Math.round((sorted / attempts) * 100) : 0;
-      let title = "Classificação Bronze", badge = "🥉", text = "Boa tentativa. Na próxima rodada, busque mais precisão e sequência.";
-      if (accuracy >= 92 && score >= 1800) { title = "Classificação Ouro"; badge = "🏆"; text = "Excelente precisão e ritmo. Você manteve a qualidade mesmo com a esteira acelerando."; }
-      else if (accuracy >= 78 && score >= 1100) { title = "Classificação Prata"; badge = "🥈"; text = "Ótimo resultado. Você classificou bem mesmo com o aumento do ritmo."; }
-      else if (!survived && lives <= 0) text = "A esteira venceu esta rodada. Tente novamente e recupere o combo.";
+
+      const accuracy = attempts ? Math.round((sorted/attempts)*100) : 0;
+      const reached = phaseNumber();
+      let title = "Classificação Bronze", badge = "🥉", text = `Você chegou à fase ${reached} e permaneceu ${formatTime(elapsedSeconds)} na operação.`;
+      if (reached >= 5 && accuracy >= 85) {title="Classificação Ouro";badge="🏆";text=`Excelente! Você alcançou a fase ${reached}, quando a operação já está em nível extremo.`;}
+      else if (reached >= 3 && accuracy >= 70) {title="Classificação Prata";badge="🥈";text=`Ótimo resultado. Você chegou à fase ${reached} mantendo ${accuracy}% de precisão.`;}
+      else if (lives <= 0) text = `As cinco vidas terminaram na fase ${reached}. Tempo total: ${formatTime(elapsedSeconds)}.`;
+
       $("#grainResultTitle").textContent = title;
       $("#grainResultBadge").textContent = badge;
       $("#grainResultText").textContent = text;
       $("#grainFinalScore").textContent = String(score);
+      $("#grainDuration").textContent = formatTime(elapsedSeconds);
+      $("#grainReachedPhase").textContent = `${reached}/10`;
       $("#grainAccuracy").textContent = `${accuracy}%`;
       $("#grainBestCombo").textContent = `x${bestCombo}`;
       $("#grainSorted").textContent = String(sorted);
-      playGameTone(accuracy >= 78 ? "success" : "tap");
-      if (accuracy >= 92) burstConfetti();
-      resetTimer = window.setTimeout(resetIntro, 18000);
+      playGameTone(reached >= 3 ? "success" : "tap");
+      if (reached >= 5 && accuracy >= 80) burstConfetti();
+      window.CoamoLeaderboard?.render?.("grain");
+
+      try {
+        if (window.CoamoLeaderboard?.maybeCapture) {
+          await window.CoamoLeaderboard.maybeCapture("grain", {
+            score,
+            duration:elapsedSeconds,
+            accuracy,
+            phase:reached,
+            combo:bestCombo,
+            sorted,
+          });
+        }
+      } catch (_) {}
+      window.CoamoLeaderboard?.render?.("grain");
+      beginResultCountdown();
     };
 
     const start = () => {
       clearTimers();
       items.forEach(item => item.el?.remove());
       items = new Map();
-      secondsLeft = 75; score = 0; combo = 0; bestCombo = 0; lives = 5; sorted = 0; attempts = 0; misses = 0; selectedId = null; nextId = 1; lastFrame = 0; speechTick = 0;
+      elapsedSeconds = 0; score = 0; combo = 0; bestCombo = 0; lives = 5; sorted = 0; attempts = 0; misses = 0; selectedId = null; nextId = 1; lastFrame = 0; speechTick = 0; lastPhaseNumber = 1;
       intro.hidden = true;
       result.hidden = true;
       game.hidden = false;
       running = true;
-      if (messageEl) messageEl.textContent = "Arraste os itens da esteira para o destino correto.";
+      if (messageEl) messageEl.textContent = "Fase 1: comece com calma e classifique cada item no destino correto.";
       if (toninhoEl) toninhoEl.textContent = "Qualidade começa na classificação.";
-      if (aroldinhoEl) aroldinhoEl.textContent = "Vamos buscar um combo alto!";
+      if (aroldinhoEl) aroldinhoEl.textContent = "São 10 fases. A partir da quinta, prepare-se!";
       updateHud();
       spawn();
-      spawnTimer = window.setTimeout(scheduleSpawn, 900);
+      spawnTimer = window.setTimeout(scheduleSpawn,900);
       rafId = requestAnimationFrame(animate);
       clockTimer = window.setInterval(() => {
-        secondsLeft -= 1;
-        if ([55,35,18].includes(secondsLeft)) {
-          if (messageEl) messageEl.textContent = `A esteira acelerou! Ritmo ${pace()}.`;
+        elapsedSeconds += 1;
+        const currentPhase = phaseNumber();
+        if (currentPhase !== lastPhaseNumber) {
+          lastPhaseNumber = currentPhase;
+          const cfg = phaseConfig();
+          if (messageEl) messageEl.textContent = currentPhase >= 5
+            ? `FASE ${currentPhase}: ${cfg.name}. Agora o desafio está em nível extremo!`
+            : `FASE ${currentPhase}: ${cfg.name}. A esteira acelerou.`;
           playGameTone("tap");
         }
         updateHud();
-        if (secondsLeft <= 0) finishGame(true);
-      }, 1000);
+      },1000);
+      window.scrollTo({top:0,behavior:"smooth"});
     };
 
-    startBtn.addEventListener("click", start);
-    playAgain?.addEventListener("click", start);
+    startBtn.addEventListener("click",start);
+    playAgain?.addEventListener("click",start);
+    window.CoamoLeaderboard?.render?.("grain");
     return clearTimers;
   }
 
