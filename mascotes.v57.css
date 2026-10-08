@@ -1,0 +1,193 @@
+/* =========================================================
+   COAMO GAMES — V57 · MASCOTES ANIMADOS
+   Usa as propriedades individuais translate/rotate/scale para não
+   conflitar com os transforms que já existem nas páginas.
+   Todos os movimentos partem da base (50% 100%), assim o corte inferior
+   dos personagens nos banners nunca se descola do cenário.
+   ========================================================= */
+
+/* ---------- 1. Banners em camadas ---------- */
+.coamo-live{
+  position:absolute;
+  left:0; top:0; width:100%; height:100%;
+  pointer-events:none;
+  overflow:hidden;
+  contain:layout paint;
+}
+.coamo-live__char{
+  position:absolute;
+  display:block;
+  transform-origin:50% 100%;
+  will-change:rotate, scale;
+  animation:coamoIdleA 3.6s ease-in-out infinite;
+}
+.coamo-live__char--toninho{ animation-name:coamoIdleB; animation-duration:4.2s; }
+.coamo-live__char img{
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  object-fit:fill !important;
+  transform-origin:50% 100%;
+  user-select:none;
+  -webkit-user-drag:none;
+  /* blindagem contra regras genéricas como ".game-stage-poster-v34 img" */
+  position:static !important;
+  inset:auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:none !important;
+  box-shadow:none !important;
+  filter:none !important;
+  opacity:1 !important;
+  aspect-ratio:auto !important;
+  object-position:center !important;
+  transform:none !important;
+}
+.coamo-live--tap .coamo-live__char{ pointer-events:auto; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+
+/* entrada quando o banner aparece na tela */
+.coamo-live.is-in:not(.is-entered) .coamo-live__char img{ animation:coamoEnter .9s cubic-bezier(.25,1.4,.45,1) both; }
+.coamo-live.is-in:not(.is-entered) .coamo-live__char--toninho img{ animation-delay:.18s; }
+
+/* gesto: aleatório, ao tocar ou ao passar o mouse no cartão */
+.coamo-live.is-in .coamo-live__char.is-gesture img,
+.game-menu-card:hover .coamo-live__char img,
+.game-menu-card:focus-visible .coamo-live__char img{
+  animation:coamoGesture .95s cubic-bezier(.3,1.35,.5,1) both;
+}
+.game-menu-card:hover .coamo-live__char--toninho img{ animation-delay:.12s; }
+
+.coamo-live.is-paused .coamo-live__char,
+.coamo-live.is-paused .coamo-live__char img{ animation-play-state:paused; }
+
+/* ---------- 2. Mascotes soltos dentro dos jogos ---------- */
+img.coamo-alive{
+  transform-origin:50% 100%;
+  animation:coamoIdleSolo 3.4s ease-in-out infinite;
+}
+img.coamo-alive--toninho{ animation-duration:3.9s; }
+img.coamo-alive.is-paused{ animation-play-state:paused; }
+img.coamo-alive.is-talk{ animation:coamoTalk .95s cubic-bezier(.3,1.4,.5,1) both; }
+img.coamo-alive.is-cheer{ animation:coamoCheer .9s cubic-bezier(.3,1.4,.5,1) both; }
+img.coamo-alive.is-oops{ animation:coamoOops .7s ease both; }
+
+/* balão de fala "estala" quando muda o texto */
+.is-said{ animation:coamoBubble .55s cubic-bezier(.3,1.6,.5,1) both; }
+
+/* ---------- 3. Guias (Quiz, Memória, Cadeia) ---------- */
+.coamo-guides{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin:6px 24px 16px;
+}
+.coamo-guide{
+  display:flex;
+  align-items:flex-end;
+  gap:10px;
+  margin:0;
+  min-width:0;
+}
+.coamo-guide--aroldinho{ justify-content:flex-end; }
+.coamo-guide img{
+  flex:0 0 auto;
+  display:block;
+  height:170px;
+  width:auto;
+  object-fit:contain;
+  filter:drop-shadow(0 8px 10px rgba(0,0,0,.16));
+}
+.coamo-guide figcaption{
+  position:relative;
+  flex:0 1 auto;
+  max-width:340px;
+  margin-bottom:70px;
+  padding:14px 18px;
+  background:#fff;
+  color:#174c32;
+  border:3px solid #ebb51b;
+  border-radius:20px;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.3;
+  box-shadow:0 9px 18px rgba(25,68,45,.14);
+  transform-origin:0 100%;
+}
+.coamo-guide--aroldinho figcaption{ transform-origin:100% 100%; text-align:right; }
+.coamo-guide figcaption::after{
+  content:"";
+  position:absolute;
+  bottom:16px;
+  width:16px; height:16px;
+  background:#fff;
+  border-left:3px solid #ebb51b;
+  border-bottom:3px solid #ebb51b;
+}
+.coamo-guide--toninho figcaption::after{ left:-10px; transform:rotate(45deg); }
+.coamo-guide--aroldinho figcaption::after{ right:-10px; transform:rotate(-135deg); }
+
+@media (max-width:760px){
+  .coamo-guides{ grid-template-columns:1fr; gap:8px; margin:4px 12px 12px; }
+  .coamo-guide img{ height:96px; }
+  .coamo-guide figcaption{ font-size:12px; margin-bottom:22px; }
+}
+
+/* ---------- Animações ---------- */
+@keyframes coamoIdleA{
+  0%,100%{ rotate:-.7deg; scale:1 1; }
+  50%    { rotate:.6deg;  scale:1.006 1.018; }
+}
+@keyframes coamoIdleB{
+  0%,100%{ rotate:.55deg; scale:1 1; }
+  50%    { rotate:-.6deg; scale:1.008 1.016; }
+}
+@keyframes coamoIdleSolo{
+  0%,100%{ rotate:-1deg; scale:1 1;      translate:0 0; }
+  50%    { rotate:1deg;  scale:1.01 1.025; translate:0 -3px; }
+}
+@keyframes coamoEnter{
+  0%  { scale:.94 .9; }
+  55% { scale:1.03 1.05; }
+  80% { scale:.995 .99; }
+  100%{ scale:1 1; }
+}
+@keyframes coamoGesture{
+  0%  { scale:1 1; rotate:0deg; }
+  22% { scale:1.03 .985; }
+  48% { scale:.99 1.05; rotate:-1.6deg; }
+  72% { scale:1.01 .995; rotate:1.2deg; }
+  100%{ scale:1 1; rotate:0deg; }
+}
+@keyframes coamoTalk{
+  0%  { translate:0 0;     scale:1 1; }
+  25% { translate:0 0;     scale:1.05 .94; }
+  50% { translate:0 -14px; scale:.97 1.05; rotate:-2deg; }
+  75% { translate:0 0;     scale:1.03 .97; rotate:1.5deg; }
+  100%{ translate:0 0;     scale:1 1;    rotate:0deg; }
+}
+@keyframes coamoCheer{
+  0%  { translate:0 0;     scale:1 1; }
+  20% { translate:0 0;     scale:1.08 .9; }
+  45% { translate:0 -26px; scale:.95 1.08; rotate:-4deg; }
+  70% { translate:0 0;     scale:1.05 .95; rotate:3deg; }
+  100%{ translate:0 0;     scale:1 1;    rotate:0deg; }
+}
+@keyframes coamoOops{
+  0%,100%{ translate:0 0;    rotate:0deg; }
+  20%    { translate:-7px 0; rotate:-3deg; }
+  45%    { translate:6px 0;  rotate:2.5deg; }
+  70%    { translate:-4px 0; rotate:-1.5deg; }
+}
+@keyframes coamoBubble{
+  0%  { scale:.9; }
+  60% { scale:1.04; }
+  100%{ scale:1; }
+}
+
+/* ---------- Acessibilidade: movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce){
+  .coamo-live__char, .coamo-live__char img, img.coamo-alive, .is-said{ animation:none !important; }
+}
