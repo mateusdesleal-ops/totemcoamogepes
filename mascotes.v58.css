@@ -1,0 +1,156 @@
+/* =========================================================
+   COAMO GAMES — V58 · MASCOTES ARTICULADOS
+   As poses são feitas com rotate/translate/scale (propriedades
+   individuais), sem conflitar com os transforms existentes.
+   ========================================================= */
+
+/* palco dos banners e bonecos soltos */
+.coamo-stage,
+.coamo-rig--solo{
+  position:absolute;
+  pointer-events:none;
+}
+.coamo-stage{ overflow:hidden; contain:layout paint; }
+.coamo-rig{ display:block; }
+.coamo-rig--full{ position:absolute; inset:0; }
+.coamo-rig--solo{ overflow:visible; }
+.coamo-rig--tap, .coamo-rig--solo{ pointer-events:none; }
+.coamo-rig--tap .coamo-rig__part:not([class*="eyes"]):not([class*="mouth"]),
+.coamo-rig--solo .coamo-rig__part{ pointer-events:auto; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+
+img.coamo-rig-hidden{ visibility:hidden !important; }
+
+.coamo-rig__puppet{
+  position:absolute; inset:0;
+  display:block;
+  transform-origin:50% 100%;
+  animation:coamoBreath 3.8s ease-in-out infinite;
+}
+.coamo-rig--full .coamo-rig__puppet{ animation:none; }
+
+.coamo-rig__part{
+  position:absolute;
+  display:block;
+}
+.coamo-rig__part > img{
+  /* blindagem contra regras genéricas de <img> das páginas */
+  position:absolute !important;
+  inset:0 !important;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  margin:0 !important; padding:0 !important; border:0 !important; border-radius:0 !important;
+  background:none !important; box-shadow:none !important; filter:none !important;
+  opacity:1 !important; transform:none !important; animation:none !important;
+  aspect-ratio:auto !important;
+  object-fit:fill !important;
+  user-select:none; -webkit-user-drag:none;
+}
+
+/* idle: cabeça e braço "vivos" o tempo todo */
+.coamo-rig__part--head{ animation:coamoHeadIdle 5.2s ease-in-out infinite; }
+.coamo-rig__part--arm,
+.coamo-rig__part--arm2{ animation:coamoArmIdle 4.4s ease-in-out infinite; }
+.coamo-rig:nth-child(2) .coamo-rig__part--head{ animation-duration:6s; animation-delay:-2s; }
+
+/* olhos fechados e boca aberta: só aparecem durante as ações */
+.coamo-rig__part[class*="eyes_"],
+.coamo-rig__part[class*="mouth_"]{ opacity:0; }
+
+/* balãozinho de pensamento */
+.coamo-rig__think{
+  position:absolute;
+  right:-14%; top:-12%;
+  display:flex; gap:7%;
+  align-items:center; justify-content:center;
+  width:42%; aspect-ratio:2.2/1;
+  background:#fff;
+  border:3px solid #0b4d2b;
+  border-radius:999px;
+  box-shadow:0 6px 14px rgba(0,0,0,.14);
+  opacity:0; scale:.4;
+  transform-origin:0 100%;
+  pointer-events:none;
+}
+.coamo-rig--full .coamo-rig__think{ border-width:2px; }
+.coamo-rig__think i{
+  display:block; width:14%; aspect-ratio:1; border-radius:50%;
+  background:#0b4d2b;
+}
+.coamo-rig__think.is-on{ animation:coamoThinkBubble 2.5s ease both; }
+.coamo-rig__think.is-on i{ animation:coamoDots 1s ease-in-out infinite; }
+.coamo-rig__think.is-on i:nth-child(2){ animation-delay:.18s; }
+.coamo-rig__think.is-on i:nth-child(3){ animation-delay:.36s; }
+
+.is-paused .coamo-rig__puppet,
+.is-paused .coamo-rig__part,
+.coamo-rig.is-paused .coamo-rig__puppet,
+.coamo-rig.is-paused .coamo-rig__part{ animation-play-state:paused; }
+
+/* balão de fala "estala" quando muda o texto */
+.is-said{ animation:coamoBubble .55s cubic-bezier(.3,1.6,.5,1) both; }
+
+/* ---------- guias (Quiz, Memória, Cadeia) ---------- */
+.coamo-guides{
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  margin:6px 24px 16px;
+}
+.coamo-guide{ display:flex; align-items:flex-end; gap:10px; margin:0; min-width:0; position:relative; }
+.coamo-guide--aroldinho{ justify-content:flex-end; }
+.coamo-guide img{
+  flex:0 0 auto; display:block;
+  height:190px; width:auto; object-fit:contain;
+}
+.coamo-guide figcaption{
+  position:relative; flex:0 1 auto; max-width:340px;
+  margin-bottom:80px; padding:14px 18px;
+  background:#fff; color:#174c32;
+  border:3px solid #ebb51b; border-radius:20px;
+  font-size:14px; font-weight:800; line-height:1.3;
+  box-shadow:0 9px 18px rgba(25,68,45,.14);
+  transform-origin:0 100%;
+}
+.coamo-guide--aroldinho figcaption{ transform-origin:100% 100%; text-align:right; }
+.coamo-guide figcaption::after{
+  content:""; position:absolute; bottom:16px; width:16px; height:16px;
+  background:#fff; border-left:3px solid #ebb51b; border-bottom:3px solid #ebb51b;
+}
+.coamo-guide--toninho figcaption::after{ left:-10px; transform:rotate(45deg); }
+.coamo-guide--aroldinho figcaption::after{ right:-10px; transform:rotate(-135deg); }
+@media (max-width:760px){
+  .coamo-guides{ grid-template-columns:1fr; gap:8px; margin:4px 12px 12px; }
+  .coamo-guide img{ height:120px; }
+  .coamo-guide figcaption{ font-size:12px; margin-bottom:34px; }
+}
+
+/* ---------- animações ---------- */
+@keyframes coamoBreath{
+  0%,100%{ scale:1 1; }
+  50%    { scale:1.008 1.016; }
+}
+@keyframes coamoHeadIdle{
+  0%,100%{ rotate:0deg; }
+  30%    { rotate:1.4deg; }
+  70%    { rotate:-1.1deg; }
+}
+@keyframes coamoArmIdle{
+  0%,100%{ rotate:0deg; }
+  50%    { rotate:-2deg; }
+}
+@keyframes coamoThinkBubble{
+  0%  { opacity:0; scale:.3; }
+  14% { opacity:1; scale:1.08; }
+  22% { scale:1; }
+  86% { opacity:1; scale:1; }
+  100%{ opacity:0; scale:.6; }
+}
+@keyframes coamoDots{
+  0%,100%{ translate:0 0; opacity:.45; }
+  50%    { translate:0 -30%; opacity:1; }
+}
+@keyframes coamoBubble{ 0%{ scale:.9; } 60%{ scale:1.04; } 100%{ scale:1; } }
+
+@media (prefers-reduced-motion: reduce){
+  .coamo-rig__puppet, .coamo-rig__part, .coamo-rig__think, .is-said{ animation:none !important; }
+}

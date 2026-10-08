@@ -1,0 +1,34 @@
+COAMO GAMES — V58 · MASCOTES ARTICULADOS
+========================================
+
+Toninho e Aroldinho agora são "bonecos articulados" montados com as partes
+da arte original: corpo, cabeça (gira no pescoço), braço/mão, pálpebras e a
+própria boca. O rosto não é redesenhado — as expressões vêm do corpo.
+
+Ações
+- Piscar (sozinhos, a cada poucos segundos)
+- Falar (boca abre e fecha enquanto o balão muda)
+- Acenar (ao aparecer na tela e ao passar o dedo nos cartões do menu)
+- Comemorar (pulo + braços para cima + cabeça para trás nos acertos)
+- Pensativo (cabeça inclinada + balão "..." quando ninguém está jogando)
+- Lamentar (cabeça balançando "não" + olhos fechados nos erros)
+
+Onde
+- Banner principal e os 5 banners dos jogos (12 personagens), sobre o
+  cenário original com os personagens removidos.
+- Mascotes de corpo inteiro (4 artes) nas telas da Classificação e do Silo
+  e como guias no Quiz, Memória e Cadeia.
+
+Arquivos
+- mascotes.v58.js        motor de animação (ações e reações)
+- mascotes.v58.css       estilos
+- mascotes-rigs.v58.js   posição de cada parte (gerado)
+- assets/mascotes/v58/   camadas WebP de cada personagem + cenários limpos
+
+Uso pelo código dos jogos (opcional)
+  CoamoMascots.play("#elemento", "celebrate" | "wave" | "think" | "oops" | "talk")
+
+Como voltar
+- Trocar nas páginas mascotes.v58 → mascotes.v57 (versão anterior, só balanço),
+  ou remover as três linhas mascotes* para voltar às imagens estáticas.
+- As artes originais (assets/games/v48 e assets/mascote_*.png) não foram alteradas.
