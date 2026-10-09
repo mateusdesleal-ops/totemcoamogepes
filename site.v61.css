@@ -200,3 +200,7 @@ body[data-page="home"] .home-hero{
   50%    { box-shadow:0 0 0 18px rgba(243,179,0,0); }
 }
 @media (prefers-reduced-motion: reduce){ #presentationOverlay .presentation-hint{ animation:none !important; } }
+
+/* V64 · fotos reais da Coamo nos slides de Tecnologia e Gestão (enquadramento no rosto) */
+#presentationOverlay[data-slide-id="tecnologia"] .presentation-photo{ object-position:96% 24% !important; }
+#presentationOverlay[data-slide-id="gestao"] .presentation-photo{ object-position:58% 28% !important; }
