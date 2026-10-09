@@ -114,8 +114,19 @@
     el.style.width = (cw * k) + "px";
     el.style.height = (ch * k) + "px";
   }
+  /* algumas telas posicionam os mascotes por ordem (img:first-child / img:last-child).
+     Antes de encaixar o boneco ao lado da imagem, fixamos a posição atual dela,
+     para que a nova peça não mude qual é a "primeira" ou a "última". */
+  function freezePlacement(img) {
+    var cs = getComputedStyle(img);
+    if (cs.position !== "absolute" && cs.position !== "fixed") return;
+    ["left", "right", "top", "bottom", "height", "width"].forEach(function (k) {
+      if (!img.style[k] && cs[k] !== "auto") img.style.setProperty(k, cs[k], "important");
+    });
+  }
   function mount(img, overlay, after) {
     var parent = img.parentElement;
+    freezePlacement(img);
     if (getComputedStyle(parent).position === "static") parent.style.position = "relative";
     var z = getComputedStyle(img).zIndex;
     if (z && z !== "auto") overlay.style.zIndex = z;

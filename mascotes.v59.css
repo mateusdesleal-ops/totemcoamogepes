@@ -234,3 +234,14 @@ img.cg-banner-src{ visibility:hidden !important; }
 .coamo-guides.is-docked .coamo-guide figcaption{ margin-bottom:56px; }
 @keyframes coamoDockIn{ from{ translate:-50% 120%; } to{ translate:-50% 0; } }
 @media (prefers-reduced-motion: reduce){ .coamo-guides.is-docked{ animation:none; } }
+
+/* tela de resultado (Classificação e Silo): os dois lado a lado, sem sobreposição */
+@media (min-width:1251px), (orientation:landscape) and (min-width:761px){
+  .grain-result__mascot > img,
+  .silo-result__mascots > img{ height:300px !important; width:300px !important; top:auto !important; bottom:0 !important; }
+  .grain-result__mascot > img:first-of-type,
+  .silo-result__mascots > img:first-of-type{ left:-92px !important; right:auto !important; }
+  .grain-result__mascot > img:last-of-type,
+  .silo-result__mascots > img:last-of-type{ right:-92px !important; left:auto !important; }
+  .grain-result__mascot, .silo-result__mascots{ height:340px !important; }
+}
