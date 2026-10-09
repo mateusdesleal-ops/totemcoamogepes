@@ -179,10 +179,11 @@
     (root || document).querySelectorAll("img").forEach(function (img) {
       if (img.closest(".coamo-rig, .coamo-stage, .cg-banner")) return;
       var src = img.getAttribute("src") || "", f = fileOf(src);
-      if (BANNERS[f] && /games\/v4[6-9]\//.test(src) && !window.COAMO_NEW_BANNERS) liveBanner(img, BANNERS[f]);
+      if (BANNERS[f] && /games\/v4[6-9]\//.test(src) && !newBanners()) liveBanner(img, BANNERS[f]);
       else if (IMAGE_RIGS[f]) liveMascot(img, IMAGE_RIGS[f]);
     });
   }
+  function newBanners() { return !!(window.COAMO_NEW_BANNERS || document.querySelector('script[src*="mascotes-banners"]')); }
   API.scan = scan;
   API.buildRig = buildRig;
 
@@ -681,10 +682,37 @@
     else { var poster = panel.querySelector(".game-stage-poster-v34"); if (poster) poster.insertAdjacentElement("afterend", box); else panel.insertBefore(box, panel.firstChild); }
   }
 
+  /* ao rolar o tabuleiro, os guias descem para o rodapé e continuam presentes */
+  function dockGuides() {
+    var box = document.querySelector(".coamo-guides");
+    if (!box) return;
+    var spacer = document.createElement("div");
+    spacer.className = "coamo-guides-spacer";
+    box.parentElement.insertBefore(spacer, box);
+    var docked = false, h = 0;
+    function check() {
+      var big = window.innerHeight >= 900 && window.innerWidth >= 700;
+      var top = spacer.getBoundingClientRect().top;
+      if (!docked) h = box.offsetHeight;
+      var out = big && visible(spacer.parentElement) && top + h < 0;
+      if (out === docked) return;
+      docked = out;
+      spacer.style.height = docked ? h + "px" : "";
+      /* no rodapé o grupo vai para o <body>: um ancestral com transform prenderia o position:fixed */
+      if (docked) document.body.appendChild(box); else spacer.insertAdjacentElement("afterend", box);
+      box.classList.toggle("is-docked", docked);
+      if (docked) bothSpeakers().forEach(function (S, i) { setTimeout(function () { play(S.P, "wave", true); }, 350 + i * 200); });
+    }
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    setInterval(check, 600);
+  }
+
   function init() {
     if (!Object.keys(RIGS).length) return;
     document.documentElement.classList.add("coamo-mascots-v59");
     addGuides();
+    dockGuides();
     scan();
     new MutationObserver(function (list) {
       list.forEach(function (rec) {
