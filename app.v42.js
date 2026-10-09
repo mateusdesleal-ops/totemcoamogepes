@@ -588,8 +588,8 @@
       pill: "Campo & Cooperado",
       title: "Onde a relação com o produtor acontece.",
       sub: "Assistência técnica, atendimento, orientação e atividades ligadas à produção aproximam conhecimento, cooperado e resultado.",
-      bg: "assets/agro_01.jpg",
-      position: "56% 38%",
+      bg: "assets/vaga_fotos/agro_2.jpg",
+      position: "58% 40%",
       metric: { value: "+400", label: "Agrônomos e Veterinários" },
     },
     {
@@ -701,8 +701,23 @@
       brandFallback: "Programa de Estágio",
       tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
     },
-
+    {
+      id: "convite",
+      pill: "Totem Coamo",
+      title: "Toque na tela e explore.",
+      sub: "Veja as vagas abertas, jogue o Coamo Games e participe do sorteio. Ou aponte a câmera do celular para o QR Code e continue de onde estiver.",
+      bg: "assets/admin_01.jpg",
+      position: "50% 30%",
+      tags: ["Vagas abertas", "Coamo Games", "Sorteio"],
+      qr: true,
+    },
   ];
+
+  /* V62: intercala áreas da Coamo e programas para a apresentação ficar mais dinâmica;
+     o convite para tocar na tela fecha cada volta. */
+  const SLIDE_ORDER = ["coamo", "campo", "unicoamo", "operacoes", "qualidade-vida", "industria", "coamo-saude",
+    "tecnologia", "fups", "gestao", "arcam", "estagio", "estagio-formacoes", "convite"];
+  BASE_SLIDES.sort((a, b) => SLIDE_ORDER.indexOf(a.id) - SLIDE_ORDER.indexOf(b.id));
 
   function isSlideEnabled(slide) {
     return !slide.feature || settings[slide.feature] !== false;
