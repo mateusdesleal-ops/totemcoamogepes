@@ -62,10 +62,10 @@
       '<pattern id="' + id + 'rows2" width="46" height="46" patternUnits="userSpaceOnUse" patternTransform="rotate(6)"><rect width="46" height="46" fill="#7fb24f"/><rect width="46" height="12" y="16" fill="#6ea444"/></pattern>' +
       '</defs>';
   }
-  function sky(id) {
+  function sky(id, noSun) {
     return '<rect width="1536" height="1024" fill="url(#' + id + 'sky)"/>' +
-      '<circle cx="1352" cy="176" r="132" fill="' + C.sun1 + '" opacity=".16"/>' +
-      '<circle cx="1352" cy="176" r="84" fill="url(#' + id + 'sun)"/>' +
+      (noSun ? '' : '<circle cx="1352" cy="176" r="132" fill="' + C.sun1 + '" opacity=".16"/>' +
+      '<circle cx="1352" cy="176" r="84" fill="url(#' + id + 'sun)"/>') +
       cloud(150, 210, .9) + cloud(1120, 300, .55);
   }
   function cloud(x, y, s) {
@@ -109,10 +109,11 @@
   /* ---------------------------------------------------------- cenários por jogo */
   function base(id, extra, opts) {
     return '<svg class="cg-banner__scene" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' +
-      defs(id) + sky(id) + land(id, opts) + (extra || '') + '</svg>';
+      defs(id) + sky(id, opts && opts.noSun) + land(id, opts) + (extra || '') + '</svg>';
   }
   function hero(id) {
-    return base(id, '', { horizon: 610, skyline: skyline(id, 560, 470, 1) });
+    /* no banner principal o sol é o da própria logo */
+    return base(id, '', { horizon: 640, noSun: true, skyline: skyline(id, 600, 548, .72) });
   }
   function area(id) {
     var boards = [
@@ -223,11 +224,13 @@
     var root = document.createElement("span");
     root.className = "cg-banner cg-banner--" + B.key;
     root.setAttribute("aria-hidden", "true");
+    var isHero = B.key === "hero";
     root.innerHTML = B.scene(id) +
-      '<span class="cg-banner__brand"><img src="assets/logo_verde.png" alt=""><b>Games</b></span>' +
-      (B.key === "hero"
-        ? '<span class="cg-banner__copy cg-banner__copy--hero"><strong>' + B.title + '</strong><em>' + B.sub + '</em></span>'
-        : '<span class="cg-banner__copy"><strong>' + B.title + '</strong><em>' + B.sub + '</em></span>');
+      (isHero
+        ? '<span class="cg-banner__copy cg-banner__copy--hero"><img class="cg-banner__logo" src="assets/coamo-games/logo-coamo-games.svg" alt=""><em>' + B.sub + '</em></span>' +
+          '<span class="cg-bubble cg-bubble--left"></span><span class="cg-bubble cg-bubble--right"></span>'
+        : '<span class="cg-banner__brand"><img src="assets/coamo-games/logo-coamo-games-mini.svg" alt=""></span>' +
+          '<span class="cg-banner__copy"><strong>' + B.title + '</strong><em>' + B.sub + '</em></span>');
     [["left", B.left], ["right", B.right]].forEach(function (s) {
       var P = API.buildRig(s[1]);
       if (!P) return;
@@ -237,8 +240,11 @@
       slot.appendChild(P.root);
       if (!img.closest("a, button")) {
         slot.classList.add("is-tappable");
-        slot.addEventListener("pointerdown", function () { API.play(P.root, Math.random() < .5 ? "celebrate" : "wave"); });
+        slot.addEventListener("pointerdown", function () {
+          if (isHero) intro.tap(s[0]); else API.play(P.root, Math.random() < .5 ? "celebrate" : "wave");
+        });
       }
+      slot._rig = P.root;
       root.appendChild(slot);
     });
     var card = img.closest(".game-menu-card");
@@ -258,6 +264,75 @@
     window.addEventListener("resize", redo);
     redo(); requestAnimationFrame(redo); setTimeout(redo, 400);
     API.watch(root);
+    if (isHero) intro = heroIntro(root);
+  }
+
+  /* ---------------------------------------------------------- os mascotes se apresentam (banner principal) */
+  var intro = { tap: function () {} };
+  var HERO_SCRIPTS = [
+    [["left", "Olá! Eu sou o Aroldinho!", "wave"], ["right", "E eu sou o Toninho!", "wave"],
+     ["left", "Vamos jogar e descobrir a Coamo juntos?", "celebrate"], ["right", "Escolha um jogo aqui embaixo!", "talk"]],
+    [["right", "Cada jogo mostra um pedacinho da Coamo.", "talk"], ["left", "Tem quiz, memória, esteira e silos!", "celebrate"],
+     ["right", "Toque em um jogo para começar.", "wave"]]
+  ];
+  var TAP_LINES = {
+    left: ["Eu sou o Aroldinho! Bora jogar?", "Opa! Escolhe um jogo aí!", "Aroldinho na área!"],
+    right: ["Eu sou o Toninho. Prazer!", "Estou aqui para te guiar.", "Escolha um jogo e vamos juntos."]
+  };
+  function heroIntro(root) {
+    var bub = { left: root.querySelector(".cg-bubble--left"), right: root.querySelector(".cg-bubble--right") };
+    var rig = {
+      left: root.querySelector(".cg-banner__mascot--left") && root.querySelector(".cg-banner__mascot--left")._rig,
+      right: root.querySelector(".cg-banner__mascot--right") && root.querySelector(".cg-banner__mascot--right")._rig
+    };
+    var timers = [], typing = {}, round = 0, token = 0;
+    function onScreen() {
+      if (document.hidden || !root.isConnected) return false;
+      var r = root.getBoundingClientRect();
+      return r.width > 0 && r.bottom > 0 && r.top < window.innerHeight;
+    }
+    function show(side, text, act) {
+      var b = bub[side];
+      if (!b) return;
+      clearInterval(typing[side]);
+      b.textContent = "";
+      b.classList.remove("is-on"); void b.offsetWidth; b.classList.add("is-on");
+      var i = 0;
+      typing[side] = setInterval(function () {
+        i += 2; b.textContent = text.slice(0, i);
+        if (i >= text.length) { clearInterval(typing[side]); b.textContent = text; }
+      }, 32);
+      if (rig[side]) API.play(rig[side], act || "talk");
+    }
+    function hide(side) { if (bub[side]) bub[side].classList.remove("is-on"); }
+    function clear() { timers.forEach(clearTimeout); timers = []; }
+    function run() {
+      clear();
+      var my = ++token;
+      if (!onScreen()) { timers.push(setTimeout(run, 1500)); return; }
+      var script = HERO_SCRIPTS[round % HERO_SCRIPTS.length], t = 600;
+      round++;
+      script.forEach(function (line, k) {
+        timers.push(setTimeout(function () {
+          if (my !== token) return;
+          var other = line[0] === "left" ? "right" : "left";
+          if (k > 0 && script[k - 1][0] === line[0]) hide(other);
+          show(line[0], line[1], line[2]);
+        }, t));
+        t += Math.max(2300, 1100 + line[1].length * 48);
+      });
+      timers.push(setTimeout(function () { hide("left"); hide("right"); }, t + 2600));
+      timers.push(setTimeout(run, t + 9000));
+    }
+    timers.push(setTimeout(run, 900));
+    return {
+      tap: function (side) {
+        clear(); token++;
+        show(side, TAP_LINES[side][Math.floor(Math.random() * TAP_LINES[side].length)], "celebrate");
+        timers.push(setTimeout(function () { hide(side); }, 4200));
+        timers.push(setTimeout(run, 6500));
+      }
+    };
   }
   /* mesmo encaixe usado pelos bonecos: cobre a área desenhada do <img> */
   function place(img, el) {

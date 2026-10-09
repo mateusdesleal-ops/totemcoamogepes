@@ -166,13 +166,11 @@ img.cg-banner-src{ visibility:hidden !important; }
 }
 .cg-banner__brand img{
   position:static !important; display:block !important;
-  width:auto !important; height:3.6cqw !important; max-width:none !important;
+  width:auto !important; height:3.3cqw !important; max-width:none !important;
   margin:0 !important; border:0 !important; box-shadow:none !important; transform:none !important;
   visibility:visible !important; aspect-ratio:auto !important; object-fit:contain !important;
 }
-.cg-banner__brand b{
-  font-weight:900; font-size:3.1cqw; line-height:.9; color:#e0742a; letter-spacing:-.02em;
-}
+.cg-banner__brand{ padding:1cqw 1.6cqw !important; }
 
 .cg-banner__copy{
   position:absolute; left:27cqw; right:27cqw; top:7cqh;
@@ -184,9 +182,7 @@ img.cg-banner-src{ visibility:hidden !important; }
   font-weight:900; font-size:6.4cqw; line-height:.98; letter-spacing:-.025em;
   color:#054d24;
   text-wrap:balance;
-  paint-order:stroke fill;
-  -webkit-text-stroke:.9cqw #fff;
-  filter:drop-shadow(0 .5cqw 0 rgba(5,77,36,.18));
+  text-shadow:0 0 1.4cqw rgba(255,255,255,.95), 0 0 .5cqw rgba(255,255,255,.9);
 }
 .cg-banner__copy em{
   display:block; font-style:normal;
@@ -196,9 +192,41 @@ img.cg-banner-src{ visibility:hidden !important; }
   padding:.9cqw 2cqw; border-radius:1.6cqw;
   max-width:40cqw; text-wrap:balance;
 }
-.cg-banner__copy--hero{ left:24cqw; right:24cqw; top:10cqh; }
-.cg-banner__copy--hero strong{ font-size:10.5cqw; }
-.cg-banner__copy--hero em{ font-size:2.3cqw; max-width:46cqw; }
+.cg-banner__copy--hero{ left:28cqw; right:28cqw; top:5cqh; gap:2.6cqh; }
+.cg-banner__logo{
+  display:block !important; position:static !important;
+  width:44cqw !important; height:auto !important; max-width:none !important;
+  margin:0 !important; border:0 !important; transform:none !important; box-shadow:none !important;
+  visibility:visible !important; aspect-ratio:auto !important;
+  filter:drop-shadow(0 .6cqw 1.2cqw rgba(5,77,36,.18));
+}
+.cg-banner__copy--hero em{ font-size:2.05cqw; max-width:40cqw; }
+
+/* balões de apresentação (banner principal) */
+.cg-bubble{
+  position:absolute; z-index:5;
+  bottom:61cqh; width:23cqw;
+  padding:1.3cqw 1.6cqw;
+  background:#fff; color:#054d24;
+  border:.32cqw solid #f3b300; border-radius:2cqw;
+  font:800 1.95cqw/1.25 Montserrat, system-ui, sans-serif;
+  box-shadow:0 .8cqw 1.8cqw rgba(5,77,36,.18);
+  opacity:0; scale:.6; translate:0 2cqh;
+  transition:opacity .25s ease, scale .35s cubic-bezier(.3,1.5,.5,1), translate .35s ease;
+  min-height:5.6cqw;
+}
+.cg-bubble.is-on{ opacity:1; scale:1; translate:0 0; }
+.cg-bubble::after{
+  content:""; position:absolute; bottom:-1.25cqw;
+  width:2.2cqw; height:2.2cqw; background:#fff;
+  border-right:.32cqw solid #f3b300; border-bottom:.32cqw solid #f3b300;
+  rotate:45deg;
+}
+.cg-bubble--left { left:3cqw;  transform-origin:40% 100%; }
+.cg-bubble--left::after { left:9cqw; }
+.cg-bubble--right{ right:3cqw; transform-origin:60% 100%; }
+.cg-bubble--right::after{ right:11cqw; }
+@media (prefers-reduced-motion: reduce){ .cg-bubble{ transition:none; } }
 
 .cg-banner__mascot{
   position:absolute; bottom:-1cqh;
