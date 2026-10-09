@@ -631,7 +631,7 @@
       pill: "Desenvolvimento de Pessoas",
       title: "Conhecimento que une, cultura que transforma.",
       sub: "A Unicoamo fortalece o compromisso da Coamo com o desenvolvimento contínuo das pessoas, conectando conhecimento técnico, experiência prática, cultura organizacional e liderança para preparar profissionais para os desafios de hoje e do futuro.",
-      brand: "assets/logo_unicoamo_v12.png",
+      brand: "assets/logo_unicoamo_v12.webp",
       tags: ["Conhecimento técnico", "Experiência prática", "Cultura", "Liderança"],
     },
     {
@@ -641,7 +641,7 @@
       pill: "Qualidade de Vida",
       title: "Cuidado integral com as pessoas.",
       sub: "O Programa Qualidade de Vida promove ações estruturadas de saúde, valorização, engajamento e desenvolvimento emocional, reforçando o bem-estar, o pertencimento e a construção de ambientes de trabalho mais saudáveis.",
-      brand: "assets/logo_qualidade_vida_v11.png",
+      brand: "assets/logo_qualidade_vida_v11.webp",
       metric: { value: "4", label: "pilares de cuidado e bem-estar" },
       tags: ["Saúde integral", "Valorização e reconhecimento", "Engajamento social", "Cultura de saúde e maturidade emocional"],
     },
@@ -652,7 +652,7 @@
       pill: "Coamo + Saúde",
       title: "Cuidado disponível quando você precisa.",
       sub: "O Coamo + Saúde oferece atendimento digital de forma prática e acessível para funcionários e aprendizes, com serviços de saúde e cuidado disponíveis para apoiar o bem-estar no dia a dia.",
-      brand: "assets/logo_coamo_saude_v11.png",
+      brand: "assets/logo_coamo_saude_v11.webp",
       metric: { value: "24/7", label: "atendimento médico e suporte de enfermagem" },
       tags: ["Médico clínico geral", "Psicologia", "Enfermagem", "Nutrição", "Educador físico", "Gestantes", "Segunda opinião médica"],
     },
@@ -663,7 +663,7 @@
       pill: "Proteção à Saúde",
       title: "FUPS: proteção à saúde para quem faz parte da Coamo.",
       sub: "O FUPS é a Associação Fundo de Proteção à Saúde, um plano de saúde de autogestão criado em 1993 para atender exclusivamente os funcionários do grupo Coamo.",
-      brand: "assets/logo_fups_v11.png",
+      brand: "assets/logo_fups_v11.webp",
       tags: ["Autogestão", "Saúde", "Funcionários do grupo Coamo"],
     },
     {
@@ -673,7 +673,7 @@
       pill: "Esporte, cultura, saúde e lazer",
       title: "Integração e bem-estar além do trabalho.",
       sub: "A ARCAM contribui para a qualidade de vida dos funcionários por meio de iniciativas voltadas ao esporte, à cultura, à saúde e ao lazer, fortalecendo vínculos e momentos de convivência.",
-      brand: "assets/logo_arcam_v11.png",
+      brand: "assets/logo_arcam_v11.webp",
       tags: ["Esporte", "Cultura", "Saúde", "Lazer"],
     },
     {
@@ -683,8 +683,8 @@
       pill: "Programa de Estágio",
       title: "111 oportunidades para começar uma trajetória na Coamo.",
       sub: "O Programa de Estágio conecta aprendizado acadêmico, experiência prática e desenvolvimento profissional, criando oportunidades para estudantes de diferentes áreas construírem sua trajetória na Coamo.",
-      brand: "assets/logo_programa_estagios_v12.png",
-      brandFallbackImage: "assets/logo_programa_estagios_v11.png",
+      brand: "assets/logo_programa_estagios_v12.webp",
+      brandFallbackImage: "assets/logo_programa_estagios_v11.webp",
       brandFallback: "Programa de Estágio",
       metric: { value: "111", label: "vagas de estágio" },
       tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
@@ -696,8 +696,8 @@
       pill: "Programa de Estágio",
       title: "Formações que encontram espaço na Coamo.",
       sub: "Há oportunidades para estudantes de Engenharias, Agronomia, Medicina Veterinária, Fisioterapia, Fonoaudiologia, Enfermagem, Psicologia, Tecnologia, Alimentos, Bioprocessos e Biotecnologia, entre outras formações ligadas ao desenvolvimento das operações e dos negócios da Coamo.",
-      brand: "assets/logo_programa_estagios_v12.png",
-      brandFallbackImage: "assets/logo_programa_estagios_v11.png",
+      brand: "assets/logo_programa_estagios_v12.webp",
+      brandFallbackImage: "assets/logo_programa_estagios_v11.webp",
       brandFallback: "Programa de Estágio",
       tags: ["Engenharias", "Agronomia", "Veterinária", "Saúde", "Psicologia", "Tecnologia", "Alimentos", "Biotecnologia"],
     },
@@ -1151,12 +1151,12 @@
   let gamesMemoryTimer = null;
 
   const PROFILE_AREAS = {
-    campo: { title: "Campo & Cooperado", text: "Você demonstra afinidade com relacionamento, orientação e proximidade com a produção. Na Coamo, essa área conecta conhecimento técnico e cooperados.", image: "assets/quiz/v34/campo.png", icon: "🌾", accent: "campo" },
-    operacoes: { title: "Armazenagem & Operações", text: "Seu perfil combina com ambientes dinâmicos, processos e execução. Essa área conecta recebimento, movimentação, conservação e expedição.", image: "assets/quiz/v34/operacao.png", icon: "🏗", accent: "operacoes" },
-    industria: { title: "Indústria & Produção", text: "Você se identifica com produção, qualidade, manutenção e eficiência. A indústria transforma matéria-prima em novas possibilidades.", image: "assets/quiz/v34/operacao.png", icon: "⚙", accent: "industria" },
-    tecnologia: { title: "Tecnologia & Dados", text: "Seu perfil aponta para soluções digitais, análise e inovação. Na Coamo, a tecnologia ajuda uma grande operação a continuar conectada.", image: "assets/quiz/v34/tecnologia.png", icon: "💻", accent: "tecnologia" },
-    gestao: { title: "Gestão & Áreas Corporativas", text: "Você demonstra afinidade com planejamento, análise, organização e suporte à operação. Essa estrutura sustenta as decisões do negócio.", image: "assets/quiz/v34/gestao.png", icon: "👥", accent: "gestao" },
-    pessoas: { title: "Pessoas & Desenvolvimento", text: "Seu perfil combina com relações humanas, cuidado, desenvolvimento e apoio às pessoas. É um universo importante para fortalecer cultura e crescimento.", image: "assets/quiz/v34/pessoas.png", icon: "🤝", accent: "pessoas" },
+    campo: { title: "Campo & Cooperado", text: "Você demonstra afinidade com relacionamento, orientação e proximidade com a produção. Na Coamo, essa área conecta conhecimento técnico e cooperados.", image: "assets/quiz/v34/campo.webp", icon: "🌾", accent: "campo" },
+    operacoes: { title: "Armazenagem & Operações", text: "Seu perfil combina com ambientes dinâmicos, processos e execução. Essa área conecta recebimento, movimentação, conservação e expedição.", image: "assets/quiz/v34/operacao.webp", icon: "🏗", accent: "operacoes" },
+    industria: { title: "Indústria & Produção", text: "Você se identifica com produção, qualidade, manutenção e eficiência. A indústria transforma matéria-prima em novas possibilidades.", image: "assets/quiz/v34/operacao.webp", icon: "⚙", accent: "industria" },
+    tecnologia: { title: "Tecnologia & Dados", text: "Seu perfil aponta para soluções digitais, análise e inovação. Na Coamo, a tecnologia ajuda uma grande operação a continuar conectada.", image: "assets/quiz/v34/tecnologia.webp", icon: "💻", accent: "tecnologia" },
+    gestao: { title: "Gestão & Áreas Corporativas", text: "Você demonstra afinidade com planejamento, análise, organização e suporte à operação. Essa estrutura sustenta as decisões do negócio.", image: "assets/quiz/v34/gestao.webp", icon: "👥", accent: "gestao" },
+    pessoas: { title: "Pessoas & Desenvolvimento", text: "Seu perfil combina com relações humanas, cuidado, desenvolvimento e apoio às pessoas. É um universo importante para fortalecer cultura e crescimento.", image: "assets/quiz/v34/pessoas.webp", icon: "🤝", accent: "pessoas" },
   };
 
   const PROFILE_QUESTIONS = [
@@ -1193,14 +1193,14 @@
   ];
 
   const MEMORY_BASE_CARDS = [
-    { pairId: "u", type: "logo", image: "assets/logo_unicoamo_v12.png", label: "Unicoamo" },
-    { pairId: "u", type: "logo", image: "assets/logo_unicoamo_v12.png", label: "Unicoamo" },
-    { pairId: "f", type: "logo", image: "assets/logo_fups_v11.png", label: "FUPS" },
-    { pairId: "f", type: "logo", image: "assets/logo_fups_v11.png", label: "FUPS" },
-    { pairId: "s", type: "logo", image: "assets/logo_coamo_saude_v11.png", label: "Coamo + Saúde" },
-    { pairId: "s", type: "logo", image: "assets/logo_coamo_saude_v11.png", label: "Coamo + Saúde" },
-    { pairId: "a", type: "logo", image: "assets/logo_arcam_v11.png", label: "ARCAM" },
-    { pairId: "a", type: "logo", image: "assets/logo_arcam_v11.png", label: "ARCAM" },
+    { pairId: "u", type: "logo", image: "assets/logo_unicoamo_v12.webp", label: "Unicoamo" },
+    { pairId: "u", type: "logo", image: "assets/logo_unicoamo_v12.webp", label: "Unicoamo" },
+    { pairId: "f", type: "logo", image: "assets/logo_fups_v11.webp", label: "FUPS" },
+    { pairId: "f", type: "logo", image: "assets/logo_fups_v11.webp", label: "FUPS" },
+    { pairId: "s", type: "logo", image: "assets/logo_coamo_saude_v11.webp", label: "Coamo + Saúde" },
+    { pairId: "s", type: "logo", image: "assets/logo_coamo_saude_v11.webp", label: "Coamo + Saúde" },
+    { pairId: "a", type: "logo", image: "assets/logo_arcam_v11.webp", label: "ARCAM" },
+    { pairId: "a", type: "logo", image: "assets/logo_arcam_v11.webp", label: "ARCAM" },
     { pairId: "func", type: "fact", image: "assets/img_carreira.jpg", title: "+12 mil", subtitle: "" },
     { pairId: "func", type: "fact", image: "assets/img_carreira.jpg", title: "funcionários", subtitle: "" },
     { pairId: "coop", type: "fact", image: "assets/agro_01.jpg", title: "+32 mil", subtitle: "" },
@@ -1549,7 +1549,7 @@
       title: "A safra começou e o movimento aumentou.",
       scene: "Três caminhões chegam quase ao mesmo tempo. O pátio começa a ficar movimentado e os cooperados aguardam orientação.",
       prompt: "Qual decisão ajuda a iniciar a operação de forma organizada?",
-      image: "assets/mission/v29/scene_campus.png",
+      image: "assets/mission/v29/scene_campus.webp",
       options: [
         { icon: "🧭", label: "Organizar a chegada e orientar o fluxo", desc: "Recepcionar, direcionar e manter a movimentação organizada.", points: 320, impact: { safety: 6, quality: 1, efficiency: 7, service: 8 }, tone: "best", feedback: "Excelente decisão. Organização e orientação ajudam a operação a começar bem e melhoram a experiência de quem chega." },
         { icon: "⏩", label: "Liberar todos o mais rápido possível", desc: "Priorizar velocidade, mesmo com a área ficando mais congestionada.", points: 80, impact: { safety: -8, quality: 0, efficiency: -3, service: -2 }, tone: "risk", feedback: "A pressa pode aumentar o congestionamento e reduzir a segurança. Em uma operação intensa, organização é parte da eficiência." },
@@ -1575,7 +1575,7 @@
       title: "Agora é hora de escolher o destino da carga.",
       scene: "Há estruturas disponíveis, mas o produto deve seguir para um local compatível com suas condições e com o planejamento da unidade.",
       prompt: "Como você conduz essa decisão?",
-      image: "assets/mission/v29/scene_complex.png",
+      image: "assets/mission/v29/scene_complex.webp",
       options: [
         { icon: "🏬", label: "Direcionar conforme classificação e planejamento", desc: "Usar qualidade, capacidade e fluxo para escolher a estrutura adequada.", points: 360, impact: { safety: 2, quality: 8, efficiency: 7, service: 2 }, tone: "best", feedback: "Boa! Uma decisão integrada preserva a qualidade e evita movimentações desnecessárias." },
         { icon: "🎯", label: "Escolher apenas o espaço mais próximo", desc: "Priorizar distância, sem considerar as demais informações.", points: 100, impact: { safety: 0, quality: -7, efficiency: -3, service: 0 }, tone: "risk", feedback: "O espaço mais próximo nem sempre é o destino mais adequado. A decisão precisa considerar o conjunto da operação." },
@@ -1588,7 +1588,7 @@
       title: "A operação está chegando à etapa final.",
       scene: "Uma carga está pronta para seguir ao destino. Antes da saída, ainda há uma última decisão importante.",
       prompt: "O que você prioriza antes da liberação?",
-      image: "assets/mission/v29/scene_complex.png",
+      image: "assets/mission/v29/scene_complex.webp",
       options: [
         { icon: "✅", label: "Conferir carga, destino e liberação", desc: "Validar as informações antes de concluir a expedição.", points: 350, impact: { safety: 4, quality: 4, efficiency: 5, service: 7 }, tone: "best", feedback: "Missão quase concluída! Conferência final ajuda a conectar operação, logística e destino com segurança." },
         { icon: "🏁", label: "Liberar assim que o caminhão estiver pronto", desc: "Evitar nova conferência para ganhar alguns minutos.", points: 80, impact: { safety: -5, quality: -3, efficiency: -2, service: -6 }, tone: "risk", feedback: "Ganhar alguns minutos não compensa o risco de uma informação ou destino incorreto." },
@@ -1645,13 +1645,13 @@
 
 
   const MISSION_VISUALS = {
-    chegada: { actor: "assets/mission/v29/toninho_point.png", actorName: "Toninho", actorClass: "mission-actor--traffic", fx: "arrival", speech: "Vou organizar esse fluxo com você!" },
+    chegada: { actor: "assets/mission/v29/toninho_point.webp", actorName: "Toninho", actorClass: "mission-actor--traffic", fx: "arrival", speech: "Vou organizar esse fluxo com você!" },
     classificacao: { actor: "assets/mission/aroldinho_inspect.webp", actorName: "Aroldinho", actorClass: "mission-actor--inspect", fx: "lab", speech: "Vamos observar os detalhes da carga." },
-    armazenagem: { actor: "assets/mission/v29/toninho_point.png", actorName: "Toninho", actorClass: "mission-actor--storage", fx: "storage", speech: "Agora precisamos escolher o destino certo." },
+    armazenagem: { actor: "assets/mission/v29/toninho_point.webp", actorName: "Toninho", actorClass: "mission-actor--storage", fx: "storage", speech: "Agora precisamos escolher o destino certo." },
     alerta: { actor: "assets/mission/toninho_maintenance.webp", actorName: "Toninho", actorClass: "mission-actor--maintenance", fx: "maintenance", speech: "Alerta na operação. Segurança primeiro!" },
-    chuva: { actor: "assets/mission/v29/toninho_wave.png", actorName: "Toninho", actorClass: "mission-actor--weather", fx: "weather", speech: "O tempo mudou. Vamos reorganizar a operação." },
-    fila: { actor: "assets/mission/v29/toninho_point.png", actorName: "Toninho", actorClass: "mission-actor--queue", fx: "queue", speech: "A fila cresceu. Organização e comunicação!" },
-    expedicao: { actor: "assets/mission/v29/aroldinho_welcome.png", actorName: "Aroldinho", actorClass: "mission-actor--logistics", fx: "dispatch", speech: "Última etapa: vamos liberar a carga com atenção." },
+    chuva: { actor: "assets/mission/v29/toninho_wave.webp", actorName: "Toninho", actorClass: "mission-actor--weather", fx: "weather", speech: "O tempo mudou. Vamos reorganizar a operação." },
+    fila: { actor: "assets/mission/v29/toninho_point.webp", actorName: "Toninho", actorClass: "mission-actor--queue", fx: "queue", speech: "A fila cresceu. Organização e comunicação!" },
+    expedicao: { actor: "assets/mission/v29/aroldinho_welcome.webp", actorName: "Aroldinho", actorClass: "mission-actor--logistics", fx: "dispatch", speech: "Última etapa: vamos liberar a carga com atenção." },
   };
 
   function missionVisual(phase) {
@@ -1673,7 +1673,7 @@
   }
 
   function missionFxMarkup(type) {
-    if (type === "arrival") return `<div class="mission-fx mission-fx--arrival"><span class="motion-signal"></span><img class="motion-truck" src="assets/mission/coamo_truck.png" alt="" aria-hidden="true"><span class="motion-dust motion-dust--1"></span><span class="motion-dust motion-dust--2"></span></div>`;
+    if (type === "arrival") return `<div class="mission-fx mission-fx--arrival"><span class="motion-signal"></span><img class="motion-truck" src="assets/mission/coamo_truck.webp" alt="" aria-hidden="true"><span class="motion-dust motion-dust--1"></span><span class="motion-dust motion-dust--2"></span></div>`;
     if (type === "lab") return `<div class="mission-fx mission-fx--lab"><span class="lab-scanner"><i></i><b>QUALIDADE</b></span><span class="lab-grain lab-grain--1"></span><span class="lab-grain lab-grain--2"></span><span class="lab-grain lab-grain--3"></span></div>`;
     if (type === "storage") return `<div class="mission-fx mission-fx--storage"><span class="motion-conveyor"><i></i><b></b><em></em></span><span class="motion-grainfall">${Array.from({length:14},(_,i)=>`<i style="--i:${i}"></i>`).join("")}</span><span class="motion-gear">⚙</span><span class="motion-steam motion-steam--1"></span><span class="motion-steam motion-steam--2"></span></div>`;
     if (type === "maintenance") return `<div class="mission-fx mission-fx--maintenance"><span class="motion-alarm">!</span><span class="motion-wrench">🔧</span><span class="motion-steam motion-steam--3"></span><span class="motion-spark motion-spark--1"></span><span class="motion-spark motion-spark--2"></span></div>`;
@@ -1737,7 +1737,7 @@
       root.innerHTML = `
         <div class="mission-final mission-final--premium">
           <div class="mission-final__hero">
-            <img class="mission-final__mascot" src="assets/mission/v29/duo_highfive.png" alt="Toninho e Aroldinho comemorando">
+            <img class="mission-final__mascot" src="assets/mission/v29/duo_highfive.webp" alt="Toninho e Aroldinho comemorando">
             <div class="mission-final__medal">${result.icon}</div>
             <span>MISSÃO CONCLUÍDA · ${result.badge}</span>
             <h2>${result.title}</h2>
@@ -1952,7 +1952,7 @@
 
     return [
       {
-        id:"planejamento", mascot:"toninho", scene:"assets/games/farm/farm_landscape_v40.png",
+        id:"planejamento", mascot:"toninho", scene:"assets/games/farm/farm_landscape_v40.webp",
         kicker:"FASE 1 · PLANEJAMENTO", title:"A missão começa antes do plantio.",
         text:`Safra de ${session.crop.name}, ${weather.short.toLowerCase()} e ${demand.short.toLowerCase()}.`,
         decisionTitle:"Como você organiza o início da safra?",
@@ -1965,7 +1965,7 @@
         ],
       },
       {
-        id:"plantio", mascot:"aroldinho", scene:"assets/games/farm/farm_landscape_v40.png",
+        id:"plantio", mascot:"aroldinho", scene:"assets/games/farm/farm_landscape_v40.webp",
         kicker:"FASE 2 · PLANTIO", title:`Hora de colocar a ${crop} no campo.`,
         text:"O que acontece agora influencia todo o restante da safra.",
         decisionTitle:"Qual estratégia de plantio você escolhe?",
@@ -1978,7 +1978,7 @@
         ],
       },
       {
-        id:"cuidado", mascot:"toninho", scene:"assets/games/farm/farm_landscape_v40.png",
+        id:"cuidado", mascot:"toninho", scene:"assets/games/farm/farm_landscape_v40.webp",
         kicker:"FASE 3 · CUIDADO DA LAVOURA", title:careTitle,
         text:`O clima da rodada é: ${weather.short}.`,
         decisionTitle:"Como você reage à condição do campo?",
@@ -2388,7 +2388,7 @@
       if(sceneTitle) sceneTitle.textContent=phase.title;
       if(sceneText) sceneText.textContent=phase.text;
       const ton=phase.mascot==="toninho";
-      if(guideMascot){ guideMascot.src=ton?"assets/mascote_toninho_pose2.png":"assets/mascote_aroldinho.png"; guideMascot.alt=ton?"Toninho":"Aroldinho"; }
+      if(guideMascot){ guideMascot.src=ton?"assets/mascote_toninho_pose2.webp":"assets/mascote_aroldinho.webp"; guideMascot.alt=ton?"Toninho":"Aroldinho"; }
       if(guideSpeech) guideSpeech.textContent=phase.speech;
       if(dk) dk.textContent=`DECISÃO ${state.phaseIndex+1} DE 5`;
       if(dt) dt.textContent=phase.decisionTitle;

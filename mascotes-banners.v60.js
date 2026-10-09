@@ -18,27 +18,27 @@
 
   /* ---------------------------------------------------------- textos e elenco */
   var BANNERS = {
-    "hero_coamo_games.png": {
+    "hero_coamo_games.webp": {
       key: "hero", title: "Coamo Games", sub: "Aprenda, jogue e descubra a Coamo de um jeito diferente.",
       left: "g_aro2", right: "g_ton2", scene: hero
     },
-    "area_banner.png": {
+    "area_banner.webp": {
       key: "area", title: "Descubra sua área na Coamo", sub: "Responda e descubra o universo profissional que combina com você.",
       left: "g_aro1", right: "g_ton2", scene: area
     },
-    "memory_banner.png": {
+    "memory_banner.webp": {
       key: "memory", title: "Jogo da Memória", sub: "Encontre os pares e descubra curiosidades da Coamo.",
       left: "g_ton1", right: "g_aro2", scene: memory
     },
-    "chain_banner.png": {
+    "chain_banner.webp": {
       key: "chain", title: "Monte a cadeia Coamo", sub: "Do campo ao mercado: coloque cada etapa no lugar certo.",
       left: "g_aro1", right: "g_ton1", scene: chain
     },
-    "classification_banner.png": {
+    "classification_banner.webp": {
       key: "grain", title: "Desafio da Classificação", sub: "Separe grãos e impurezas antes que a esteira acelere.",
       left: "g_ton1", right: "g_aro1", scene: grain
     },
-    "silo_banner.png": {
+    "silo_banner.webp": {
       key: "silo", title: "Silo em Equilíbrio", sub: "Memorize os destinos e mantenha a operação sob controle.",
       left: "g_aro2", right: "g_ton2", scene: silo
     }

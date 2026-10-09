@@ -19,16 +19,16 @@
   API.speaks = !!(RIGS && Object.keys(RIGS).length && FALAS && FALAS.memory);
 
   var IMAGE_RIGS = {
-    "mascote_toninho.png": "g_ton1", "mascote_toninho_pose2.png": "g_ton2",
-    "mascote_aroldinho.png": "g_aro1", "mascote_aroldinho_pose2.png": "g_aro2"
+    "mascote_toninho.webp": "g_ton1", "mascote_toninho_pose2.webp": "g_ton2",
+    "mascote_aroldinho.webp": "g_aro1", "mascote_aroldinho_pose2.webp": "g_aro2"
   };
   var BANNERS = {
-    "hero_coamo_games.png":      { plate: "assets/mascotes/v58/b_hero_plate.webp",           rigs: ["b_hero_aro", "b_hero_ton"] },
-    "area_banner.png":           { plate: "assets/mascotes/v58/b_area_plate.webp",           rigs: ["b_area_aro", "b_area_ton"] },
-    "memory_banner.png":         { plate: "assets/mascotes/v58/b_memory_plate.webp",         rigs: ["b_memory_aro", "b_memory_ton"] },
-    "chain_banner.png":          { plate: "assets/mascotes/v58/b_chain_plate.webp",          rigs: ["b_chain_aro", "b_chain_ton"] },
-    "classification_banner.png": { plate: "assets/mascotes/v58/b_classification_plate.webp", rigs: ["b_classification_aro", "b_classification_ton"] },
-    "silo_banner.png":           { plate: "assets/mascotes/v58/b_silo_plate.webp",           rigs: ["b_silo_aro", "b_silo_ton"] }
+    "hero_coamo_games.webp":      { plate: "assets/mascotes/v58/b_hero_plate.webp",           rigs: ["b_hero_aro", "b_hero_ton"] },
+    "area_banner.webp":           { plate: "assets/mascotes/v58/b_area_plate.webp",           rigs: ["b_area_aro", "b_area_ton"] },
+    "memory_banner.webp":         { plate: "assets/mascotes/v58/b_memory_plate.webp",         rigs: ["b_memory_aro", "b_memory_ton"] },
+    "chain_banner.webp":          { plate: "assets/mascotes/v58/b_chain_plate.webp",          rigs: ["b_chain_aro", "b_chain_ton"] },
+    "classification_banner.webp": { plate: "assets/mascotes/v58/b_classification_plate.webp", rigs: ["b_classification_aro", "b_classification_ton"] },
+    "silo_banner.webp":           { plate: "assets/mascotes/v58/b_silo_plate.webp",           rigs: ["b_silo_aro", "b_silo_ton"] }
   };
   var GUIDE_GAMES = { "game-profile": 1, "game-memory": 1, "game-chain": 1 };
   var SPEECH = {
@@ -686,8 +686,8 @@
     var box = document.createElement("div");
     box.className = "coamo-guides";
     box.innerHTML =
-      '<figure class="coamo-guide coamo-guide--toninho"><img src="assets/mascote_toninho_pose2.png" alt="Toninho"><figcaption id="leftMascotSpeech" aria-live="polite">' + text[0] + '</figcaption></figure>' +
-      '<figure class="coamo-guide coamo-guide--aroldinho"><figcaption id="rightMascotSpeech" aria-live="polite">' + text[1] + '</figcaption><img src="assets/mascote_aroldinho.png" alt="Aroldinho"></figure>';
+      '<figure class="coamo-guide coamo-guide--toninho"><img src="assets/mascote_toninho_pose2.webp" alt="Toninho"><figcaption id="leftMascotSpeech" aria-live="polite">' + text[0] + '</figcaption></figure>' +
+      '<figure class="coamo-guide coamo-guide--aroldinho"><figcaption id="rightMascotSpeech" aria-live="polite">' + text[1] + '</figcaption><img src="assets/mascote_aroldinho.webp" alt="Aroldinho"></figure>';
     var anchor = panel.querySelector(".memory-status, .game-progress, #chainTrack, .profile-game");
     if (anchor && anchor.parentElement === panel) panel.insertBefore(box, anchor);
     else { var poster = panel.querySelector(".game-stage-poster-v34"); if (poster) poster.insertAdjacentElement("afterend", box); else panel.insertBefore(box, panel.firstChild); }
