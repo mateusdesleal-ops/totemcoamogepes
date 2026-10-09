@@ -3,7 +3,7 @@
    Carregado por último em todas as páginas.
    ========================================================= */
 
-/* ---------- Início: foto principal + boas-vindas + atalhos + números ---------- */
+/* ---------- Início: foto principal + atalhos + números ---------- */
 body[data-page="home"] .home-main{
   display:flex !important; flex-direction:column !important;
   height:auto !important; min-height:0 !important;
@@ -14,42 +14,9 @@ body[data-page="home"] .home-hero{
   flex:0 0 auto;
 }
 @media (orientation:portrait) and (max-width:1250px){
-  body[data-page="home"] .home-hero{ height:44svh !important; min-height:640px !important; }
+  body[data-page="home"] .home-hero{ height:50svh !important; min-height:640px !important; }
   body[data-page="home"] .home-hero__image{ object-position:62% 30% !important; }
 }
-
-.home-welcome{
-  position:relative;
-  display:grid; grid-template-columns:1fr 1fr; gap:18px;
-  align-items:end;
-  padding:10px 24px 0;
-  border-radius:30px;
-  background:linear-gradient(180deg, #eaf4ed 0%, #f6faf7 100%);
-  border:1px solid #d7e6db;
-  min-height:230px;
-  overflow:hidden;
-}
-.home-guide{ display:flex; align-items:flex-end; gap:12px; margin:0; min-width:0; position:relative; cursor:pointer; }
-.home-guide--a{ justify-content:flex-end; }
-.home-guide > img{ flex:0 0 auto; display:block; height:220px; width:auto; object-fit:contain; }
-
-.home-say{
-  position:relative; flex:0 1 auto;
-  max-width:360px; min-height:3.6em;
-  display:flex; align-items:center;
-  margin-bottom:92px; padding:14px 18px;
-  background:#fff; color:#0b4d2b;
-  border:3px solid #ebb51b; border-radius:20px;
-  font-weight:800; font-size:17px; line-height:1.3;
-  box-shadow:0 9px 18px rgba(25,68,45,.12);
-}
-.home-say::after{
-  content:""; position:absolute; bottom:18px; width:16px; height:16px;
-  background:#fff; border-left:3px solid #ebb51b; border-bottom:3px solid #ebb51b;
-}
-.home-guide--t .home-say::after, .page-guide--t .home-say::after{ left:-10px; transform:rotate(45deg); }
-.home-guide--a .home-say, .page-guide--a .home-say{ justify-content:flex-end; text-align:right; }
-.home-guide--a .home-say::after, .page-guide--a .home-say::after{ right:-10px; transform:rotate(-135deg); }
 
 .home-shortcuts{
   display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px;
@@ -92,13 +59,9 @@ body[data-page="home"] .home-hero{
 
 @media (orientation:portrait) and (max-width:1250px), (max-width:1100px){
   .home-shortcuts{ grid-template-columns:repeat(2, minmax(0,1fr)); }
-  .home-tile{ min-height:210px; }
+  .home-tile{ min-height:clamp(210px, 15svh, 330px); }
 }
 @media (max-width:760px){
-  .home-welcome{ grid-template-columns:1fr; padding:10px 14px 0; min-height:0; }
-  .home-guide--a{ display:none; }
-  .home-guide > img{ height:150px; }
-  .home-say{ font-size:14px; margin-bottom:60px; }
   .home-shortcuts{ grid-template-columns:1fr 1fr; gap:12px; }
   .home-tile{ min-height:170px; border-radius:20px; }
   .home-tile__text{ padding:14px; }
@@ -108,20 +71,6 @@ body[data-page="home"] .home-hero{
   .home-facts{ grid-template-columns:1fr; gap:10px; }
   .home-facts > div{ flex-direction:row; align-items:baseline; gap:10px; padding:14px 18px; }
   .home-facts strong{ font-size:26px; white-space:nowrap; }
-}
-
-/* ---------- Mascote-guia nas páginas (Vagas, Sorteio) ---------- */
-.page-guide{
-  display:flex; align-items:flex-end; gap:12px;
-  margin:0 0 16px; min-height:150px; cursor:pointer;
-}
-.page-guide--a{ justify-content:flex-end; }
-.page-guide > img{ display:block; height:150px; width:auto; object-fit:contain; }
-.page-guide .home-say{ margin-bottom:58px; font-size:16px; }
-@media (max-width:760px){
-  .page-guide{ min-height:110px; }
-  .page-guide > img{ height:110px; }
-  .page-guide .home-say{ font-size:13px; margin-bottom:40px; }
 }
 
 /* ---------- Sorteio: autorização de dados e vídeo sem internet ---------- */
