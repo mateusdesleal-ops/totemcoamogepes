@@ -1,0 +1,105 @@
+/* =========================================================
+   COAMO GAMES — V63 · ACABAMENTO DOS JOGOS
+   Carregado por último nas páginas de jogo.
+   ========================================================= */
+
+/* ---------- 1. Seções escondidas ficam escondidas de verdade
+   (antes, o CSS mostrava jogo e resultado antes da partida começar) ---------- */
+.grain-page [hidden], .silo-page [hidden], .game-single-page [hidden]{ display:none !important; }
+
+/* ---------- 2. Título não se repete: o banner já mostra o nome do jogo ---------- */
+.grain-intro__copy h1, .silo-intro__copy h1,
+.grain-kicker, .silo-kicker{
+  position:absolute !important; width:1px !important; height:1px !important;
+  overflow:hidden !important; clip:rect(0 0 0 0) !important; white-space:nowrap !important;
+}
+.grain-intro__copy > p, .silo-intro__copy > p{ font-size:19px !important; line-height:1.55 !important; color:#36503f !important; }
+
+/* ---------- 3. Tabuleiros cabendo na tela ---------- */
+.memory-grid, .memory-grid--v18{ grid-template-columns:repeat(4, minmax(0,1fr)) !important; gap:12px !important; }
+.memory-card{ aspect-ratio:.86 / 1 !important; }
+.chain-options, .chain-options--v18{ grid-template-columns:repeat(3, minmax(0,1fr)) !important; gap:12px !important; padding:0 !important; }
+.chain-option{ grid-template-rows:150px auto !important; }
+.chain-option__scene{ height:150px !important; }
+.chain-option__body strong{ font-size:18px !important; }
+.silo-grid{ grid-template-columns:repeat(4, minmax(0,1fr)) !important; gap:12px !important; }
+.silo-unit__body{ height:clamp(190px, 17vh, 300px) !important; }
+@media (max-width:760px){
+  .memory-grid, .memory-grid--v18{ gap:8px !important; }
+  .chain-options, .chain-options--v18{ grid-template-columns:repeat(2, minmax(0,1fr)) !important; }
+  .chain-option{ grid-template-rows:110px auto !important; }
+  .chain-option__scene{ height:110px !important; }
+  .silo-grid{ grid-template-columns:repeat(2, minmax(0,1fr)) !important; }
+  .silo-unit__body{ height:170px !important; }
+}
+
+/* ---------- 4. Placar igual em todos os jogos ---------- */
+.grain-hud, .silo-hud, .memory-status, .chain-hud{
+  display:grid !important; gap:10px !important;
+  grid-auto-flow:column !important; grid-auto-columns:minmax(0,1fr) !important; grid-template-columns:none !important;
+}
+.grain-hud > div, .silo-hud > div, .memory-status > div, .chain-hud__card{
+  display:flex !important; flex-direction:column-reverse !important; align-items:center !important; justify-content:center !important;
+  gap:4px !important; min-height:92px !important; padding:12px 8px !important;
+  background:#0b4d2b !important; color:#fff !important; border:0 !important;
+  border-radius:20px !important; box-shadow:0 10px 22px rgba(5,77,36,.18) !important; text-align:center !important;
+}
+.grain-hud strong, .silo-hud strong, .memory-status strong, .chain-hud__card strong{
+  font-size:34px !important; line-height:1 !important; font-weight:900 !important; color:#fff !important;
+  font-variant-numeric:tabular-nums; letter-spacing:-.01em;
+}
+.grain-hud small, .silo-hud small, .memory-status span, .chain-hud__card small{
+  font-size:12px !important; font-weight:800 !important; letter-spacing:.12em !important; text-transform:uppercase !important;
+  color:#f6cf3c !important; margin:0 !important;
+}
+.chain-hud__card i{ display:none !important; }
+#grainLives, #siloLives{ color:#ff8a80 !important; font-size:26px !important; letter-spacing:.06em !important; }
+@media (max-width:760px){
+  .grain-hud, .silo-hud, .memory-status, .chain-hud{ grid-auto-flow:row !important; grid-template-columns:repeat(2, minmax(0,1fr)) !important; }
+  .grain-hud > div, .silo-hud > div, .memory-status > div, .chain-hud__card{ min-height:70px !important; }
+  .grain-hud strong, .silo-hud strong, .memory-status strong, .chain-hud__card strong{ font-size:26px !important; }
+}
+
+/* ---------- 5. Botões no tamanho do dedo ---------- */
+.grain-start, .silo-start, .game-cover__start,
+#grainPlayAgain, #siloPlayAgain, #memoryRestart, #chainRestart, #profileRestart,
+.grain-result__actions .btn, .silo-result__actions .btn{
+  min-height:72px !important; padding:0 34px !important; font-size:20px !important; border-radius:20px !important;
+}
+.grain-start, .silo-start, #grainPlayAgain, #siloPlayAgain, #memoryRestart, #chainRestart{
+  background:linear-gradient(180deg, #f6cf3c 0%, #e8962e 100%) !important; color:#3b2400 !important;
+  box-shadow:0 10px 0 #b46a14, 0 18px 30px rgba(180,106,20,.3) !important;
+  transition:transform .12s ease, box-shadow .12s ease !important;
+}
+.grain-start:active, .silo-start:active, #grainPlayAgain:active, #siloPlayAgain:active, #memoryRestart:active, #chainRestart:active{
+  transform:translateY(6px) !important; box-shadow:0 4px 0 #b46a14, 0 8px 16px rgba(180,106,20,.3) !important;
+}
+.grain-help, .silo-tip small, .profile-question__helper{ font-size:16px !important; }
+
+/* ---------- 6. Tela de resultado ---------- */
+.grain-result__badge, .silo-result__badge{
+  font-size:110px !important; line-height:1 !important;
+  filter:drop-shadow(0 12px 20px rgba(160,100,0,.3));
+  animation:cgBadgeIn .8s cubic-bezier(.3,1.6,.5,1) both;
+}
+.grain-result h2, .silo-result h2, #grainResultTitle, #siloResultTitle{ font-size:clamp(44px,5vw,68px) !important; color:#0b4d2b !important; }
+.grain-result__score strong, #siloFinalScore{ font-size:96px !important; color:#0b4d2b !important; letter-spacing:-.03em; }
+.game-result__card--celebrate{ text-align:center !important; padding:34px !important; }
+.game-result__card--celebrate h3{ font-size:34px !important; }
+@keyframes cgBadgeIn{ 0%{ transform:scale(.3) rotate(-20deg); opacity:0; } 100%{ transform:scale(1) rotate(0); opacity:1; } }
+
+/* ---------- 7. Contagem 3, 2, 1, Já! ---------- */
+.cg-count{
+  position:fixed; inset:0; z-index:9998;
+  display:grid; place-items:center;
+  background:rgba(4,40,23,.72); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+  pointer-events:none;
+}
+.cg-count b{
+  font:900 clamp(140px, 22vw, 280px)/1 Montserrat, system-ui, sans-serif;
+  color:#f6cf3c; text-shadow:0 10px 0 #b46a14, 0 24px 50px rgba(0,0,0,.35);
+  animation:cgCount .9s cubic-bezier(.3,1.5,.5,1) both;
+}
+.cg-count b.is-go{ color:#fff; text-shadow:0 10px 0 #0b4d2b, 0 24px 50px rgba(0,0,0,.35); }
+@keyframes cgCount{ 0%{ transform:scale(2.2); opacity:0; } 35%{ transform:scale(1); opacity:1; } 80%{ opacity:1; } 100%{ transform:scale(.8); opacity:0; } }
+@media (prefers-reduced-motion: reduce){ .cg-count b, .grain-result__badge, .silo-result__badge{ animation:none !important; } }
