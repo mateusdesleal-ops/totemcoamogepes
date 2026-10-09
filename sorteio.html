@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b4d2b">
   <title>Sorteio • Coamo</title>
+  <meta name="description" content="Assista ao vídeo e cadastre-se no sorteio da Coamo.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Coamo">
+  <meta property="og:title" content="Sorteio #SomosCoamo">
+  <meta property="og:description" content="Assista ao vídeo e cadastre-se no sorteio da Coamo.">
+  <meta property="og:image" content="https://totemcoamogepes.vercel.app/assets/compartilhar-coamo.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/pwa/icon-192.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -19,6 +29,8 @@
   <meta name="apple-mobile-web-app-title" content="Coamo Totem">
   <link rel="apple-touch-icon" href="assets/pwa/icon-192.png?v=52.0">
   <script src="pwa.v55.js?v=55.0" defer></script>
+  <link rel="stylesheet" href="site.v61.css?v=61.0">
+  <link rel="stylesheet" href="mascotes.v59.css?v=59.0">
 </head>
 <body data-page="raffle">
   <div class="kiosk-shell">
@@ -39,11 +51,19 @@
       <section class="raffle-heading">
         <div><span class="section-kicker">#SomosCoamo</span><h1>Participe do sorteio.</h1><p>Assista ao vídeo e faça seu cadastro no próprio totem.</p></div>
       </section>
+      <figure class="page-guide page-guide--a">
+        <figcaption class="home-say" data-say="a" aria-live="polite">Preencha seu nome e telefone. É rapidinho!</figcaption>
+        <img src="assets/mascote_aroldinho_pose2.webp" alt="Aroldinho">
+      </figure>
 
       <section class="raffle-layout">
         <div class="raffle-video-card">
           <div class="raffle-video-card__header"><span>Vídeo</span><strong>Conheça e participe</strong></div>
           <div class="raffle-video-frame">
+            <div class="raffle-video-offline" hidden>
+              <img src="assets/video-thumb.webp" alt="">
+              <p>O vídeo precisa de internet. Você pode se cadastrar normalmente no formulário.</p>
+            </div>
             <iframe src="https://www.youtube.com/embed/FpTDQahbx8c?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1" title="Vídeo do sorteio #SomosCoamo" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
           </div>
         </div>
@@ -53,15 +73,26 @@
           <form id="sorteioForm" action="https://docs.google.com/forms/d/e/1FAIpQLSd1vR1Si2jTsZUZHwwxCnNH9ShEWjVRZ4Xr2HqXgxpiCEycOQ/formResponse" method="POST" target="hidden_iframe">
             <label class="form-field" for="sorteioNome"><span>Nome completo *</span><input id="sorteioNome" name="entry.959601241" type="text" autocomplete="name" required placeholder="Digite seu nome"></label>
             <label class="form-field" for="sorteioTel"><span>Telefone *</span><input id="sorteioTel" name="entry.1864990246" type="tel" inputmode="tel" autocomplete="tel" required placeholder="(DDD) 99999-9999"></label>
+            <label class="form-consent" for="sorteioAceite">
+              <input id="sorteioAceite" type="checkbox" required>
+              <span>Autorizo o uso do meu nome e telefone para participar deste sorteio e ser contatado(a) caso seja sorteado(a).</span>
+            </label>
+            <details class="form-privacy">
+              <summary>Como usamos seus dados</summary>
+              <p>Nome e telefone são usados somente para registrar sua participação neste sorteio e entrar em contato com quem for sorteado(a).</p>
+            </details>
             <button class="btn btn--primary btn--submit" type="submit">Quero participar</button>
             <div class="form-success" id="sorteioSuccess" role="status" aria-live="polite">Cadastro enviado com sucesso. Boa sorte! ★</div>
-            <p class="form-note">Ao enviar, os dados informados serão registrados no formulário oficial do sorteio.</p>
+            <p class="form-note">Ao enviar, os dados são registrados no formulário oficial do sorteio.</p>
           </form>
           <iframe name="hidden_iframe" title="Envio do formulário" class="hidden-frame"></iframe>
         </div>
       </section>
     </main>
   </div>
+  <script src="mascotes-rigs.v58.js?v=58.0"></script>
+  <script src="mascotes.v59.js?v=59.0"></script>
   <script src="app.v42.js?v=55.0"></script>
+  <script src="site.v61.js?v=61.0"></script>
 </body>
 </html>

@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b4d2b">
   <title>Coamo • Totem GEPES</title>
+  <meta name="description" content="Vagas abertas, a Coamo por dentro, sorteio e o Coamo Games. Encontre onde a sua experiência pode nos levar.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Coamo">
+  <meta property="og:title" content="Carreiras na Coamo">
+  <meta property="og:description" content="Vagas abertas, a Coamo por dentro, sorteio e o Coamo Games. Encontre onde a sua experiência pode nos levar.">
+  <meta property="og:image" content="https://totemcoamogepes.vercel.app/assets/compartilhar-coamo.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/pwa/icon-192.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -19,6 +29,8 @@
   <meta name="apple-mobile-web-app-title" content="Coamo Totem">
   <link rel="apple-touch-icon" href="assets/pwa/icon-192.png?v=52.0">
   <script src="pwa.v55.js?v=55.0" defer></script>
+  <link rel="stylesheet" href="site.v61.css?v=61.0">
+  <link rel="stylesheet" href="mascotes.v59.css?v=59.0">
 </head>
 <body data-page="home">
   <div class="kiosk-shell">
@@ -55,10 +67,47 @@
         </div>
       </section>
 
-      
+      <section class="home-welcome" aria-label="Toninho e Aroldinho dão as boas-vindas">
+        <figure class="home-guide home-guide--t">
+          <img src="assets/mascote_toninho_pose2.webp" alt="Toninho">
+          <figcaption class="home-say" data-say="t" aria-live="polite">Olá! Que bom ter você aqui.</figcaption>
+        </figure>
+        <figure class="home-guide home-guide--a">
+          <figcaption class="home-say" data-say="a" aria-live="polite">Toque em uma opção para começar!</figcaption>
+          <img src="assets/mascote_aroldinho.webp" alt="Aroldinho">
+        </figure>
+      </section>
+
+      <nav class="home-shortcuts" aria-label="Por onde começar">
+        <a class="home-tile" href="vagas.html">
+          <img class="home-tile__img" src="assets/vaga_fotos/adm_operacional.jpg" alt="">
+          <span class="home-tile__text"><strong>Vagas abertas</strong><small>Veja as oportunidades e candidate-se</small></span>
+        </a>
+        <a class="home-tile home-tile--games" data-feature="games" href="jogos.html">
+          <span class="home-tile__brand"><img src="assets/coamo-games/logo-coamo-games.svg" alt=""></span>
+          <span class="home-tile__text"><strong>Coamo Games</strong><small>Jogue e descubra a Coamo</small></span>
+        </a>
+        <a class="home-tile" data-feature="raffle" href="sorteio.html">
+          <img class="home-tile__img" src="assets/video-thumb.webp" alt="">
+          <span class="home-tile__text"><strong>Sorteio</strong><small>Cadastre-se aqui no totem</small></span>
+        </a>
+        <a class="home-tile" href="apresentacao.html">
+          <img class="home-tile__img" src="assets/agro_01.jpg" alt="">
+          <span class="home-tile__text"><strong>Conheça a Coamo</strong><small>Áreas, estrutura e jeito de trabalhar</small></span>
+        </a>
+      </nav>
+
+      <section class="home-facts" aria-label="A Coamo em números">
+        <div><strong>+32 mil</strong><span>cooperados</span></div>
+        <div><strong>+12 mil</strong><span>funcionários</span></div>
+        <div><strong>A maior</strong><span>cooperativa agrícola da América Latina</span></div>
+      </section>
     </main>
   </div>
 
+  <script src="mascotes-rigs.v58.js?v=58.0"></script>
+  <script src="mascotes.v59.js?v=59.0"></script>
   <script src="app.v42.js?v=55.0"></script>
+  <script src="site.v61.js?v=61.0"></script>
 </body>
 </html>

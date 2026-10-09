@@ -1,0 +1,173 @@
+/* =========================================================
+   TOTEM COAMO — V61 · AJUSTES GERAIS DO SITE
+   Carregado por último em todas as páginas.
+   ========================================================= */
+
+/* ---------- Início: foto principal + boas-vindas + atalhos + números ---------- */
+body[data-page="home"] .home-main{
+  display:flex !important; flex-direction:column !important;
+  height:auto !important; min-height:0 !important;
+  gap:22px !important;
+}
+body[data-page="home"] .home-hero{
+  height:min(70vh, 820px) !important; min-height:520px !important; max-height:none !important;
+  flex:0 0 auto;
+}
+@media (orientation:portrait) and (max-width:1250px){
+  body[data-page="home"] .home-hero{ height:44svh !important; min-height:640px !important; }
+  body[data-page="home"] .home-hero__image{ object-position:62% 30% !important; }
+}
+
+.home-welcome{
+  position:relative;
+  display:grid; grid-template-columns:1fr 1fr; gap:18px;
+  align-items:end;
+  padding:10px 24px 0;
+  border-radius:30px;
+  background:linear-gradient(180deg, #eaf4ed 0%, #f6faf7 100%);
+  border:1px solid #d7e6db;
+  min-height:230px;
+  overflow:hidden;
+}
+.home-guide{ display:flex; align-items:flex-end; gap:12px; margin:0; min-width:0; position:relative; cursor:pointer; }
+.home-guide--a{ justify-content:flex-end; }
+.home-guide > img{ flex:0 0 auto; display:block; height:220px; width:auto; object-fit:contain; }
+
+.home-say{
+  position:relative; flex:0 1 auto;
+  max-width:360px; min-height:3.6em;
+  display:flex; align-items:center;
+  margin-bottom:92px; padding:14px 18px;
+  background:#fff; color:#0b4d2b;
+  border:3px solid #ebb51b; border-radius:20px;
+  font-weight:800; font-size:17px; line-height:1.3;
+  box-shadow:0 9px 18px rgba(25,68,45,.12);
+}
+.home-say::after{
+  content:""; position:absolute; bottom:18px; width:16px; height:16px;
+  background:#fff; border-left:3px solid #ebb51b; border-bottom:3px solid #ebb51b;
+}
+.home-guide--t .home-say::after, .page-guide--t .home-say::after{ left:-10px; transform:rotate(45deg); }
+.home-guide--a .home-say, .page-guide--a .home-say{ justify-content:flex-end; text-align:right; }
+.home-guide--a .home-say::after, .page-guide--a .home-say::after{ right:-10px; transform:rotate(-135deg); }
+
+.home-shortcuts{
+  display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px;
+}
+.home-tile{
+  position:relative; display:flex; flex-direction:column;
+  min-height:250px; border-radius:26px; overflow:hidden;
+  background:#0b4d2b; color:#fff; text-decoration:none;
+  box-shadow:0 14px 30px rgba(7,56,32,.14);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.home-tile:active{ transform:scale(.98); }
+.home-tile:focus-visible{ outline:4px solid #f3b300; outline-offset:3px; }
+.home-tile__img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.home-tile::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(4,40,23,0) 30%, rgba(4,40,23,.86) 100%);
+}
+.home-tile__text{
+  position:relative; z-index:1; margin-top:auto;
+  display:flex; flex-direction:column; gap:4px; padding:20px 22px;
+}
+.home-tile__text strong{ font-size:24px; line-height:1.1; font-weight:900; letter-spacing:-.01em; }
+.home-tile__text small{ font-size:14px; line-height:1.35; font-weight:600; color:rgba(255,255,255,.88); }
+.home-tile--games{ background:linear-gradient(160deg, #cfe9f5 0%, #eef7ec 58%, #7fb24f 58%, #3f8a4e 100%); }
+.home-tile--games::after{ background:linear-gradient(180deg, rgba(4,40,23,0) 48%, rgba(4,40,23,.82) 100%); }
+.home-tile__brand{ position:absolute; inset:18px 18px 92px; display:grid; place-items:center; }
+.home-tile__brand img{ width:min(84%, 260px); height:auto; filter:drop-shadow(0 8px 14px rgba(5,77,36,.22)); }
+
+.home-facts{
+  display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:16px;
+}
+.home-facts > div{
+  display:flex; flex-direction:column; gap:4px;
+  padding:20px 24px; border-radius:22px;
+  background:#fff; border:1px solid #dbe8df;
+}
+.home-facts strong{ font-size:34px; line-height:1; font-weight:900; color:#0b4d2b; letter-spacing:-.02em; }
+.home-facts span{ font-size:15px; line-height:1.35; font-weight:600; color:#4f6a5b; }
+
+@media (orientation:portrait) and (max-width:1250px), (max-width:1100px){
+  .home-shortcuts{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+  .home-tile{ min-height:210px; }
+}
+@media (max-width:760px){
+  .home-welcome{ grid-template-columns:1fr; padding:10px 14px 0; min-height:0; }
+  .home-guide--a{ display:none; }
+  .home-guide > img{ height:150px; }
+  .home-say{ font-size:14px; margin-bottom:60px; }
+  .home-shortcuts{ grid-template-columns:1fr 1fr; gap:12px; }
+  .home-tile{ min-height:170px; border-radius:20px; }
+  .home-tile__text{ padding:14px; }
+  .home-tile__text strong{ font-size:18px; }
+  .home-tile__text small{ font-size:12px; }
+  .home-tile__brand{ inset:10px 10px 70px; }
+  .home-facts{ grid-template-columns:1fr; gap:10px; }
+  .home-facts > div{ flex-direction:row; align-items:baseline; gap:10px; padding:14px 18px; }
+  .home-facts strong{ font-size:26px; white-space:nowrap; }
+}
+
+/* ---------- Mascote-guia nas páginas (Vagas, Sorteio) ---------- */
+.page-guide{
+  display:flex; align-items:flex-end; gap:12px;
+  margin:0 0 16px; min-height:150px; cursor:pointer;
+}
+.page-guide--a{ justify-content:flex-end; }
+.page-guide > img{ display:block; height:150px; width:auto; object-fit:contain; }
+.page-guide .home-say{ margin-bottom:58px; font-size:16px; }
+@media (max-width:760px){
+  .page-guide{ min-height:110px; }
+  .page-guide > img{ height:110px; }
+  .page-guide .home-say{ font-size:13px; margin-bottom:40px; }
+}
+
+/* ---------- Sorteio: autorização de dados e vídeo sem internet ---------- */
+.form-consent{
+  display:flex; gap:12px; align-items:flex-start;
+  padding:14px 16px; border-radius:16px;
+  background:#f4f8f5; border:1px solid #d7e6db;
+  font-size:14px; line-height:1.45; font-weight:600; color:#24402f;
+  cursor:pointer;
+}
+.form-consent input{ flex:0 0 auto; width:26px; height:26px; margin:0; accent-color:#0b4d2b; cursor:pointer; }
+.form-privacy{ font-size:13px; color:#4f6a5b; }
+.form-privacy summary{ cursor:pointer; font-weight:800; color:#0b4d2b; padding:4px 0; }
+.form-privacy p{ margin:6px 0 0; line-height:1.5; }
+.raffle-video-frame{ position:relative; }
+.raffle-video-offline{
+  position:absolute; inset:0; display:grid; place-items:center; align-content:center; gap:14px;
+  padding:24px; text-align:center; background:#0b4d2b; color:#fff; border-radius:inherit;
+}
+.raffle-video-offline[hidden]{ display:none; }
+.raffle-video-offline img{ max-width:70%; max-height:60%; border-radius:16px; object-fit:cover; }
+.raffle-video-offline p{ margin:0; font-weight:700; font-size:17px; max-width:420px; }
+
+/* ---------- Menu no celular: todos os botões visíveis, em duas linhas ---------- */
+@media (max-width:760px){
+  .topbar .topnav{
+    display:flex !important; flex-wrap:wrap !important; justify-content:center !important;
+    overflow:visible !important; gap:6px !important; width:100% !important;
+    padding:4px 0 8px !important;
+  }
+  .topbar .topnav__item{
+    flex:0 1 auto !important; min-width:0 !important;
+    height:40px !important; padding:0 12px !important; font-size:12px !important;
+  }
+}
+
+/* ---------- Coamo Games: banner principal não ultrapassa a largura da tela ---------- */
+.games-page{ overflow-x:clip; }
+.games-hero-v31{ max-width:100% !important; box-sizing:border-box !important; }
+
+/* ---------- Menu no celular: grade 3 x 2, todos os itens visíveis ---------- */
+@media (max-width:760px){
+  .topbar .topnav{
+    display:grid !important; grid-template-columns:repeat(3, minmax(0,1fr)) !important;
+    justify-items:stretch !important;
+  }
+  .topbar .topnav__item{ width:100% !important; justify-content:center !important; text-align:center !important; white-space:nowrap !important; padding:0 6px !important; }
+  .topbar .topnav__item.is-feature-hidden{ display:none !important; }
+}
