@@ -103,3 +103,115 @@
 .cg-count b.is-go{ color:#fff; text-shadow:0 10px 0 #0b4d2b, 0 24px 50px rgba(0,0,0,.35); }
 @keyframes cgCount{ 0%{ transform:scale(2.2); opacity:0; } 35%{ transform:scale(1); opacity:1; } 80%{ opacity:1; } 100%{ transform:scale(.8); opacity:0; } }
 @media (prefers-reduced-motion: reduce){ .cg-count b, .grain-result__badge, .silo-result__badge{ animation:none !important; } }
+
+/* =========================================================
+   V64 · O JOGO EM SI
+   ========================================================= */
+
+/* ---------- ícones desenhados (milho, trigo, impurezas) ---------- */
+.grain-corn-icon, .grain-wheat-icon, .grain-dirt-icon{
+  display:block; width:1.35em; height:1.35em; overflow:visible; pointer-events:none; user-select:none;
+}
+.grain-bin__icon .grain-corn-icon, .grain-bin__icon .grain-wheat-icon, .grain-bin__icon .grain-dirt-icon,
+.grain-bin__icon .grain-soy-icon{ width:62px !important; height:62px !important; margin:0 auto 4px; }
+.grain-item__icon svg{ width:1.3em !important; height:1.3em !important; }
+.silo-load__icon svg{ width:56px; height:56px; display:block; }
+
+/* ---------- Classificação: esteira viva, itens balançando, caixas reagindo ---------- */
+.grain-conveyor__rollers{ background-size:58px 100% !important; animation:cgRollers .6s linear infinite; }
+.grain-game.is-final-sprint .grain-conveyor__rollers{ animation-duration:.28s; }
+@keyframes cgRollers{ from{ background-position:0 0; } to{ background-position:58px 0; } }
+.grain-item{ background:#fff !important; box-shadow:0 8px 16px rgba(0,0,0,.28), inset 0 -4px 0 rgba(0,0,0,.06) !important; }
+.grain-item__icon{ animation:cgWobble 1.4s ease-in-out infinite; display:grid; place-items:center; }
+@keyframes cgWobble{ 0%,100%{ rotate:-6deg; } 50%{ rotate:6deg; } }
+.grain-bin{ transition:transform .15s ease; }
+.grain-bin.is-hit{ animation:cgBinHit .5s cubic-bezier(.3,1.6,.5,1) !important; box-shadow:0 0 0 6px rgba(46,157,88,.25) !important; }
+.grain-bin.is-wrong{ animation:cgBinWrong .45s ease !important; box-shadow:0 0 0 6px rgba(217,90,70,.25) !important; }
+@keyframes cgBinHit{ 0%{ transform:scale(1); } 40%{ transform:scale(1.07) translateY(-6px); } 100%{ transform:scale(1); } }
+@keyframes cgBinWrong{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-10px); } 40%{ transform:translateX(9px); } 60%{ transform:translateX(-6px); } 80%{ transform:translateX(4px); } }
+.cg-drop{ position:fixed; z-index:9997; width:64px; height:64px; pointer-events:none; translate:-50% -50%; }
+.cg-drop svg{ width:100%; height:100%; }
+
+/* barra de combo */
+.cg-combo{ display:flex; align-items:center; gap:14px; margin:4px 0 2px; }
+.cg-combo__label{ font:900 15px/1 Montserrat, system-ui, sans-serif; color:#0b4d2b; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+.cg-combo__bar{ flex:1; height:16px; border-radius:999px; background:#dfece2; overflow:hidden; box-shadow:inset 0 2px 4px rgba(0,0,0,.08); }
+.cg-combo__bar i{ display:block; height:100%; width:0; border-radius:inherit;
+  background:linear-gradient(90deg, #8bbd4a, #f6cf3c 60%, #e0742a); transition:width .3s ease; }
+.cg-combo.is-hot .cg-combo__bar i{ animation:cgHot .6s ease-in-out infinite alternate; }
+@keyframes cgHot{ from{ filter:brightness(1); } to{ filter:brightness(1.25); } }
+
+/* aviso de fase no meio da tela */
+.cg-phase{
+  position:fixed; left:50%; top:38%; z-index:9996; translate:-50% -50%;
+  padding:22px 46px; border-radius:999px; background:#0b4d2b; color:#fff;
+  font:900 clamp(30px, 5vw, 54px)/1 Montserrat, system-ui, sans-serif; text-align:center; white-space:nowrap;
+  border:5px solid #f6cf3c; box-shadow:0 24px 60px rgba(0,0,0,.35); pointer-events:none;
+  animation:cgPhase 1.6s cubic-bezier(.3,1.5,.5,1) both;
+}
+.cg-phase small{ display:block; font-size:.4em; letter-spacing:.2em; color:#f6cf3c; margin-bottom:8px; }
+.cg-phase.is-extreme{ background:#8c1d18; border-color:#ffb199; }
+@keyframes cgPhase{ 0%{ scale:.4; opacity:0; } 18%{ scale:1.06; opacity:1; } 26%{ scale:1; } 80%{ opacity:1; } 100%{ scale:.9; opacity:0; } }
+
+/* ---------- Silo: grão subindo, níveis coloridos, carga caindo ---------- */
+.silo-unit__fill{ transition:height .7s cubic-bezier(.3,1.2,.5,1) !important; }
+.silo-unit.is-warning{ box-shadow:0 0 0 4px rgba(243,179,0,.45) !important; }
+.silo-unit.is-warning .silo-unit__title b{ color:#b46a14 !important; }
+.silo-unit.is-danger{ box-shadow:0 0 0 5px rgba(217,90,70,.55) !important; animation:cgDanger 1s ease-in-out infinite; }
+.silo-unit.is-danger .silo-unit__title b{ color:#c62828 !important; }
+@keyframes cgDanger{ 0%,100%{ box-shadow:0 0 0 4px rgba(217,90,70,.45); } 50%{ box-shadow:0 0 0 10px rgba(217,90,70,.12); } }
+.silo-unit.cg-receive{ animation:cgBinHit .55s cubic-bezier(.3,1.6,.5,1); }
+.silo-unit.cg-refuse{ animation:cgBinWrong .45s ease; }
+.silo-load{ animation:cgLoadIn .5s cubic-bezier(.3,1.4,.5,1); }
+@keyframes cgLoadIn{ from{ transform:translateX(-30px); opacity:0; } to{ transform:none; opacity:1; } }
+
+/* ---------- Memória: verso com a logo do Coamo Games ---------- */
+.memory-card__face--front img{
+  content:url("assets/coamo-games/logo-coamo-games-mini.svg");
+  width:86% !important; max-width:220px !important; height:auto !important;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)) !important;
+}
+.memory-card__face--front b{ display:none !important; }
+.memory-card.is-matched .memory-card__face--back{ box-shadow:0 0 0 5px rgba(246,207,60,.7), 0 0 30px rgba(246,207,60,.55) !important; }
+.memory-card.is-matched::after{
+  content:"✓"; position:absolute; top:8px; right:8px; z-index:5;
+  width:34px; height:34px; border-radius:50%; display:grid; place-items:center;
+  background:#2e9d58; color:#fff; font:900 20px/1 Montserrat, sans-serif;
+  box-shadow:0 4px 10px rgba(0,0,0,.2); animation:cgBadgeIn .5s cubic-bezier(.3,1.6,.5,1) both;
+}
+.memory-card{ position:relative; }
+
+/* ---------- Cadeia: caminho que se ilumina e etapa que encaixa ---------- */
+.chain-track__list, .chain-track__list--v18{ position:relative; }
+.chain-track__list::before{
+  content:""; position:absolute; left:14px; right:14px; top:-10px; height:8px; border-radius:999px;
+  background:linear-gradient(90deg, #2e9d58 0 var(--cg-p, 0%), #dfe9df var(--cg-p, 0%) 100%);
+  transition:background .6s ease;
+}
+.chain-slot.cg-snap{ animation:cgSnap .7s cubic-bezier(.3,1.6,.5,1); }
+@keyframes cgSnap{ 0%{ transform:scale(.6) rotate(-6deg); } 60%{ transform:scale(1.08) rotate(2deg); } 100%{ transform:none; } }
+
+/* ---------- Quiz: transição entre perguntas e gráfico de afinidades ---------- */
+.profile-question, .profile-result{ animation:cgSlideIn .45s cubic-bezier(.25,1,.5,1) both; }
+@keyframes cgSlideIn{ from{ opacity:0; transform:translateX(40px); } to{ opacity:1; transform:none; } }
+.cg-reveal{ font:800 18px/1 Montserrat, sans-serif; letter-spacing:.14em; text-transform:uppercase; color:#e0742a; margin-bottom:6px; }
+.cg-aff{ display:grid; gap:10px; margin:16px 0 4px; }
+.cg-aff__row{ display:grid; grid-template-columns:minmax(0,1fr) 3fr auto; gap:12px; align-items:center; font-weight:800; color:#0b4d2b; font-size:15px; }
+.cg-aff__bar{ height:14px; border-radius:999px; background:#e3eee6; overflow:hidden; }
+.cg-aff__bar i{ display:block; height:100%; width:0; border-radius:inherit; background:linear-gradient(90deg, #3f8a4e, #8bbd4a); transition:width 1s cubic-bezier(.25,1,.5,1); }
+.cg-aff__row:first-child .cg-aff__bar i{ background:linear-gradient(90deg, #e0742a, #f6cf3c); }
+
+/* ---------- botão de som ---------- */
+.cg-sound{
+  position:fixed; right:18px; bottom:18px; z-index:9990;
+  width:60px; height:60px; border-radius:50%; border:0; cursor:pointer;
+  background:#0b4d2b; color:#fff; font-size:26px; line-height:1;
+  box-shadow:0 10px 24px rgba(5,77,36,.3); display:grid; place-items:center;
+}
+.cg-sound:focus-visible{ outline:4px solid #f6cf3c; outline-offset:3px; }
+.cg-sound[aria-pressed="false"]{ background:#7c8a81; }
+
+@media (prefers-reduced-motion: reduce){
+  .grain-conveyor__rollers, .grain-item__icon, .silo-unit.is-danger, .cg-combo.is-hot .cg-combo__bar i,
+  .profile-question, .profile-result, .cg-phase, .chain-slot.cg-snap{ animation:none !important; }
+}

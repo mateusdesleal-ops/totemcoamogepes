@@ -24,6 +24,7 @@ Toninho e Aroldinho (os mascotes aparecem só no Coamo Games). Publicado na Verc
 | `styles.v48.css` (importa `styles.v47.css`) · `app.v59.js` | Jogos | Estilos e lógica dos jogos |
 | `silo.v59.js` · `ranking.v55.js` | Silo / Classificação | Jogo do silo e ranking |
 | `site.v61.css` · `site.v61.js` | Todas | Ajustes gerais: menu no celular, Início do totem, Sorteio, modo apresentação no totem |
+| `games.v63.css` · `games.v63.js` | Jogos | Visual padrão dos jogos, contagem 3-2-1, sons (botão liga/desliga), vibração, combo, avisos de fase e animações de acerto |
 | `mascotes.v59.js` / `.css` | Jogos | Mascotes articulados, falas e reações |
 | `mascotes-falas.v59.js` | Jogos | **Falas dos mascotes — edite aqui** |
 | `mascotes-banners.v60.js` | Jogos | Banners vetoriais dos jogos |
