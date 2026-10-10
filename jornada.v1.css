@@ -454,3 +454,19 @@ body[data-q="low"] .jr-load, body[data-q="low"] .jr-silo-tag{ background:rgba(6,
 .jr-mission__ask{ grid-column:1 / -1; margin:0; font:700 calc(var(--u) * .82)/1.2 var(--font); color:var(--gold2); text-align:center; }
 body[data-q="low"] .jr-station, body[data-q="low"] .jr-mission{ background:rgba(6,40,22,.95); }
 @media (max-width:700px){ .jr-mission{ width:calc(100% - 150px); min-width:0; } .jr-station span{ display:none; } .jr-station{ padding:5px; } .jr-station.is-current span{ display:inline; padding-right:6px; } }
+
+/* =========================================================
+   CAPÍTULO 4 · curiosidade revelada
+   ========================================================= */
+.jr-fact{
+  position:fixed; z-index:16; left:50%; translate:-50% 0; bottom:max(20px, env(safe-area-inset-bottom));
+  width:min(560px, calc(100% - 210px)); min-width:270px; display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center;
+  padding:12px 18px 12px 12px; border-radius:22px; background:#fff; color:var(--ink);
+  border:3px solid var(--gold); box-shadow:0 20px 50px rgba(0,0,0,.3); pointer-events:none;
+}
+.jr-fact.is-in{ animation:jrFactIn .5s cubic-bezier(.3,1.5,.5,1) both; }
+@keyframes jrFactIn{ from{ transform:translateY(20px) scale(.9); opacity:0; } to{ transform:none; opacity:1; } }
+.jr-fact__img{ width:calc(var(--u) * 5); height:calc(var(--u) * 5); border-radius:14px; background:#eef3ef center/cover no-repeat; }
+.jr-fact__img.is-logo{ background-size:82% auto; background-color:#fff; border:1px solid #e1ece4; }
+.jr-fact__txt small{ font:800 calc(var(--u) * .66)/1 var(--font); letter-spacing:.2em; color:var(--amber); }
+.jr-fact__txt p{ margin:.35em 0 0; font:800 calc(var(--u) * 1.08)/1.35 var(--font); color:var(--g800); }

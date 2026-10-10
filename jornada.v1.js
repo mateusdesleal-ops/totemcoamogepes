@@ -15,6 +15,7 @@ import { ICONS } from "./jornada-icones.v1.js";
 import { createWorld, V } from "./jornada-mundo.v1.js?v=1.4";
 import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.4";
 import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=1.4";
+import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.4";
 
 /* ===================================================== HISTÓRIA */
 const STORY = {
@@ -54,14 +55,14 @@ const CHAPTERS = [
   { id: "ch1", n: 1, kicker: "RECEBIMENTO", title: "A primeira carga", text: "Classifique os grãos que chegam na esteira.", ready: true },
   { id: "ch2", n: 2, kicker: "ARMAZENAGEM", title: "Corrida contra a chuva", text: "Guarde cada produto no silo certo antes do temporal.", ready: true },
   { id: "ch3", n: 3, kicker: "INDÚSTRIA E LOGÍSTICA", title: "Do grão ao mercado", text: "Trace a rota de cada carga até virar produto.", ready: true },
-  { id: "ch4", n: 4, kicker: "MEMÓRIA", title: "O arquivo da Coamo", text: "Cada par encontrado libera uma curiosidade." },
+  { id: "ch4", n: 4, kicker: "MEMÓRIA", title: "O arquivo da Coamo", text: "Cada par encontrado libera uma curiosidade.", ready: true },
   { id: "ch5", n: 5, kicker: "FINAL", title: "Onde você brilha", text: "Descubra a área da Coamo que combina com você." },
 ];
 
 const GAMES = [
   { id: "classificacao", label: "NOVO · 3D", title: "Desafio da Classificação", text: "Separe soja, milho, trigo e impurezas na esteira.", img: "assets/games/v48/classification_banner.webp", play: "ch1", isNew: true },
   { id: "silo3d", label: "NOVO · 3D", title: "Corrida contra a chuva", text: "Guarde cada carga no silo certo antes do temporal.", img: "assets/games/v48/silo_banner.webp", play: "ch2", isNew: true },
-  { id: "memoria", label: "MEMÓRIA", title: "Desafio Coamo", text: "Encontre os pares e conheça curiosidades.", img: "assets/games/v48/memory_banner.webp", href: "jogo-memoria.html" },
+  { id: "memoria3d", label: "NOVO · 3D", title: "O arquivo da Coamo", text: "Jogo da memória com curiosidades sobre a Coamo.", img: "assets/games/v48/memory_banner.webp", play: "ch4", isNew: true },
   { id: "cadeia3d", label: "NOVO · 3D", title: "Do grão ao mercado", text: "Trace a rota da soja, do trigo e do milho até o destino.", img: "assets/games/v48/chain_banner.webp", play: "ch3", isNew: true },
   { id: "quiz", label: "QUIZ", title: "Descubra sua área", text: "Veja qual área da Coamo combina com você.", img: "assets/games/v48/area_banner.webp", href: "jogo-area.html", noRank: true },
 ];
@@ -266,11 +267,21 @@ function shotPose(name) {
     case "siloStage": { const p = ch2Pose(); return pose(p.pos.clone().add(V(-3, -1, 4)), p.look.clone().add(V(0, -1.5, 0)), p.fov, { to: p.pos.clone().add(V(-1.5, -.5, 2)), dur: 12 }); }
     case "ch2": return ch2Pose();
     case "ch3": return regionPose();
+    case "ch4": return tablePose();
+    case "tableWide": { const T = W.TABLE; return pose(V(T.x - 30, 9, T.z - 26), V(T.x + 30, 6, T.z + 4), portrait ? 56 : 44, { to: V(T.x - 26, 8, T.z - 20), dur: 10 }); }
+    case "tableStage": { const p = tablePose(); return pose(p.pos.clone().add(V(-4, -4, 0)), p.look.clone().add(V(6, 2, 0)), p.fov, null); }
     case "regionWide": return pose(V(-150, 40, 260), V(30, 4, 60), portrait ? 56 : 44, { to: V(-120, 50, 240), dur: 12 });
     case "regionStage": { const p = regionPose(); return pose(p.pos.clone().multiplyScalar(.82).add(p.look.clone().multiplyScalar(.18)), p.look, p.fov, null); }
     case "map": return portrait ? pose(V(26, 16, 34), V(4, 6, -14), 50, { orbit: true }) : pose(V(34, 20, 44), V(2, 4, -14), 40, { orbit: true });
     default: return gamePose();
   }
+}
+function tablePose() {
+  const a = camera.aspect, portrait = a < .9, fov = portrait ? 52 : 40, half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
+  const T = W.TABLE, look = V(T.x + (portrait ? 7.5 : 2.5), portrait ? 5 : 3.5, T.z);
+  const d = Math.max((portrait ? 7.2 : 8) / (half * a), portrait ? 0 : 8.6 / half);
+  const el = THREE.MathUtils.degToRad(portrait ? 36 : 50);
+  return pose(V(look.x - Math.cos(el) * d, look.y + Math.sin(el) * d, look.z), look, fov);
 }
 function regionPose() {
   const a = camera.aspect, portrait = a < .9, fov = portrait ? 50 : 40, half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
@@ -428,7 +439,9 @@ const hud = {
   el: $("#jrHud"), score: $("#hudScore"), time: $("#hudTime"), timeBar: $("#hudTimeBar"), lives: $("#hudLives"),
   combo: $("#hudCombo"), comboN: $("#hudComboN"), comboBar: $("#hudComboBar"), line: $("#hudLine"), lineT: 0,
   setScore(v) { this.score.textContent = fmt(v); bump(this.score); },
-  setLives(n, max) { this.lives.innerHTML = "♥".repeat(Math.max(0, n)) + "<s>" + "♥".repeat(Math.max(0, max - n)) + "</s>"; },
+  alt(label, text) { this.lives.previousElementSibling.textContent = label; this.lives.textContent = text; this.lives.classList.remove("jr-hearts"); },
+  resetAlt() { this.lives.previousElementSibling.textContent = "VIDAS"; this.lives.classList.add("jr-hearts"); },
+  setLives(n, max) { this.resetAlt(); this.lives.innerHTML = "♥".repeat(Math.max(0, n)) + "<s>" + "♥".repeat(Math.max(0, max - n)) + "</s>"; },
   setCombo(n) { this.comboN.textContent = "x" + n; this.comboBar.style.width = Math.min(100, n * 10) + "%"; this.combo.classList.toggle("is-hot", n >= 5); },
   setTime(left, total) {
     const s = Math.ceil(left); this.time.textContent = "00:" + String(Math.max(0, s)).padStart(2, "0");
@@ -881,9 +894,26 @@ CH.ch3 = {
     entry: r => ({ score: r.score, duration: r.seconds, accuracy: r.accuracy, stars: r.stars }),
   },
 };
+const Ch4 = createCh4({ W, camera, canvas, hud, Cast, Sound, buzz, banner, floater, flash, toScreen, setSky });
+CH.ch4 = {
+  n: 4, engine: Ch4, rank: "memoria3d",
+  kicker: STORY4.kicker, title: STORY4.title, soloKicker: "JOGO AVULSO · MEMÓRIA", soloTitle: "O arquivo da Coamo",
+  goal: STORY4.goal, how: STORY4.how,
+  legend: () => ["assets/logo_unicoamo_v12.webp", "assets/logo_fups_v11.webp", "assets/logo_coamo_saude_v11.webp", "assets/logo_arcam_v11.webp"].map(src => `<li><img src="${src}" alt="" style="width:calc(var(--u)*3.2);height:calc(var(--u)*3.2);object-fit:contain;background:#fff;border-radius:10px;padding:4px"></li>`).join(""),
+  setup() { clearChapters(Ch4); setSky("sunset", 1.2); Ch4.show(true); Ch4.reset(); camTo(shotPose("ch4"), 2.2); Cast.set("corners"); },
+  intro: () => { clearChapters(Ch4); setSky("sunset", 1.5); Ch4.show(true); Ch4.reset(); return playIntro(STORY4.intro); },
+  endShot: () => shotPose("tableStage"),
+  end: STORY4.end,
+  after() { setTimeout(() => Ch4.clear(), 400); },
+  result: {
+    titles: STORY4.result.titles, texts: STORY4.result.texts, soloKicker: "O ARQUIVO DA COAMO",
+    stats: r => `<div><b>${r.matches}/8</b><small>pares</small></div><div><b>${r.moves}</b><small>jogadas</small></div><div><b>x${r.best}</b><small>pares seguidos</small></div><div><b>${r.seconds}s</b><small>tempo</small></div>`,
+    entry: r => ({ score: r.score, duration: r.seconds, accuracy: r.accuracy, stars: r.stars }),
+  },
+};
 /* limpa os outros capítulos ao trocar de cena */
 function clearChapters(keep) {
-  [Ch1, Ch2, Ch3].forEach(e => { if (e === keep) return; if (e.clear) e.clear(); if (e.clearItems) e.clearItems(); });
+  [Ch1, Ch2, Ch3, Ch4].forEach(e => { if (e === keep) return; if (e.clear) e.clear(); if (e.clearItems) e.clearItems(); });
   if (keep !== Ch3) W.setShadowArea();
 }
 
@@ -1045,6 +1075,7 @@ function loop() {
   Ch1.update(dt);
   Ch2.update(dt);
   Ch3.update(dt, time);
+  Ch4.update(dt, time);
   updateCamera(dt, time);
   W.update(dt, time, camera);
   Cast.update(dt);
@@ -1071,6 +1102,8 @@ if (params.get("jogo") === "silo" || start === "silo") runChapter("ch2", true);
 else if (start === "cap2") runChapter("ch2", false);
 else if (params.get("jogo") === "cadeia" || start === "cadeia") runChapter("ch3", true);
 else if (start === "cap3") runChapter("ch3", false);
+else if (params.get("jogo") === "memoria" || start === "memoria") runChapter("ch4", true);
+else if (start === "cap4") runChapter("ch4", false);
 else if (start === "jogo" || params.get("jogo") === "classificacao") runChapter1(true);
 else if (start === "prologo") { Journey.clear(); runChapter1(false); }
 else if (start === "mapa") goMap();
@@ -1080,4 +1113,4 @@ else goTitle();
 requestAnimationFrame(loop);
 
 /* ganchos para testes automatizados */
-window.__jr = { Ch3, Ch2, runChapter, shot: n => camSnap(shotPose(n)), snap: () => camSnap(mode === "title" ? shotPose("title") : currentPose()), W, setQuality, Ch1, Journey, Caption, get mode() { return mode; }, camera, renderer, goTitle, goMap, runChapter1, showResult, fps: () => fps };
+window.__jr = { Ch4, Ch3, Ch2, runChapter, shot: n => camSnap(shotPose(n)), snap: () => camSnap(mode === "title" ? shotPose("title") : currentPose()), W, setQuality, Ch1, Journey, Caption, get mode() { return mode; }, camera, renderer, goTitle, goMap, runChapter1, showResult, fps: () => fps };

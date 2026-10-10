@@ -291,6 +291,7 @@ export function createWorld(renderer) {
     mercado:      { x: -58, z: 78 },
     porto:        { x: 96, z: 178 },
   };
+  const TABLE = { x: -44, z: 44 };
   const ROADS = [["lavoura", "recebimento"], ["recebimento", "silos"], ["silos", "industria"], ["silos", "moinho"], ["silos", "porto"], ["industria", "distribuicao"], ["moinho", "distribuicao"], ["distribuicao", "mercado"]];
   function nearStation(x, z, r) { for (const k in STATIONS) { const st = STATIONS[k]; if (Math.hypot(x - st.x, z - st.z) < r) return true; } return false; }
   function nearRoad(x, z, r) {
@@ -478,7 +479,7 @@ export function createWorld(renderer) {
       const x = Math.cos(a) * r, z = Math.sin(a) * r - 14;
       if (z > 4 && Math.abs(x) < 70 && z < 40) continue;
       if (Math.abs(z + 8) < 8 && x < -40) continue;
-      if (nearStation(x, z, 30) || nearRoad(x, z, 7) || (x > SEA.x0 - 14 && z > SEA.z0 - 14)) continue;
+      if (nearStation(x, z, 30) || nearRoad(x, z, 7) || (x > SEA.x0 - 14 && z > SEA.z0 - 14) || Math.hypot(x - TABLE.x, z - TABLE.z) < 24) continue;
       const k = .8 + hash(tries, 5) * .8;
       const y = terrainH(x, z);
       q.setFromEuler(eu.set(0, hash(tries, 7) * 6, 0));
@@ -1104,7 +1105,7 @@ export function createWorld(renderer) {
     ringNext, ringSel, makeItem, hitGeo, hitMat, burst,
     trucks, driveTrucks, parkTrucks, hideTrucks,
     SILO, siloObjs, setSiloLevel, streamTo, setLoad, setRain, setStorm, loadTruck, CAM2_DIR,
-    STATIONS, ROADS, SEA, terrainH, buildTruck, logoTex, GRAIN, world, setShadowArea,
+    STATIONS, ROADS, SEA, TABLE, terrainH, buildTruck, logoTex, GRAIN, world, setShadowArea,
     kit: { RB, CY, std, add, plateTexture, roundRect, iconImage, TEX, makeCanvas, toTex, normalFromHeight, pixels, hash, noise, fbm, rnd, clamp, lerp },
   };
 }
