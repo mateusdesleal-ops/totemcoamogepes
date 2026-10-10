@@ -23,23 +23,23 @@
       left: "g_aro2", right: "g_ton2", scene: hero
     },
     "area_banner.webp": {
-      key: "area", title: "Descubra sua área na Coamo", sub: "Responda e descubra o universo profissional que combina com você.",
+      key: "area", title: "Onde você brilha", sub: "Responda e descubra a área da Coamo que combina com você.",
       left: "g_aro1", right: "g_ton2", scene: area
     },
     "memory_banner.webp": {
-      key: "memory", title: "Jogo da Memória", sub: "Encontre os pares e descubra curiosidades da Coamo.",
+      key: "memory", title: "O arquivo da Coamo", sub: "Encontre os pares e descubra curiosidades da Coamo.",
       left: "g_ton1", right: "g_aro2", scene: memory
     },
     "chain_banner.webp": {
-      key: "chain", title: "Monte a cadeia Coamo", sub: "Do campo ao mercado: coloque cada etapa no lugar certo.",
+      key: "chain", title: "Do grão ao mercado", sub: "Trace a rota de cada grão até virar produto.",
       left: "g_aro1", right: "g_ton1", scene: chain
     },
     "classification_banner.webp": {
-      key: "grain", title: "Desafio da Classificação", sub: "Separe grãos e impurezas antes que a esteira acelere.",
+      key: "grain", title: "Desafio da Classificação", sub: "Separe soja, milho, trigo e impurezas na esteira.",
       left: "g_ton1", right: "g_aro1", scene: grain
     },
     "silo_banner.webp": {
-      key: "silo", title: "Silo em Equilíbrio", sub: "Memorize os destinos e mantenha a operação sob controle.",
+      key: "silo", title: "Corrida contra a chuva", sub: "Guarde cada carga no silo certo antes do temporal.",
       left: "g_aro2", right: "g_ton2", scene: silo
     }
   };

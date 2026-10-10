@@ -175,7 +175,7 @@ export const SKIES = {
   storm:    { top: "#26303c", mid: "#4a5561", low: "#66707a", sun: "#aeb7c0", hemi: "#7b8794", ground: "#3a4639", light: .75, hemiI: .6, env: .32, elev: .95, az: .8, fog: "#545f69", fogN: 30, fogF: 190, exp: 1.12 },
   afternoon: { top: "#3378c6", mid: "#a6d0ee", low: "#efe5cf", sun: "#ffd9a0", hemi: "#d8e8f8", ground: "#6c8a4a", light: 3.3, hemiI: .42, env: .62, elev: .55, az: 1.35, fog: "#d6e2e6", fogN: 260, fogF: 1400, exp: 1.0 },
   sunset:    { top: "#33427a", mid: "#e9906a", low: "#ffc98a", sun: "#ffb067", hemi: "#ffcfa8", ground: "#5d6b44", light: 2.7, hemiI: .4, env: .55, elev: .16, az: 1.9, fog: "#e7b892", fogN: 90, fogF: 520, exp: 1.02 },
-  night:     { top: "#060c1e", mid: "#14234a", low: "#2b3a63", sun: "#9db4ea", hemi: "#5a6e9e", ground: "#1f2a2a", light: .55, hemiI: .55, env: .22, elev: .9, az: .5, fog: "#1a2442", fogN: 80, fogF: 520, exp: 1.18 },
+  night:     { top: "#040916", mid: "#0f1c3d", low: "#1e2b4d", sun: "#9db4ea", hemi: "#4a5e8e", ground: "#141c1c", light: .35, hemiI: .2, env: .12, elev: .9, az: .5, fog: "#121a33", fogN: 70, fogF: 480, exp: 1.05 },
   morning: { top: "#2b78cc", mid: "#9cccee", low: "#e6eff0", sun: "#ffe4b8", hemi: "#d6eaff", ground: "#6c8a4a", light: 3.8, hemiI: .38, env: .62, elev: .62, az: .95, fog: "#cfe3ec", fogN: 90, fogF: 520, exp: 1.0 },
 };
 
@@ -292,6 +292,7 @@ export function createWorld(renderer) {
     porto:        { x: 96, z: 178 },
   };
   const TABLE = { x: -44, z: 44 };
+  const STAGE = { x: -18, z: 8 };
   const ROADS = [["lavoura", "recebimento"], ["recebimento", "silos"], ["silos", "industria"], ["silos", "moinho"], ["silos", "porto"], ["industria", "distribuicao"], ["moinho", "distribuicao"], ["distribuicao", "mercado"]];
   function nearStation(x, z, r) { for (const k in STATIONS) { const st = STATIONS[k]; if (Math.hypot(x - st.x, z - st.z) < r) return true; } return false; }
   function nearRoad(x, z, r) {
@@ -1011,9 +1012,10 @@ export function createWorld(renderer) {
   rainGeo.setAttribute("position", new THREE.BufferAttribute(rp, 3));
   const rain = new THREE.LineSegments(rainGeo, new THREE.LineBasicMaterial({ color: "#c9dbea", transparent: true, opacity: 0, depthWrite: false }));
   rain.frustumCulled = false; rain.visible = false; rain.userData.dynamic = true; scene.add(rain);
-  let rainLevel = 0, stormK = 0;
+  let rainLevel = 0, stormK = 0, nightK = 0;
   function setRain(v) { rainLevel = clamp(v, 0, 1); rain.visible = rainLevel > 0; }
   function setStorm(k) { stormK = clamp(k, 0, 1); }
+  function setNight(k) { nightK = clamp(k, 0, 1); }
   function updateWeather(dt, camera) {
     if (rain.visible) {
       rain.material.opacity = lerp(rain.material.opacity, rainLevel * .6, 1 - Math.pow(.05, dt));
@@ -1025,7 +1027,7 @@ export function createWorld(renderer) {
       }
       a.needsUpdate = true;
     }
-    clouds.children.forEach(c => { c.material.color.setRGB(1 - stormK * .58, 1 - stormK * .55, 1 - stormK * .5); c.material.opacity = .92; });
+    clouds.children.forEach(c => { const n = 1 - nightK * .72; c.material.color.setRGB((1 - stormK * .58) * n, (1 - stormK * .55) * n, (1 - stormK * .5) * (n + nightK * .12)); c.material.opacity = .92; });
   }
 
   /* ===================================================== junta as peças fixas (menos chamadas de desenho) */
@@ -1104,8 +1106,8 @@ export function createWorld(renderer) {
     play, BELT, BIN, BINS, binObjs, beltTex: [TEX.belt, TEX.beltN], setFill,
     ringNext, ringSel, makeItem, hitGeo, hitMat, burst,
     trucks, driveTrucks, parkTrucks, hideTrucks,
-    SILO, siloObjs, setSiloLevel, streamTo, setLoad, setRain, setStorm, loadTruck, CAM2_DIR,
-    STATIONS, ROADS, SEA, TABLE, terrainH, buildTruck, logoTex, GRAIN, world, setShadowArea,
+    SILO, siloObjs, setSiloLevel, streamTo, setLoad, setRain, setStorm, setNight, loadTruck, CAM2_DIR,
+    STATIONS, ROADS, SEA, TABLE, STAGE, terrainH, buildTruck, logoTex, GRAIN, world, setShadowArea,
     kit: { RB, CY, std, add, plateTexture, roundRect, iconImage, TEX, makeCanvas, toTex, normalFromHeight, pixels, hash, noise, fbm, rnd, clamp, lerp },
   };
 }

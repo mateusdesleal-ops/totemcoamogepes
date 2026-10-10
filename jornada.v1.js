@@ -12,10 +12,11 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
-import { createWorld, V } from "./jornada-mundo.v1.js?v=1.4";
-import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.4";
-import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=1.4";
-import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.4";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=1.5";
+import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.5";
+import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=1.5";
+import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.5";
+import { createCh5, STORY5 } from "./jornada-cap5.v1.js?v=1.5";
 
 /* ===================================================== HISTÓRIA */
 const STORY = {
@@ -56,7 +57,7 @@ const CHAPTERS = [
   { id: "ch2", n: 2, kicker: "ARMAZENAGEM", title: "Corrida contra a chuva", text: "Guarde cada produto no silo certo antes do temporal.", ready: true },
   { id: "ch3", n: 3, kicker: "INDÚSTRIA E LOGÍSTICA", title: "Do grão ao mercado", text: "Trace a rota de cada carga até virar produto.", ready: true },
   { id: "ch4", n: 4, kicker: "MEMÓRIA", title: "O arquivo da Coamo", text: "Cada par encontrado libera uma curiosidade.", ready: true },
-  { id: "ch5", n: 5, kicker: "FINAL", title: "Onde você brilha", text: "Descubra a área da Coamo que combina com você." },
+  { id: "ch5", n: 5, kicker: "FINAL", title: "Onde você brilha", text: "Descubra a área da Coamo que combina com você.", ready: true },
 ];
 
 const GAMES = [
@@ -64,7 +65,7 @@ const GAMES = [
   { id: "silo3d", label: "NOVO · 3D", title: "Corrida contra a chuva", text: "Guarde cada carga no silo certo antes do temporal.", img: "assets/games/v48/silo_banner.webp", play: "ch2", isNew: true },
   { id: "memoria3d", label: "NOVO · 3D", title: "O arquivo da Coamo", text: "Jogo da memória com curiosidades sobre a Coamo.", img: "assets/games/v48/memory_banner.webp", play: "ch4", isNew: true },
   { id: "cadeia3d", label: "NOVO · 3D", title: "Do grão ao mercado", text: "Trace a rota da soja, do trigo e do milho até o destino.", img: "assets/games/v48/chain_banner.webp", play: "ch3", isNew: true },
-  { id: "quiz", label: "QUIZ", title: "Descubra sua área", text: "Veja qual área da Coamo combina com você.", img: "assets/games/v48/area_banner.webp", href: "jogo-area.html", noRank: true },
+  { id: "quiz", label: "NOVO · 3D · QUIZ", title: "Onde você brilha", text: "Descubra a área da Coamo que mais combina com você.", img: "assets/games/v48/area_banner.webp", play: "ch5", isNew: true, noRank: true },
 ];
 
 const WHO = { t: "Toninho", a: "Aroldinho", n: "Coamo" };
@@ -129,6 +130,7 @@ const Sound = (() => {
     star: i => note([784, 988, 1318][i] || 1318, 0, .3, "triangle", .1),
     win: () => [523, 659, 784, 1046].forEach((f, i) => note(f, i * .11, i === 3 ? .45 : .14, "triangle", .09)),
     type: () => note(1400 + Math.random() * 300, 0, .02, "square", .008),
+    pop: () => { const c = ac(); if (!c) return; note(160 + Math.random() * 80, 0, .25, "triangle", .07); const len = Math.floor(c.sampleRate * .5), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4) * .6; const src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); src.buffer = buf; f.type = "highpass"; f.frequency.value = 1800; g.gain.value = .25; src.connect(f); f.connect(g); g.connect(master); src.start(c.currentTime + .05); },
     thunder: () => {
       const c = ac(); if (!c) return;
       const len = Math.floor(c.sampleRate * 1.8), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
@@ -178,7 +180,12 @@ try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance", stencil: false });
   if (!renderer.getContext()) throw new Error("sem webgl");
 } catch (e) { renderer = null; }
-if (!renderer) { $("#scrNo3d").hidden = false; throw new Error("WebGL indisponível"); }
+if (!renderer) {
+  /* sem 3D: abre a versão clássica do jogo pedido, ou a lista de jogos clássicos */
+  const classic = { classificacao: "jogo-classificacao.html", silo: "jogo-silo.html", cadeia: "jogo-cadeia.html", memoria: "jogo-memoria.html", quiz: "jogo-area.html" }[params.get("jogo")];
+  if (classic) location.replace(classic);
+  $("#scrNo3d").hidden = false; throw new Error("WebGL indisponível");
+}
 
 /* qualidade: alta (oclusão de ambiente + brilho), média (brilho) ou baixa (sem pós) */
 const QUALITY = ["low", "medium", "high"];
@@ -268,6 +275,9 @@ function shotPose(name) {
     case "ch2": return ch2Pose();
     case "ch3": return regionPose();
     case "ch4": return tablePose();
+    case "ch5": return stagePose();
+    case "nightWide": return pose(V(-70, 20, 74), V(-2, 8, -14), portrait ? 56 : 44, { to: V(-58, 16, 64), dur: 12 });
+    case "nightStage": { const p = stagePose(); return pose(p.pos.clone().add(V(4, 1, 6)), p.look.clone().add(V(0, 2, 0)), p.fov, null); }
     case "tableWide": { const T = W.TABLE; return pose(V(T.x - 30, 9, T.z - 26), V(T.x + 30, 6, T.z + 4), portrait ? 56 : 44, { to: V(T.x - 26, 8, T.z - 20), dur: 10 }); }
     case "tableStage": { const p = tablePose(); return pose(p.pos.clone().add(V(-4, -4, 0)), p.look.clone().add(V(6, 2, 0)), p.fov, null); }
     case "regionWide": return pose(V(-150, 40, 260), V(30, 4, 60), portrait ? 56 : 44, { to: V(-120, 50, 240), dur: 12 });
@@ -275,6 +285,13 @@ function shotPose(name) {
     case "map": return portrait ? pose(V(26, 16, 34), V(4, 6, -14), 50, { orbit: true }) : pose(V(34, 20, 44), V(2, 4, -14), 40, { orbit: true });
     default: return gamePose();
   }
+}
+function stagePose() {
+  const a = camera.aspect, portrait = a < .9, fov = portrait ? 50 : 40, half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
+  const S = W.STAGE, look = V(S.x, portrait ? 6.2 : 5.2, S.z);
+  const d = Math.max(9 / (half * a), portrait ? 0 : 6.6 / half);
+  const el = THREE.MathUtils.degToRad(portrait ? 9 : 10);
+  return pose(V(look.x, look.y + Math.sin(el) * d, look.z + Math.cos(el) * d), look, fov);
 }
 function tablePose() {
   const a = camera.aspect, portrait = a < .9, fov = portrait ? 52 : 40, half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
@@ -429,7 +446,7 @@ const Cast = (() => {
 
 /* ===================================================== INTERFACE */
 const UI = {
-  screens: ["scrTitle", "scrMap", "scrGames", "scrRank", "scrChapter", "scrResult"],
+  screens: ["scrTitle", "scrMap", "scrGames", "scrRank", "scrChapter", "scrResult", "scrBadge"],
   show(id) {
     this.screens.forEach(s => { const el = document.getElementById(s); if (el) el.hidden = s !== id; });
   },
@@ -911,9 +928,23 @@ CH.ch4 = {
     entry: r => ({ score: r.score, duration: r.seconds, accuracy: r.accuracy, stars: r.stars }),
   },
 };
+const Ch5 = createCh5({ W, camera, canvas, hud, Cast, Sound, buzz, banner, floater, toScreen, setSky });
+CH.ch5 = {
+  n: 5, engine: Ch5, rank: null,
+  kicker: STORY5.kicker, title: STORY5.title, soloKicker: "QUIZ · ONDE VOCÊ BRILHA", soloTitle: "Onde você brilha",
+  goal: STORY5.goal, how: STORY5.how,
+  legend: () => ["campo", "industria", "tecnologia", "pessoas"].map(k => `<li><img src="${Ch5.AREAS[k].photo}" alt="" style="width:calc(var(--u)*3.4);height:calc(var(--u)*3.4);object-fit:cover;border-radius:12px"><span>${Ch5.AREAS[k].title.split(" &")[0]}</span></li>`).join(""),
+  setup() { clearChapters(Ch5); setSky("night", 1.2); Ch5.show(true); Ch5.reset(); camTo(shotPose("ch5"), 2.2); Cast.set("corners"); },
+  intro: () => { clearChapters(Ch5); setSky("night", 2); Ch5.show(true); Ch5.reset(); return playIntro(STORY5.intro); },
+  endShot: () => shotPose("nightStage"),
+  end: r => [{ who: "t", text: `Você brilha em ${r.areaTitle}!`, act: "celebrate" }, { who: "a", text: r.areaText, act: "celebrate" }],
+  after() { },
+  noHud: false,
+  onFinish: (r, solo) => showBadge(r, solo),
+};
 /* limpa os outros capítulos ao trocar de cena */
 function clearChapters(keep) {
-  [Ch1, Ch2, Ch3, Ch4].forEach(e => { if (e === keep) return; if (e.clear) e.clear(); if (e.clearItems) e.clearItems(); });
+  [Ch1, Ch2, Ch3, Ch4, Ch5].forEach(e => { if (e === keep) return; if (e.clear) e.clear(); if (e.clearItems) e.clearItems(); });
   if (keep !== Ch3) W.setShadowArea();
 }
 
@@ -968,14 +999,41 @@ async function runChapter(id, solo) {
     Cast.set("stage");
     camTo(def.endShot(), 2.2);
     await new Promise(res => setTimeout(res, 700));
-    const lines = (def.end[r.stars] || def.end[1]).map(([who, text]) => ({ who, text, act: r.stars >= 2 ? "celebrate" : "think" }));
+    const lines = typeof def.end === "function" ? def.end(r) : (def.end[r.stars] || def.end[1]).map(([who, text]) => ({ who, text, act: r.stars >= 2 ? "celebrate" : "think" }));
     await Caption.play(lines, { skippable: true });
   }
   if (token !== runToken) return;
   def.after();
-  showResult(r, solo, id);
+  if (def.onFinish) def.onFinish(r, solo); else showResult(r, solo, id);
 }
 const runChapter1 = solo => runChapter("ch1", solo);
+
+/* ---------- crachá final ---------- */
+function showBadge(r, solo) {
+  Cast.set("off");
+  setMode("result");
+  camTo(shotPose("nightWide"), 3);
+  Ch5.celebrate(solo ? 5 : 9);
+  UI.show("scrBadge");
+  const st = Journey.state, chs = ["ch1", "ch2", "ch3", "ch4"];
+  const complete = !solo && chs.every(c => st.stars[c] != null);
+  $("#jrBadgeKicker").textContent = solo ? "SEU PERFIL NA COAMO" : complete ? "JORNADA DA SAFRA CONCLUÍDA" : "CAPÍTULO 5 CONCLUÍDO";
+  $("#jrBadgePhoto").style.backgroundImage = `url("${r.photo}")`;
+  $("#jrBadgeArea").textContent = r.areaTitle;
+  $("#jrBadgeText").textContent = r.areaText;
+  $("#jrBadgeSecond").textContent = r.second ? `Também combina com você: ${r.second}` : "";
+  const stars = chs.reduce((a, c) => a + (st.stars[c] || 0), 0), total = Journey.total();
+  $("#jrBadgeStats").innerHTML = solo ? "" : `<div><b>${stars}/12</b><small>estrelas</small></div><div><b>${chs.filter(c => st.stars[c] != null).length + 1}/5</b><small>capítulos</small></div><div><b>${fmt(total)}</b><small>pontos</small></div>`;
+  const acts = $("#jrBadgeActions"); acts.innerHTML = "";
+  const add = (label, cls, fn) => { const b = document.createElement("button"); b.type = "button"; b.className = "jr-btn " + cls; b.textContent = label; b.onclick = () => { Sound.fx("tap"); fn(); }; acts.appendChild(b); };
+  add("Ver vagas abertas", "jr-btn--primary", () => { location.href = "vagas.html"; });
+  if (solo) { add("Jogar de novo", "jr-btn--soft", () => runChapter("ch5", true)); add("Outros jogos", "jr-btn--soft", goGames); }
+  else { add("Ranking", "jr-btn--soft", () => goRanking("jornada")); add("Menu", "jr-btn--soft", () => { Journey.clear(); goTitle(); }); }
+  if (complete) setTimeout(() => {
+    if (!window.CoamoLeaderboard || !document.querySelector("#scrBadge:not([hidden])")) return;
+    window.CoamoLeaderboard.maybeCapture("jornada", { score: total, stars, duration: null, accuracy: null });
+  }, 3200);
+}
 
 function showResult(r, solo, id = "ch1") {
   const def = CH[id];
@@ -998,7 +1056,9 @@ function showResult(r, solo, id = "ch1") {
     add("Ver ranking", "jr-btn--soft", () => goRanking(def.rank));
     add("Outros jogos", "jr-btn--soft", goGames);
   } else {
-    add("Continuar a jornada", "jr-btn--primary", goMap);
+    const next = CHAPTERS[CHAPTERS.findIndex(c => c.id === id) + 1];
+    if (next && next.ready) add(`Próximo capítulo`, "jr-btn--primary", () => runChapter(next.id, false));
+    add("Mapa da safra", next ? "jr-btn--soft" : "jr-btn--primary", goMap);
     add("Jogar de novo", "jr-btn--soft", () => runChapter(id, false));
   }
   /* ranking do evento: pede o nome se entrou no top 5 */
@@ -1076,6 +1136,7 @@ function loop() {
   Ch2.update(dt);
   Ch3.update(dt, time);
   Ch4.update(dt, time);
+  Ch5.update(dt, time);
   updateCamera(dt, time);
   W.update(dt, time, camera);
   Cast.update(dt);
@@ -1104,6 +1165,8 @@ else if (params.get("jogo") === "cadeia" || start === "cadeia") runChapter("ch3"
 else if (start === "cap3") runChapter("ch3", false);
 else if (params.get("jogo") === "memoria" || start === "memoria") runChapter("ch4", true);
 else if (start === "cap4") runChapter("ch4", false);
+else if (params.get("jogo") === "quiz" || start === "quiz") runChapter("ch5", true);
+else if (start === "cap5") runChapter("ch5", false);
 else if (start === "jogo" || params.get("jogo") === "classificacao") runChapter1(true);
 else if (start === "prologo") { Journey.clear(); runChapter1(false); }
 else if (start === "mapa") goMap();
@@ -1113,4 +1176,4 @@ else goTitle();
 requestAnimationFrame(loop);
 
 /* ganchos para testes automatizados */
-window.__jr = { Ch4, Ch3, Ch2, runChapter, shot: n => camSnap(shotPose(n)), snap: () => camSnap(mode === "title" ? shotPose("title") : currentPose()), W, setQuality, Ch1, Journey, Caption, get mode() { return mode; }, camera, renderer, goTitle, goMap, runChapter1, showResult, fps: () => fps };
+window.__jr = { showBadge, Ch5, Ch4, Ch3, Ch2, runChapter, shot: n => camSnap(shotPose(n)), snap: () => camSnap(mode === "title" ? shotPose("title") : currentPose()), W, setQuality, Ch1, Journey, Caption, get mode() { return mode; }, camera, renderer, goTitle, goMap, runChapter1, showResult, fps: () => fps };

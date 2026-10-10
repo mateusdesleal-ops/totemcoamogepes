@@ -16,7 +16,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="stylesheet" href="mascotes.v59.css?v=59.0">
-  <link rel="stylesheet" href="jornada.v1.css?v=1.4">
+  <link rel="stylesheet" href="jornada.v1.css?v=1.6">
   <script src="pwa.v55.js?v=55.0" defer></script>
 </head>
 <body data-page="journey" class="jr">
@@ -172,12 +172,36 @@
     </div>
   </section>
 
+  <!-- ========== CRACHÁ FINAL ========== -->
+  <section class="jr-screen jr-panel-screen jr-badge-screen" id="scrBadge" hidden>
+    <div class="jr-badge">
+      <div class="jr-badge__strap" aria-hidden="true"></div>
+      <div class="jr-badge__card">
+        <header class="jr-badge__head"><img src="assets/coamo-games/logo-coamo-games-mini.svg" alt="Coamo Games"><span id="jrBadgeKicker">JORNADA DA SAFRA CONCLUÍDA</span></header>
+        <div class="jr-badge__photo" id="jrBadgePhoto"></div>
+        <small class="jr-badge__label">VOCÊ BRILHA EM</small>
+        <h2 id="jrBadgeArea">Tecnologia &amp; Dados</h2>
+        <p id="jrBadgeText"></p>
+        <p class="jr-badge__second" id="jrBadgeSecond"></p>
+        <div class="jr-badge__stats" id="jrBadgeStats"></div>
+        <div class="jr-badge__qr"><img src="assets/qr-selecty.png" alt="QR Code das vagas da Coamo"><span><b>Que tal fazer parte?</b>Aponte a câmera do celular e veja as vagas abertas na Coamo.</span></div>
+      </div>
+      <div class="jr-panel__actions" id="jrBadgeActions"></div>
+    </div>
+  </section>
+
   <!-- ========== SEM 3D ========== -->
   <section class="jr-screen jr-panel-screen" id="scrNo3d" hidden>
     <div class="jr-panel">
       <header class="jr-panel__head"><small>COAMO GAMES</small><h2>Este aparelho não roda o modo 3D</h2>
       <p>Sem problema: os jogos continuam disponíveis na versão clássica.</p></header>
-      <div class="jr-panel__actions"><a class="jr-btn jr-btn--primary" href="jogos.html">Ir para o Coamo Games</a></div>
+      <div class="jr-panel__actions">
+        <a class="jr-btn jr-btn--primary" href="jogo-classificacao.html">Classificação</a>
+        <a class="jr-btn jr-btn--soft" href="jogo-silo.html">Silo</a>
+        <a class="jr-btn jr-btn--soft" href="jogo-cadeia.html">Cadeia</a>
+        <a class="jr-btn jr-btn--soft" href="jogo-memoria.html">Memória</a>
+        <a class="jr-btn jr-btn--soft" href="jogo-area.html">Quiz</a>
+      </div>
     </div>
   </section>
 
@@ -187,8 +211,8 @@
   <script src="mascotes-falas.v59.js?v=59.0"></script>
   <script src="mascotes-rigs.v58.js?v=58.0"></script>
   <script src="mascotes.v59.js?v=59.0"></script>
-  <script src="ranking.v55.js?v=67.0"></script>
+  <script src="ranking.v55.js?v=68.0"></script>
   <script type="importmap">{ "imports": { "three": "./vendor/three.r169.module.min.js", "three/addons/": "./vendor/addons/" } }</script>
-  <script type="module" src="jornada.v1.js?v=1.4"></script>
+  <script type="module" src="jornada.v1.js?v=1.6"></script>
 </body>
 </html>
