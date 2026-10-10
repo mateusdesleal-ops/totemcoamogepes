@@ -12,11 +12,11 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
-import { createWorld, V } from "./jornada-mundo.v1.js?v=1.5";
-import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.5";
-import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=1.5";
-import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.5";
-import { createCh5, STORY5 } from "./jornada-cap5.v1.js?v=1.5";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=1.6";
+import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.6";
+import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=1.6";
+import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.6";
+import { createCh5, STORY5 } from "./jornada-cap5.v1.js?v=1.6";
 
 /* ===================================================== HISTÓRIA */
 const STORY = {
@@ -294,10 +294,12 @@ function stagePose() {
   return pose(V(look.x, look.y + Math.sin(el) * d, look.z + Math.cos(el) * d), look, fov);
 }
 function tablePose() {
-  const a = camera.aspect, portrait = a < .9, fov = portrait ? 52 : 40, half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
-  const T = W.TABLE, look = V(T.x + (portrait ? 7.5 : 2.5), portrait ? 5 : 3.5, T.z);
-  const d = Math.max((portrait ? 7.2 : 8) / (half * a), portrait ? 0 : 8.6 / half);
-  const el = THREE.MathUtils.degToRad(portrait ? 36 : 50);
+  /* mesa vista de cima: as 16 cartas ocupam o meio da tela, sobra espaço embaixo para os mascotes */
+  const a = camera.aspect, portrait = a < .9, fov = portrait ? 50 : 40, half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
+  const T = W.TABLE, el = THREE.MathUtils.degToRad(portrait ? 62 : 58);
+  const look = V(T.x + (portrait ? -1.6 : -.6), 3.5, T.z);
+  const Vh = portrait ? Math.max(18.8, 11 / (a * 2 * half) * 2 * half) : 14.6;
+  const d = Math.max(Vh / (2 * half), (portrait ? 10.8 : 12) / (2 * half * a));
   return pose(V(look.x - Math.cos(el) * d, look.y + Math.sin(el) * d, look.z), look, fov);
 }
 function regionPose() {

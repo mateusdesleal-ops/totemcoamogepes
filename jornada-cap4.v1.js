@@ -102,7 +102,7 @@ function buildTable(W) {
     const wire = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), wireM); g.add(wire);
     for (let i = 1; i < 20; i += 2) { const b = add(new THREE.SphereGeometry(.17, 10, 8), bulbM, pts[i].x, pts[i].y - .25, pts[i].z, g, false); bulbs.push(b); }
   }
-  const glow = new THREE.PointLight("#ffc779", 0, 34, 1.6); glow.position.set(0, 8, 0); g.add(glow);
+  const glow = new THREE.PointLight("#ffc779", 0, 40, 1.4); glow.position.set(0, 12, 0); g.add(glow);
   W.scene.add(root);
   root.visible = false;
   return { root, table: g, top: 3.52, crate: crate.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 1.4, 0)), glow, bulbs };
@@ -301,7 +301,7 @@ export function createCh4(ctx) {
     },
     get running() { return !!(S && S.running); },
     clear() { if (S) S.running = false; T.root.visible = false; T.glow.intensity = 0; fact.hidden = true; },
-    show(on) { T.root.visible = on; T.glow.intensity = on ? 60 : 0; },
+    show(on) { T.root.visible = on; T.glow.intensity = on ? 26 : 0; },
     _state: () => S,
     _cards: () => cards.map(c => ({ k: c.k, pair: c.pair, state: c.state })),
     _open: k => open(cards[k]),

@@ -217,6 +217,7 @@ function buildRegion(W) {
     add(RB(6, 1.6, 8.8, .2), glass, -20, 9.4, 0, ship);
     add(CY(.9, 1.1, 4, 14), std("funnel", { color: "#e0742a", roughness: .5 }), -22.5, 12.6, 0, ship);
     steamOrigins.push(V(W.SEA.x0 + 28 - 22.5, 14.5, st.z + 19));
+    W.kit.mergeGroup(ship);
   }
   /* ---------- estradas ---------- */
   const asph = std("asphalt");

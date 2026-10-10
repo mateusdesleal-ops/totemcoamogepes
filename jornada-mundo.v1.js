@@ -218,6 +218,7 @@ export function createWorld(renderer) {
   function setLite(on) {
     lite = !!on;
     if (lite) scene.environment = null; else refreshEnv();
+    if (renderer.shadowMap.enabled === lite) { renderer.shadowMap.enabled = !lite; scene.traverse(o => { if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.needsUpdate = true; }); }); }
     sun.shadow.mapSize.set(lite ? 1024 : 2048, lite ? 1024 : 2048);
     if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
     applySky(clamp(skyState.t / skyState.dur, 0, 1));
@@ -539,6 +540,26 @@ export function createWorld(renderer) {
   })();
 
   /* ===================================================== caminhões graneleiros */
+  /* junta as peças de um grupo por material (menos chamadas de desenho) */
+  function mergeGroup(g) {
+    g.updateMatrixWorld(true);
+    const inv = new THREE.Matrix4().copy(g.matrixWorld).invert(), rel = new THREE.Matrix4();
+    const groups = new Map(), victims = [];
+    g.traverse(o => {
+      if (!o.isMesh || o.isInstancedMesh || o.userData.keep) return;
+      const m = o.material; if (!m || Array.isArray(m) || m.transparent || m.visible === false) return;
+      const key = m.uuid + (o.castShadow ? "s" : "n");
+      let geo = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
+      for (const a of Object.keys(geo.attributes)) if (!["position", "normal", "uv"].includes(a)) geo.deleteAttribute(a);
+      if (!geo.attributes.uv) geo.setAttribute("uv", new THREE.Float32BufferAttribute(new Float32Array(geo.attributes.position.count * 2), 2));
+      geo.clearGroups(); geo.applyMatrix4(rel.multiplyMatrices(inv, o.matrixWorld));
+      if (!groups.has(key)) groups.set(key, { m, cast: o.castShadow, geos: [] });
+      groups.get(key).geos.push(geo); victims.push(o);
+    });
+    victims.forEach(o => o.parent.remove(o));
+    groups.forEach(G => { const me = new THREE.Mesh(mergeGeometries(G.geos), G.m); me.castShadow = G.cast; me.receiveShadow = true; g.add(me); });
+    return g;
+  }
   function buildTruck(color) {
     const g = new THREE.Group(); g.userData.dynamic = true;
     const paint = new THREE.MeshStandardMaterial({ color, roughness: .25, metalness: .35 });
@@ -577,7 +598,9 @@ export function createWorld(renderer) {
     /* sombra de contato */
     const blob = new THREE.Mesh(new THREE.PlaneGeometry(13, 4), new THREE.MeshBasicMaterial({ map: TEX.blob, transparent: true, depthWrite: false }));
     blob.rotation.x = -Math.PI / 2; blob.position.set(-.4, .1, 0); g.add(blob);
-    g.userData.wheels = wheels;
+    heap.userData.keep = true; blob.userData.keep = true;
+    mergeGroup(g);
+    g.userData.wheels = [];
     return g;
   }
   const trucks = [buildTruck("#ffffff"), buildTruck("#f2b400"), buildTruck("#1d5fa8")];
@@ -769,6 +792,7 @@ export function createWorld(renderer) {
     blob.rotation.x = -Math.PI / 2; blob.receiveShadow = false;
     const hit = new THREE.Mesh(new THREE.BoxGeometry(w + BIN.gap, h + 1.6, d + 1.2), new THREE.MeshBasicMaterial({ visible: false }));
     hit.position.y = h / 2 + .4; hit.userData.bin = i; g.add(hit);
+    blob.userData.keep = true; mergeGroup(g);
     return { ...b, i, g, x, body, front, pile, hit, fill: 0, shown: 0, pulse: 0, bad: 0, grainColor: G.mat.color.getStyle() };
   });
   function setFill(b, f, instant) { b.fill = clamp(f, 0, 1); if (instant) b.pile.count = Math.round(b.fill * PILE_N); }
@@ -939,6 +963,7 @@ export function createWorld(renderer) {
     /* área de toque */
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(SILO.R + .8, SILO.R + .8, SILO.Hs + 4, 12), new THREE.MeshBasicMaterial({ visible: false }));
     hit.position.y = (SILO.Hs + 4) / 2; hit.userData.silo = i; g.add(hit);
+    fill.userData.keep = true; plaque.userData.keep = true; mergeGroup(g);
     return { i, letter, x, z, g, face, plaque, fill, fillMat, gauge: { GH, gy }, hit, level: 0, shown: 0, top: V(x, SILO.Hs + SILO.roofH + 1, z), pulse: 0, bad: 0 };
   });
   function setSiloLevel(s, v, instant) { s.level = clamp(v, 0, 100); if (instant) s.shown = s.level; }
@@ -1108,6 +1133,6 @@ export function createWorld(renderer) {
     trucks, driveTrucks, parkTrucks, hideTrucks,
     SILO, siloObjs, setSiloLevel, streamTo, setLoad, setRain, setStorm, setNight, loadTruck, CAM2_DIR,
     STATIONS, ROADS, SEA, TABLE, STAGE, terrainH, buildTruck, logoTex, GRAIN, world, setShadowArea,
-    kit: { RB, CY, std, add, plateTexture, roundRect, iconImage, TEX, makeCanvas, toTex, normalFromHeight, pixels, hash, noise, fbm, rnd, clamp, lerp },
+    kit: { mergeGroup, RB, CY, std, add, plateTexture, roundRect, iconImage, TEX, makeCanvas, toTex, normalFromHeight, pixels, hash, noise, fbm, rnd, clamp, lerp },
   };
 }
