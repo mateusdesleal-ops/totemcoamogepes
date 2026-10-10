@@ -173,6 +173,9 @@ export const SKIES = {
   dawn:    { top: "#3f6fb3", mid: "#f2a978", low: "#ffd29c", sun: "#ffbf73", hemi: "#ffd2a8", ground: "#57703f", light: 3.0, hemiI: .35, env: .55, elev: .12, az: 2.6, fog: "#efc39b", fogN: 60, fogF: 380, exp: 1.0 },
   overcast: { top: "#5f7894", mid: "#a3b3c1", low: "#c6ced4", sun: "#e9e6dc", hemi: "#c9d4df", ground: "#5b6b52", light: 1.7, hemiI: .55, env: .5, elev: .95, az: .8, fog: "#aab7c0", fogN: 70, fogF: 330, exp: 1.02 },
   storm:    { top: "#26303c", mid: "#4a5561", low: "#66707a", sun: "#aeb7c0", hemi: "#7b8794", ground: "#3a4639", light: .75, hemiI: .6, env: .32, elev: .95, az: .8, fog: "#545f69", fogN: 30, fogF: 190, exp: 1.12 },
+  afternoon: { top: "#3378c6", mid: "#a6d0ee", low: "#efe5cf", sun: "#ffd9a0", hemi: "#d8e8f8", ground: "#6c8a4a", light: 3.3, hemiI: .42, env: .62, elev: .55, az: 1.35, fog: "#d6e2e6", fogN: 260, fogF: 1400, exp: 1.0 },
+  sunset:    { top: "#33427a", mid: "#e9906a", low: "#ffc98a", sun: "#ffb067", hemi: "#ffcfa8", ground: "#5d6b44", light: 2.7, hemiI: .4, env: .55, elev: .16, az: 1.9, fog: "#e7b892", fogN: 90, fogF: 520, exp: 1.02 },
+  night:     { top: "#060c1e", mid: "#14234a", low: "#2b3a63", sun: "#9db4ea", hemi: "#5a6e9e", ground: "#1f2a2a", light: .55, hemiI: .55, env: .22, elev: .9, az: .5, fog: "#1a2442", fogN: 80, fogF: 520, exp: 1.18 },
   morning: { top: "#2b78cc", mid: "#9cccee", low: "#e6eff0", sun: "#ffe4b8", hemi: "#d6eaff", ground: "#6c8a4a", light: 3.8, hemiI: .38, env: .62, elev: .62, az: .95, fog: "#cfe3ec", fogN: 90, fogF: 520, exp: 1.0 },
 };
 
@@ -277,15 +280,42 @@ export function createWorld(renderer) {
   const RB = (w, h, d, r = .06, s = 3) => new RoundedBoxGeometry(w, h, d, s, Math.min(r, w / 2 - .001, h / 2 - .001, d / 2 - .001));
   const CY = (rt, rb, h, seg = 24, open = false) => new THREE.CylinderGeometry(rt, rb, h, seg, 1, open);
 
+  /* ===================================================== região (capítulo 3): estações e estradas */
+  const STATIONS = {
+    lavoura:      { x: -58, z: 160 },
+    recebimento:  { x: -22, z: -8 },
+    silos:        { x: 15, z: -24 },
+    industria:    { x: 88, z: 32 },
+    moinho:       { x: 84, z: 108 },
+    distribuicao: { x: 8, z: 88 },
+    mercado:      { x: -58, z: 78 },
+    porto:        { x: 96, z: 178 },
+  };
+  const ROADS = [["lavoura", "recebimento"], ["recebimento", "silos"], ["silos", "industria"], ["silos", "moinho"], ["silos", "porto"], ["industria", "distribuicao"], ["moinho", "distribuicao"], ["distribuicao", "mercado"]];
+  function nearStation(x, z, r) { for (const k in STATIONS) { const st = STATIONS[k]; if (Math.hypot(x - st.x, z - st.z) < r) return true; } return false; }
+  function nearRoad(x, z, r) {
+    for (const [a, b] of ROADS) {
+      const A = STATIONS[a], B = STATIONS[b], dx = B.x - A.x, dz = B.z - A.z, L2 = dx * dx + dz * dz;
+      const t = clamp(((x - A.x) * dx + (z - A.z) * dz) / L2, 0, 1), px = A.x + dx * t, pz = A.z + dz * t;
+      if (Math.hypot(x - px, z - pz) < r) return true;
+    }
+    return false;
+  }
+  const SEA = { x0: 112, z0: 124 };
+  function terrainH(x, z) {
+    const sx = x - SEA.x0, sz = z - SEA.z0;
+    if (sx > -8 && sz > -8) return -3.2 * clamp(Math.min(sx + 8, sz + 8) / 10, 0, 1) - .05;
+    const dx = Math.max(0, -115 - x, x - 145), dz = Math.max(0, -70 - z, z - 220), k = clamp(Math.hypot(dx, dz) / 120, 0, 1);
+    return k > 0 ? (fbm(x * .006 + 7, z * .006 + 3, 4) * 46 - 10) * k - .05 : -.05;
+  }
+
   /* ===================================================== terreno */
   {
     /* grama/lavoura ao redor, com relevo suave longe do pátio */
     const g = new THREE.PlaneGeometry(1400, 1400, 160, 160); g.rotateX(-Math.PI / 2);
     const p = g.attributes.position;
     for (let i = 0; i < p.count; i++) {
-      const x = p.getX(i), z = p.getZ(i), r = Math.hypot(x * .8, z + 14);
-      const hill = fbm(x * .006 + 7, z * .006 + 3, 4) * 46 - 10;
-      p.setY(i, r > 60 ? hill * clamp((r - 60) / 160, 0, 1) - .05 : -.05);
+      p.setY(i, terrainH(p.getX(i), p.getZ(i)));
     }
     g.computeVertexNormals();
     TEX.grass.repeat.set(70, 70); TEX.grassN.repeat.set(70, 70);
@@ -301,8 +331,8 @@ export function createWorld(renderer) {
       const pp = geo.attributes.position;
       for (let i = 0; i < pp.count; i++) {
         const lx = pp.getX(i), lz = pp.getZ(i), c = Math.cos(f.r), s = Math.sin(f.r);
-        const wx = f.x + lx * c - lz * s, wz = f.z + lx * s + lz * c, r = Math.hypot(wx * .8, wz + 14);
-        pp.setY(i, (r > 60 ? (fbm(wx * .006 + 7, wz * .006 + 3, 4) * 46 - 10) * clamp((r - 60) / 160, 0, 1) - .05 : -.05) + .12);
+        const wx = f.x + lx * c - lz * s, wz = f.z + lx * s + lz * c;
+        pp.setY(i, terrainH(wx, wz) + .12);
       }
       geo.computeVertexNormals();
       const tex = (f.t === "wheat" ? TEX.wheat : TEX.field).clone(); tex.needsUpdate = true; tex.repeat.set(f.w / 40, f.d / 40);
@@ -446,10 +476,11 @@ export function createWorld(renderer) {
       tries++;
       const a = hash(tries, 3) * Math.PI * 2, r = 46 + Math.pow(hash(tries, 9), 1.6) * 150;
       const x = Math.cos(a) * r, z = Math.sin(a) * r - 14;
-      if (z > 4 && Math.abs(x) < 70) continue;
+      if (z > 4 && Math.abs(x) < 70 && z < 40) continue;
       if (Math.abs(z + 8) < 8 && x < -40) continue;
+      if (nearStation(x, z, 30) || nearRoad(x, z, 7) || (x > SEA.x0 - 14 && z > SEA.z0 - 14)) continue;
       const k = .8 + hash(tries, 5) * .8;
-      const y = r > 60 ? (fbm(x * .006 + 7, z * .006 + 3, 4) * 46 - 10) * clamp((Math.hypot(x * .8, z + 14) - 60) / 160, 0, 1) : 0;
+      const y = terrainH(x, z);
       q.setFromEuler(eu.set(0, hash(tries, 7) * 6, 0));
       m4.compose(pos.set(x, y - .1, z), q, s.set(k, k, k)); trunks.setMatrixAt(i, m4); leaves.setMatrixAt(i, m4);
       leaves.setColorAt(i, tmp.set(greens[i % greens.length]).offsetHSL(0, 0, (hash(i, 4) - .5) * .06));
@@ -1057,7 +1088,14 @@ export function createWorld(renderer) {
     if (loadTruck.userData.bounce > 0) { const u = loadTruck.userData; u.bounce = Math.max(0, u.bounce - dt * 2.5); u.heap.scale.y = 1 + Math.sin(u.bounce * Math.PI) * .25; }
     /* sombras acompanham o que a câmera olha */
     sun.target.position.set(camera.userData.look ? camera.userData.look.x : 0, 0, camera.userData.look ? camera.userData.look.z : 0);
-    sun.position.copy(sun.target.position).addScaledVector(skyU.sunDir.value, 80);
+    sun.position.copy(sun.target.position).addScaledVector(skyU.sunDir.value, sunDist);
+  }
+  let sunDist = 80;
+  /* área coberta pelas sombras (maior na vista aérea do capítulo 3) */
+  function setShadowArea(r) {
+    const c = sun.shadow.camera; r = r || 18;
+    c.left = -r; c.right = r; c.top = r; c.bottom = -r; c.far = r > 40 ? 900 : 140; c.updateProjectionMatrix();
+    sunDist = r > 40 ? 420 : 80; sun.shadow.normalBias = r > 40 ? .3 : .025; sun.shadow.bias = r > 40 ? -.0008 : -.00025;
   }
 
   return {
@@ -1066,5 +1104,7 @@ export function createWorld(renderer) {
     ringNext, ringSel, makeItem, hitGeo, hitMat, burst,
     trucks, driveTrucks, parkTrucks, hideTrucks,
     SILO, siloObjs, setSiloLevel, streamTo, setLoad, setRain, setStorm, loadTruck, CAM2_DIR,
+    STATIONS, ROADS, SEA, terrainH, buildTruck, logoTex, GRAIN, world, setShadowArea,
+    kit: { RB, CY, std, add, plateTexture, roundRect, iconImage, TEX, makeCanvas, toTex, normalFromHeight, pixels, hash, noise, fbm, rnd, clamp, lerp },
   };
 }

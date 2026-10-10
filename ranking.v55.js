@@ -8,6 +8,8 @@
     silo: "Silo em Equilíbrio",
     classificacao: "Classificação 3D",
     silo3d: "Corrida contra a chuva (Silo 3D)",
+    cadeia3d: "Do grão ao mercado (Rotas 3D)",
+    memoria3d: "O arquivo da Coamo (Memória 3D)",
     memoria: "Desafio Coamo (Memória)",
     cadeia: "Monte a cadeia Coamo",
     jornada: "Jornada da Safra",
