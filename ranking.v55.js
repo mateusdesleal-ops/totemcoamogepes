@@ -7,6 +7,7 @@
     grain: "Desafio da Classificação",
     silo: "Silo em Equilíbrio",
     classificacao: "Classificação 3D",
+    silo3d: "Corrida contra a chuva (Silo 3D)",
     memoria: "Desafio Coamo (Memória)",
     cadeia: "Monte a cadeia Coamo",
     jornada: "Jornada da Safra",

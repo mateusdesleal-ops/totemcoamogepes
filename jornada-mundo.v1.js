@@ -171,6 +171,8 @@ function plateTexture(draw, w = 512, h = 256) {
 /* ===================================================== céu e luz */
 export const SKIES = {
   dawn:    { top: "#3f6fb3", mid: "#f2a978", low: "#ffd29c", sun: "#ffbf73", hemi: "#ffd2a8", ground: "#57703f", light: 3.0, hemiI: .35, env: .55, elev: .12, az: 2.6, fog: "#efc39b", fogN: 60, fogF: 380, exp: 1.0 },
+  overcast: { top: "#5f7894", mid: "#a3b3c1", low: "#c6ced4", sun: "#e9e6dc", hemi: "#c9d4df", ground: "#5b6b52", light: 1.7, hemiI: .55, env: .5, elev: .95, az: .8, fog: "#aab7c0", fogN: 70, fogF: 330, exp: 1.02 },
+  storm:    { top: "#26303c", mid: "#4a5561", low: "#66707a", sun: "#aeb7c0", hemi: "#7b8794", ground: "#3a4639", light: .75, hemiI: .6, env: .32, elev: .95, az: .8, fog: "#545f69", fogN: 30, fogF: 190, exp: 1.12 },
   morning: { top: "#2b78cc", mid: "#9cccee", low: "#e6eff0", sun: "#ffe4b8", hemi: "#d6eaff", ground: "#6c8a4a", light: 3.8, hemiI: .38, env: .62, elev: .62, az: .95, fog: "#cfe3ec", fogN: 90, fogF: 520, exp: 1.0 },
 };
 
@@ -340,7 +342,7 @@ export function createWorld(renderer) {
   {
     const R = 3.1, Hs = 13, roofH = 2.7;
     TEX.corrugN.repeat.set(10, 7);
-    const shell = new THREE.MeshStandardMaterial({ color: "#e4e8ea", roughness: .28, metalness: .88, normalMap: TEX.corrugN, normalScale: new THREE.Vector2(.9, .9) });
+    const shell = new THREE.MeshStandardMaterial({ color: "#f1f4f6", roughness: .32, metalness: .72, normalMap: TEX.corrugN, normalScale: new THREE.Vector2(.9, .9) });
     const roofM = new THREE.MeshStandardMaterial({ color: "#d3d9dc", roughness: .3, metalness: .85 });
     const stiff = std("stiff", { color: "#aab3b8", roughness: .35, metalness: .85 });
     const xs = [5, 12, 19, 26];
@@ -531,7 +533,7 @@ export function createWorld(renderer) {
     add(new THREE.BoxGeometry(8.1, .18, 2.7), paint, -1.6, 3.3, 0, g);
     const heap = add(new THREE.CylinderGeometry(1.15, 1.15, 7.6, 18, 1, false, 0, Math.PI), new THREE.MeshStandardMaterial({ color: "#e0b54a", roughness: 1, normalMap: TEX.grassN }), -1.6, 3.25, 0, g);
     heap.rotation.set(0, 0, Math.PI / 2); heap.scale.set(.42, 1, 1); heap.rotation.x = Math.PI / 2; heap.rotation.z = Math.PI / 2;
-    heap.rotation.set(-Math.PI / 2, 0, Math.PI / 2); heap.scale.set(1, 1, .45);
+    heap.rotation.set(-Math.PI / 2, 0, Math.PI / 2); heap.scale.set(1, 1, .45); g.userData.heap = heap;
     const wheels = [];
     [[4.6, 1.15], [4.6, -1.15], [.2, 1.15], [.2, -1.15], [-1.1, 1.15], [-1.1, -1.15], [-4.1, 1.15], [-4.1, -1.15], [-5.4, 1.15], [-5.4, -1.15]].forEach(([x, z]) => {
       const w = new THREE.Group(); w.position.set(x, .62, z); g.add(w);
@@ -876,6 +878,124 @@ export function createWorld(renderer) {
   }
 
 
+
+  /* ===================================================== CAPÍTULO 2: silos com letra e nível, moega, caminhão, chuva */
+  const SILO = { R: 3.1, Hs: 13, roofH: 2.7, xs: [5, 12, 19, 26] };
+  const CAM2_DIR = new THREE.Vector3(.55, 0, 1).normalize();            /* de onde a câmera do capítulo 2 olha */
+  const siloObjs = SILO.xs.map((x, i) => {
+    const z = -24 - (i % 2) * .4, ang = Math.atan2(CAM2_DIR.x, CAM2_DIR.z);
+    const g = new THREE.Group(); g.position.set(x, 0, z); g.userData.dynamic = true; world.add(g);
+    const face = new THREE.Group(); face.rotation.y = ang; g.add(face);
+    /* placa com a letra */
+    const letter = String.fromCharCode(65 + i);
+    const lt = plateTexture((c, W, H) => {
+      c.fillStyle = "#1d5fa8"; c.beginPath(); c.arc(W / 2, H / 2, W / 2 - 8, 0, Math.PI * 2); c.fill();
+      c.lineWidth = 14; c.strokeStyle = "#ffffff"; c.stroke();
+      c.fillStyle = "#ffffff"; c.font = "900 170px Montserrat, Arial, sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(letter, W / 2, H / 2 + 8);
+    }, 256, 256);
+    const plaque = new THREE.Mesh(new THREE.CircleGeometry(1.25, 48), new THREE.MeshStandardMaterial({ map: lt, roughness: .4, metalness: .1 }));
+    plaque.position.set(0, SILO.Hs - 1.1, SILO.R + .1); face.add(plaque);
+    /* régua de nível (vidro + coluna de grão) */
+    const GH = 8.2, gy = 1.6;
+    add(RB(.95, GH + .3, .16, .06), std("gaugeFrame", { color: "#e9edf0", roughness: .3, metalness: .7 }), 0, gy + GH / 2, SILO.R + .08, face);
+    add(new THREE.BoxGeometry(.7, GH, .1), new THREE.MeshStandardMaterial({ color: "#1b2a33", roughness: .15, metalness: .2 }), 0, gy + GH / 2, SILO.R + .17, face, false);
+    const fillGeo = new THREE.BoxGeometry(.58, 1, .1); fillGeo.translate(0, .5, 0);
+    const fillMat = new THREE.MeshStandardMaterial({ color: "#3fb36b", emissive: "#3fb36b", emissiveIntensity: .35, roughness: .4 });
+    const fill = add(fillGeo, fillMat, 0, gy, SILO.R + .2, face, false); fill.scale.y = .01;
+    for (const lv of [.28, .82]) add(new THREE.BoxGeometry(1.05, .07, .14), std("tick", { color: "#f3c331", roughness: .4 }), 0, gy + GH * lv, SILO.R + .2, face, false);
+    /* área de toque */
+    const hit = new THREE.Mesh(new THREE.CylinderGeometry(SILO.R + .8, SILO.R + .8, SILO.Hs + 4, 12), new THREE.MeshBasicMaterial({ visible: false }));
+    hit.position.y = (SILO.Hs + 4) / 2; hit.userData.silo = i; g.add(hit);
+    return { i, letter, x, z, g, face, plaque, fill, fillMat, gauge: { GH, gy }, hit, level: 0, shown: 0, top: V(x, SILO.Hs + SILO.roofH + 1, z), pulse: 0, bad: 0 };
+  });
+  function setSiloLevel(s, v, instant) { s.level = clamp(v, 0, 100); if (instant) s.shown = s.level; }
+  function updateSilos(dt) {
+    siloObjs.forEach(s => {
+      s.shown = lerp(s.shown, s.level, 1 - Math.pow(.02, dt));
+      s.fill.scale.y = Math.max(.01, s.shown / 100 * s.gauge.GH);
+      const lv = s.shown, col = lv > 94 ? "#e0483c" : lv > 82 ? "#f2b630" : lv < 28 ? "#7fa7c9" : "#3fb36b";
+      s.fillMat.color.set(col); s.fillMat.emissive.set(col);
+      if (s.pulse > 0) { s.pulse = Math.max(0, s.pulse - dt * 2); const k = Math.sin(s.pulse * Math.PI); s.g.scale.set(1 + k * .03, 1 + k * .02, 1 + k * .03); } else s.g.scale.set(1, 1, 1);
+      if (s.bad > 0) { s.bad = Math.max(0, s.bad - dt * 2.4); s.g.position.x = s.x + Math.sin(s.bad * 40) * .18 * s.bad; s.plaque.material.emissive.setRGB(s.bad, 0, 0); }
+      else { s.g.position.x = s.x; s.plaque.material.emissive.setRGB(0, 0, 0); }
+    });
+  }
+  /* moega com grade e o caminhão que traz a carga */
+  {
+    const pit = new THREE.Group(); pit.position.set(-1.5, 0, -19.6); world.add(pit);
+    add(RB(4.2, .14, 3.2, .04), std("pitFrame", { color: "#f3c331", roughness: .5 }), 0, .07, 0, pit, false);
+    add(new THREE.BoxGeometry(3.6, .1, 2.6), new THREE.MeshStandardMaterial({ color: "#1d2224", roughness: .6, metalness: .6, normalMap: TEX.ribN }), 0, .12, 0, pit, false);
+    add(RB(1.2, 2.2, 1.2, .05), std("pitBox", { color: "#1d5fa8", roughness: .45, metalness: .35 }), 0, 1.1, -4.8, pit);
+  }
+  const loadTruck = buildTruck("#ffffff");
+  loadTruck.rotation.y = -Math.PI / 2; loadTruck.position.set(-1.5, 0, -14.1); world.add(loadTruck);
+  const GRAIN_COLOR = { soja: "#dcb661", milho: "#f2a71b", trigo: "#c98f3c" };
+  function setLoad(type) {
+    const h = loadTruck.userData.heap; if (!h) return;
+    h.material = h.material.clone(); h.material.color.set(GRAIN_COLOR[type] || "#e0b54a");
+    loadTruck.userData.bounce = 1;
+  }
+  /* corrente de grãos: caminhão -> moega -> elevador -> passarela -> silo */
+  const STREAM_N = 140;
+  const streamMat = new THREE.MeshStandardMaterial({ color: "#f2b01e", roughness: .4, emissive: "#3a2a00", emissiveIntensity: .2 });
+  const stream = new THREE.InstancedMesh(new THREE.SphereGeometry(.16, 8, 6), streamMat, STREAM_N);
+  stream.frustumCulled = false; stream.count = STREAM_N; stream.userData.dynamic = true; scene.add(stream);
+  const streams = [], tmpM = new THREE.Matrix4(), hidden = new THREE.Matrix4().makeScale(0, 0, 0);
+  for (let k = 0; k < STREAM_N; k++) stream.setMatrixAt(k, hidden);
+  function pathFor(i) {
+    const s = siloObjs[i];
+    return [V(-1.5, 2.6, -18.4), V(-1.5, .4, -19.6), V(-1.5, 1.2, -25), V(-1.5, 25.6, -26), s.top.clone(), s.top.clone().add(V(0, -1.4, 0))];
+  }
+  function streamTo(i, type, onArrive) {
+    const pts = pathFor(i), segs = []; let L = 0;
+    for (let k = 1; k < pts.length; k++) { const d = pts[k].distanceTo(pts[k - 1]); segs.push(d); L += d; }
+    streams.push({ pts, segs, L, t: 0, dur: 1.5, n: 26, onArrive, done: false, color: GRAIN_COLOR[type] || "#f2b01e" });
+    streamMat.color.set(GRAIN_COLOR[type] || "#f2b01e");
+  }
+  const _v = new THREE.Vector3();
+  function pointAt(st, u) {
+    let d = clamp(u, 0, 1) * st.L;
+    for (let k = 0; k < st.segs.length; k++) { if (d <= st.segs[k]) return _v.lerpVectors(st.pts[k], st.pts[k + 1], d / st.segs[k]); d -= st.segs[k]; }
+    return _v.copy(st.pts[st.pts.length - 1]);
+  }
+  function updateStreams(dt) {
+    let slot = 0;
+    for (let j = streams.length - 1; j >= 0; j--) {
+      const st = streams[j]; st.t += dt;
+      for (let k = 0; k < st.n && slot < STREAM_N; k++) {
+        const u = (st.t - k * .035) / st.dur;
+        if (u <= 0 || u >= 1) continue;
+        pointAt(st, u); tmpM.makeTranslation(_v.x + Math.sin(k * 7) * .12, _v.y, _v.z + Math.cos(k * 5) * .12); stream.setMatrixAt(slot++, tmpM);
+      }
+      if (!st.done && st.t >= st.dur * .92) { st.done = true; if (st.onArrive) st.onArrive(); }
+      if (st.t > st.dur + st.n * .035) streams.splice(j, 1);
+    }
+    for (let k = slot; k < STREAM_N; k++) stream.setMatrixAt(k, hidden);
+    stream.instanceMatrix.needsUpdate = true;
+  }
+  /* chuva */
+  const RAIN_N = 2600, rainGeo = new THREE.BufferGeometry(), rp = new Float32Array(RAIN_N * 6);
+  for (let k = 0; k < RAIN_N; k++) { const x = (rnd() - .5) * 90, y = rnd() * 40, z = (rnd() - .5) * 90; rp.set([x, y, z, x + .1, y - .9, z + .05], k * 6); }
+  rainGeo.setAttribute("position", new THREE.BufferAttribute(rp, 3));
+  const rain = new THREE.LineSegments(rainGeo, new THREE.LineBasicMaterial({ color: "#c9dbea", transparent: true, opacity: 0, depthWrite: false }));
+  rain.frustumCulled = false; rain.visible = false; rain.userData.dynamic = true; scene.add(rain);
+  let rainLevel = 0, stormK = 0;
+  function setRain(v) { rainLevel = clamp(v, 0, 1); rain.visible = rainLevel > 0; }
+  function setStorm(k) { stormK = clamp(k, 0, 1); }
+  function updateWeather(dt, camera) {
+    if (rain.visible) {
+      rain.material.opacity = lerp(rain.material.opacity, rainLevel * .6, 1 - Math.pow(.05, dt));
+      const look = camera.userData.look || V(0, 0, 0); rain.position.set(look.x, 0, look.z);
+      const a = rainGeo.attributes.position;
+      for (let k = 0; k < RAIN_N; k++) {
+        let y = a.getY(k * 2) - dt * 38; if (y < 0) y += 40;
+        a.setY(k * 2, y); a.setY(k * 2 + 1, y - .9);
+      }
+      a.needsUpdate = true;
+    }
+    clouds.children.forEach(c => { c.material.color.setRGB(1 - stormK * .58, 1 - stormK * .55, 1 - stormK * .5); c.material.opacity = .92; });
+  }
+
   /* ===================================================== junta as peças fixas (menos chamadas de desenho) */
   (function bakeStatic() {
     scene.updateMatrixWorld(true);
@@ -931,6 +1051,10 @@ export function createWorld(renderer) {
     });
     updateBins(dt);
     updateSparks(dt);
+    updateSilos(dt);
+    updateStreams(dt);
+    updateWeather(dt, camera);
+    if (loadTruck.userData.bounce > 0) { const u = loadTruck.userData; u.bounce = Math.max(0, u.bounce - dt * 2.5); u.heap.scale.y = 1 + Math.sin(u.bounce * Math.PI) * .25; }
     /* sombras acompanham o que a câmera olha */
     sun.target.position.set(camera.userData.look ? camera.userData.look.x : 0, 0, camera.userData.look ? camera.userData.look.z : 0);
     sun.position.copy(sun.target.position).addScaledVector(skyU.sunDir.value, 80);
@@ -941,5 +1065,6 @@ export function createWorld(renderer) {
     play, BELT, BIN, BINS, binObjs, beltTex: [TEX.belt, TEX.beltN], setFill,
     ringNext, ringSel, makeItem, hitGeo, hitMat, burst,
     trucks, driveTrucks, parkTrucks, hideTrucks,
+    SILO, siloObjs, setSiloLevel, streamTo, setLoad, setRain, setStorm, loadTruck, CAM2_DIR,
   };
 }

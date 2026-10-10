@@ -16,7 +16,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="stylesheet" href="mascotes.v59.css?v=59.0">
-  <link rel="stylesheet" href="jornada.v1.css?v=1.2">
+  <link rel="stylesheet" href="jornada.v1.css?v=1.3">
   <script src="pwa.v55.js?v=55.0" defer></script>
 </head>
 <body data-page="journey" class="jr">
@@ -100,14 +100,14 @@
       </header>
       <div class="jr-tabs" role="tablist" id="jrRankTabs">
         <button role="tab" type="button" data-rank="classificacao" aria-selected="true">Classificação</button>
-        <button role="tab" type="button" data-rank="silo" aria-selected="false">Silo</button>
+        <button role="tab" type="button" data-rank="silo3d" aria-selected="false">Silo</button>
         <button role="tab" type="button" data-rank="memoria" aria-selected="false">Memória</button>
         <button role="tab" type="button" data-rank="cadeia" aria-selected="false">Cadeia</button>
         <button role="tab" type="button" data-rank="jornada" aria-selected="false">Jornada</button>
       </div>
       <div class="jr-rank-lists">
         <ol class="coamo-ranking-list" data-ranking-list="classificacao"></ol>
-        <ol class="coamo-ranking-list" data-ranking-list="silo" hidden></ol>
+        <ol class="coamo-ranking-list" data-ranking-list="silo3d" hidden></ol>
         <ol class="coamo-ranking-list" data-ranking-list="memoria" hidden></ol>
         <ol class="coamo-ranking-list" data-ranking-list="cadeia" hidden></ol>
         <ol class="coamo-ranking-list" data-ranking-list="jornada" hidden></ol>
@@ -137,6 +137,14 @@
     <div class="jr-hud__stat"><small>VIDAS</small><b class="jr-hearts" id="hudLives"></b></div>
     <div class="jr-hud__combo" id="hudCombo"><span>COMBO <b id="hudComboN">x0</b></span><i><u id="hudComboBar"></u></i></div>
     <div class="jr-hud__line" id="hudLine" aria-live="polite"></div>
+  </div>
+  <!-- capítulo 2: carga chegando e etiquetas dos silos -->
+  <div class="jr-silo-tags" id="jrSiloTags" hidden></div>
+  <div class="jr-load" id="jrLoad" hidden aria-live="polite">
+    <span class="jr-load__icon" id="jrLoadIcon"></span>
+    <span class="jr-load__txt"><small>CARGA CHEGANDO</small><strong id="jrLoadName">Milho</strong></span>
+    <b class="jr-load__amt" id="jrLoadAmt">+12%</b>
+    <i class="jr-load__bar"><u id="jrLoadBar"></u></i>
   </div>
   <div class="jr-floaters" id="jrFloaters" aria-hidden="true"></div>
   <div class="jr-banner" id="jrBanner" aria-live="assertive" hidden></div>
@@ -179,8 +187,8 @@
   <script src="mascotes-falas.v59.js?v=59.0"></script>
   <script src="mascotes-rigs.v58.js?v=58.0"></script>
   <script src="mascotes.v59.js?v=59.0"></script>
-  <script src="ranking.v55.js?v=65.0"></script>
+  <script src="ranking.v55.js?v=66.0"></script>
   <script type="importmap">{ "imports": { "three": "./vendor/three.r169.module.min.js", "three/addons/": "./vendor/addons/" } }</script>
-  <script type="module" src="jornada.v1.js?v=1.2"></script>
+  <script type="module" src="jornada.v1.js?v=1.3"></script>
 </body>
 </html>

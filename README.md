@@ -41,12 +41,13 @@ e atualize as páginas — e apague a anterior. O histórico completo fica no Gi
 | Arquivo | Função |
 | --- | --- |
 | `jornada.v1.js` | História (objeto `STORY`, **edite as falas aqui**), capítulos, telas, jogo do capítulo 1 |
-| `jornada-mundo.v1.js` | Cenário 3D: texturas, céu, silos, armazém, esteira, caçambas, grãos, caminhões |
+| `jornada-mundo.v1.js` | Cenário 3D: texturas, céu, silos, armazém, esteira, caçambas, grãos, caminhões, chuva |
+| `jornada-cap2.v1.js` | Capítulo 2 · Corrida contra a chuva (silos): falas em `STORY2` e regras |
 | `jornada.v1.css` | Telas, HUD, legendas |
 | `vendor/three.r169.module.min.js` · `vendor/addons/` | Biblioteca 3D (three.js, licença MIT) |
 
 Endereços úteis para teste: `jornada.html?fps=1` (mostra o desempenho), `?q=high|medium|low`
-(força a qualidade), `?tela=jogo` (abre direto o jogo avulso). Sem `?q`, a página baixa a qualidade
+(força a qualidade), `?jogo=classificacao` ou `?jogo=silo` (abre direto o jogo avulso). Sem `?q`, a página baixa a qualidade
 sozinha se o totem não aguentar e lembra a escolha.
 
 ## Painel oculto

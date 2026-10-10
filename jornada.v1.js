@@ -12,7 +12,8 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
-import { createWorld, V } from "./jornada-mundo.v1.js?v=1.2";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=1.3";
+import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.3";
 
 /* ===================================================== HISTÓRIA */
 const STORY = {
@@ -50,7 +51,7 @@ const STORY = {
 
 const CHAPTERS = [
   { id: "ch1", n: 1, kicker: "RECEBIMENTO", title: "A primeira carga", text: "Classifique os grãos que chegam na esteira.", ready: true },
-  { id: "ch2", n: 2, kicker: "ARMAZENAGEM", title: "Corrida contra a chuva", text: "Guarde cada produto no silo certo antes do temporal." },
+  { id: "ch2", n: 2, kicker: "ARMAZENAGEM", title: "Corrida contra a chuva", text: "Guarde cada produto no silo certo antes do temporal.", ready: true },
   { id: "ch3", n: 3, kicker: "INDÚSTRIA", title: "Do grão ao mercado", text: "Acompanhe a carga até virar produto." },
   { id: "ch4", n: 4, kicker: "MEMÓRIA", title: "O arquivo da Coamo", text: "Cada par encontrado libera uma curiosidade." },
   { id: "ch5", n: 5, kicker: "FINAL", title: "Onde você brilha", text: "Descubra a área da Coamo que combina com você." },
@@ -58,7 +59,7 @@ const CHAPTERS = [
 
 const GAMES = [
   { id: "classificacao", label: "NOVO · 3D", title: "Desafio da Classificação", text: "Separe soja, milho, trigo e impurezas na esteira.", img: "assets/games/v48/classification_banner.webp", play: "ch1", isNew: true },
-  { id: "silo", label: "ARCADE", title: "Silo em Equilíbrio", text: "Guarde cada produto no silo certo.", img: "assets/games/v48/silo_banner.webp", href: "jogo-silo.html" },
+  { id: "silo3d", label: "NOVO · 3D", title: "Corrida contra a chuva", text: "Guarde cada carga no silo certo antes do temporal.", img: "assets/games/v48/silo_banner.webp", play: "ch2", isNew: true },
   { id: "memoria", label: "MEMÓRIA", title: "Desafio Coamo", text: "Encontre os pares e conheça curiosidades.", img: "assets/games/v48/memory_banner.webp", href: "jogo-memoria.html" },
   { id: "cadeia", label: "SEQUÊNCIA", title: "Monte a cadeia Coamo", text: "Do campo ao mercado, na ordem certa.", img: "assets/games/v48/chain_banner.webp", href: "jogo-cadeia.html" },
   { id: "quiz", label: "QUIZ", title: "Descubra sua área", text: "Veja qual área da Coamo combina com você.", img: "assets/games/v48/area_banner.webp", href: "jogo-area.html", noRank: true },
@@ -126,6 +127,14 @@ const Sound = (() => {
     star: i => note([784, 988, 1318][i] || 1318, 0, .3, "triangle", .1),
     win: () => [523, 659, 784, 1046].forEach((f, i) => note(f, i * .11, i === 3 ? .45 : .14, "triangle", .09)),
     type: () => note(1400 + Math.random() * 300, 0, .02, "square", .008),
+    thunder: () => {
+      const c = ac(); if (!c) return;
+      const len = Math.floor(c.sampleRate * 1.8), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2);
+      const src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+      src.buffer = buf; f.type = "lowpass"; f.frequency.value = 420; g.gain.value = .55;
+      src.connect(f); f.connect(g); g.connect(master); src.start();
+    },
   };
   /* trilha leve: acordes suaves + melodia em pentatônica */
   const CHORDS = [[261.6, 329.6, 392], [220, 261.6, 329.6], [174.6, 220, 261.6], [196, 246.9, 293.7]];
@@ -252,9 +261,20 @@ function shotPose(name) {
     case "trucks": return pose(V(-56, 6.5, 8), V(-30, 2, -8), portrait ? 56 : 44, { to: V(-48, 5.5, 6), dur: 8 });
     case "yard": return pose(V(-26, 9, 16), V(-6, 2, -8), portrait ? 54 : 42, { to: V(-20, 8, 15), dur: 8 });
     case "belt": return gamePose(true);
+    case "siloWide": return pose(V(44, 15, 24), V(12, 9, -24), portrait ? 54 : 42, { to: V(38, 13, 20), dur: 10 });
+    case "siloStage": { const p = ch2Pose(); return pose(p.pos.clone().add(V(-3, -1, 4)), p.look.clone().add(V(0, -1.5, 0)), p.fov, { to: p.pos.clone().add(V(-1.5, -.5, 2)), dur: 12 }); }
+    case "ch2": return ch2Pose();
     case "map": return portrait ? pose(V(26, 16, 34), V(4, 6, -14), 50, { orbit: true }) : pose(V(34, 20, 44), V(2, 4, -14), 40, { orbit: true });
     default: return gamePose();
   }
+}
+function ch2Pose() {
+  const a = camera.aspect, portrait = a < .9, fov = portrait ? 50 : 42;
+  const look = V(15.5, portrait ? 9.5 : 7.5, -24.4);
+  const dir = V(W.CAM2_DIR.x, portrait ? .3 : .26, W.CAM2_DIR.z).normalize();
+  const half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
+  const d = Math.max(portrait ? 0 : 36, 15 / (half * Math.min(a, 1.7)));
+  return pose(look.clone().addScaledVector(dir, d), look, fov);
 }
 function gamePose(cine) {
   const a = camera.aspect, portrait = a < .9, o = window.__gp || {};
@@ -340,6 +360,12 @@ const Cast = (() => {
     A.t.tx = W * .17; A.t.ty = top - 8; A.t.ts = h / BASE;
     A.a.tx = W * .83; A.a.ty = top - 8; A.a.ts = h / BASE;
   }
+  function cornerTargets() {
+    const W = innerWidth, H = innerHeight, load = $("#jrLoad"), h = Math.min(H * .2, W * .34);
+    const by = H - (W < 700 ? 18 : 26);
+    A.t.tx = W * .1 + h * .12; A.t.ty = by; A.t.ts = h / BASE;
+    A.a.tx = W * .9 - h * .12; A.a.ty = by; A.a.ts = h / BASE;
+  }
   function worldTargets(set) {
     for (const k of ["t", "a"]) {
       const foot = toScreen(set[k]), head = toScreen(_head.copy(set[k]).add(V(0, set.h, 0)));
@@ -363,7 +389,7 @@ const Cast = (() => {
     act(who, name) { const o = A[who]; if (!o) return; try { window.CoamoMascots && window.CoamoMascots.play(o.el, name); } catch (_) {} },
     update(dt, snap) {
       if (mode === "off") return;
-      if (mode === "stage") stageTargets(); else if (mode === "title") titleTargets();
+      if (mode === "stage") stageTargets(); else if (mode === "title") titleTargets(); else if (mode === "corners") cornerTargets();
       else worldTargets(mode === "game" && camera.aspect > 1.15 ? WORLD.gameWide : (WORLD[mode] || WORLD.game));
       const k = snap ? 1 : 1 - Math.pow(.0005, dt);
       for (const key of ["t", "a"]) {
@@ -707,18 +733,19 @@ function setMode(m) {
 }
 function goTitle() {
   Caption.stop(); setMode("title"); UI.show("scrTitle");
-  Ch1.clearItems(); setSky("morning", 1.5);
+  runToken++; Ch1.clearItems(); Ch2.clear(); setSky("morning", 1.5);
   camTo(shotPose("title"), 2.2);
   Cast.set("title");
   setTimeout(() => { if (mode === "title") { Cast.act("t", "wave"); setTimeout(() => Cast.act("a", "wave"), 500); } }, 900);
 }
 function goMap() {
+  Ch2.clear();
   setMode("map"); UI.show("scrMap"); Cast.set("off");
   camTo(shotPose("map"), 2);
   renderMap();
 }
-function goGames() { setMode("games"); UI.show("scrGames"); Cast.set("off"); camTo(shotPose("map"), 2); renderGames(); }
-function goRanking(game) { setMode("ranking"); UI.show("scrRank"); Cast.set("off"); camTo(shotPose("map"), 2); renderRanking(game || "classificacao"); }
+function goGames() { Ch2.clear(); setMode("games"); UI.show("scrGames"); Cast.set("off"); camTo(shotPose("map"), 2); renderGames(); }
+function goRanking(game) { Ch2.clear(); setMode("ranking"); UI.show("scrRank"); Cast.set("off"); camTo(shotPose("map"), 2); renderRanking(game || "classificacao"); }
 
 function renderMap() {
   const st = Journey.state, list = $("#jrMap"); list.innerHTML = "";
@@ -736,7 +763,7 @@ function renderMap() {
   $("#jrMapTotal").textContent = fmt(Journey.total());
   const btn = $("#jrMapPlay");
   if (current) { btn.textContent = `Jogar capítulo ${current.n}`; btn.dataset.ch = current.id; }
-  else { btn.textContent = "Jogar o capítulo 1 de novo"; btn.dataset.ch = "ch1"; }
+  else { const lastReady = [...CHAPTERS].reverse().find(c => c.ready); btn.textContent = `Jogar o capítulo ${lastReady.n} de novo`; btn.dataset.ch = lastReady.id; }
   $("#jrMapSub").textContent = current ? "Complete os capítulos e ganhe até 3 estrelas em cada um." : "Os próximos capítulos estão em produção. Enquanto isso, melhore suas estrelas!";
 }
 function renderGames() {
@@ -785,75 +812,132 @@ async function playPrologue() {
   Journey.state.seen = true; Journey.save();
 }
 
-/* ---------- capítulo 1 ---------- */
-async function runChapter1(solo) {
+/* ---------- capítulos ---------- */
+const Ch2 = createCh2({ W, camera, canvas, hud, Cast, Sound, buzz, banner, floater, flash, toScreen, setSky });
+const CH = {
+  ch1: {
+    n: 1, engine: Ch1, rank: "classificacao",
+    kicker: STORY.ch1.kicker, title: STORY.ch1.title, soloKicker: "JOGO AVULSO · CLASSIFICAÇÃO", soloTitle: "Desafio da Classificação",
+    goal: STORY.ch1.goal, how: STORY.ch1.how,
+    legend: () => BINS.map(b => `<li>${ICONS[b.type]}<span>${b.label[0] + b.label.slice(1).toLowerCase()}</span></li>`).join(""),
+    setup() { parkTrucks(); setSky("morning", 1); Ch1.reset(); camTo(gamePose(), 1.8); Cast.set("game"); },
+    intro: () => (!Journey.state.seen ? playPrologue() : null),
+    endShot: () => shotPose("belt"),
+    end: STORY.ch1.end,
+    after() { ringNext.visible = ringSel.visible = false; setTimeout(() => Ch1.clearItems(), 900); },
+    result: {
+      titles: ["A esteira venceu desta vez", "Carga classificada!", "Ótima classificação!", "Classificação perfeita!"],
+      texts: ["Tente de novo: comece pelo item com o anel amarelo.", "Você classificou a carga. Tente mais acertos seguidos para subir de nível.", "Quase tudo no lugar certo. Mais um pouco e chega às 3 estrelas.", "Precisão de especialista. Os cooperados agradecem!"],
+      soloKicker: "DESAFIO DA CLASSIFICAÇÃO",
+      stats: r => `<div><b>${r.sorted}</b><small>itens certos</small></div><div><b>${r.accuracy}%</b><small>precisão</small></div><div><b>x${r.best}</b><small>melhor combo</small></div><div><b>${r.seconds}s</b><small>tempo</small></div>`,
+      entry: r => ({ score: r.score, duration: r.seconds, accuracy: r.accuracy, phase: r.phase, stars: r.stars }),
+    },
+  },
+  ch2: {
+    n: 2, engine: Ch2, rank: "silo3d",
+    kicker: STORY2.kicker, title: STORY2.title, soloKicker: "JOGO AVULSO · SILOS", soloTitle: "Corrida contra a chuva",
+    goal: STORY2.goal, how: STORY2.how,
+    legend: () => ["soja", "milho", "trigo"].map(t => `<li>${ICONS[t]}<span>${t[0].toUpperCase() + t.slice(1)}</span></li>`).join("") +
+      `<li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="17" y="4" width="14" height="40" rx="4" fill="#1b2a33" stroke="#e9edf0" stroke-width="3"/><rect x="20" y="20" width="8" height="21" rx="2" fill="#3fb36b"/><rect x="14" y="14" width="20" height="3" fill="#f3c331"/></svg><span>Nível</span></li>`,
+    setup() { Ch1.clearItems(); parkTrucks(); setSky("morning", 1); Ch2.reset(); camTo(shotPose("ch2"), 2); Cast.set("corners"); Ch2.showTags(true); },
+    intro: () => playIntro(STORY2.intro),
+    endShot: () => shotPose("siloStage"),
+    end: STORY2.end,
+    after() { setTimeout(() => { Ch2.clear(); }, 400); },
+    result: {
+      titles: STORY2.result.titles, texts: STORY2.result.texts, soloKicker: "CORRIDA CONTRA A CHUVA",
+      stats: r => `<div><b>${r.correct}</b><small>cargas guardadas</small></div><div><b>${r.accuracy}%</b><small>precisão</small></div><div><b>x${r.best}</b><small>melhor combo</small></div><div><b>${r.errors}</b><small>erros</small></div>`,
+      entry: r => ({ score: r.score, duration: r.seconds, accuracy: r.accuracy, stars: r.stars, combo: r.best }),
+    },
+  },
+};
+
+/* cena de abertura de um capítulo (falas + câmera) */
+async function playIntro(lines) {
+  setMode("cutscene"); UI.hideAll();
+  let last = null;
+  await Caption.play(lines, {
+    skippable: true,
+    onLine(L) {
+      if (L.shot && L.shot !== last) {
+        last = L.shot;
+        Cast.set(L.shot === "siloWide" ? "off" : "stage");
+        if (L.shot === "siloWide") camSnap(shotPose(L.shot)); else camTo(shotPose(L.shot), 2.6);
+      }
+    },
+  });
+}
+
+let runToken = 0;
+async function runChapter(id, solo) {
+  const def = CH[id]; if (!def) return;
+  const token = ++runToken;
   playMode = solo ? "solo" : "journey";
   Caption.stop();
-  if (!solo && !Journey.state.seen) await playPrologue();
-  parkTrucks();
-  setSky("morning", 1);
-  Ch1.reset();
+  Object.values(CH).forEach(d => { if (d !== def && d.engine.clear) d.engine.clear(); if (d !== def && d.engine.clearItems) d.engine.clearItems(); });
+  if (!solo && def.intro) { const p = def.intro(); if (p) await p; }
+  if (token !== runToken) return;
   setMode("chapter");
-  camTo(gamePose(), 1.8);
-  Cast.set("game");
-  const c = STORY.ch1;
-  $("#jrChKicker").textContent = solo ? "JOGO AVULSO · CLASSIFICAÇÃO" : c.kicker;
-  $("#jrChTitle").textContent = solo ? "Desafio da Classificação" : c.title;
-  $("#jrChGoal").textContent = c.goal;
-  $("#jrChHow").textContent = c.how;
-  $("#jrChLegend").innerHTML = BINS.map(b => `<li>${ICONS[b.type]}<span>${b.label[0] + b.label.slice(1).toLowerCase()}</span></li>`).join("");
+  def.setup();
+  $("#jrChKicker").textContent = solo ? def.soloKicker : def.kicker;
+  $("#jrChTitle").textContent = solo ? def.soloTitle : def.title;
+  $("#jrChGoal").textContent = def.goal;
+  $("#jrChHow").textContent = def.how;
+  $("#jrChLegend").innerHTML = def.legend();
   UI.show("scrChapter");
   await new Promise(res => { $("#jrChStart").onclick = () => { Sound.fx("tap"); res(); }; });
+  if (token !== runToken) return;
   UI.hideAll();
   setMode("play");
   await countdown();
-  const r = await Ch1.start();
+  const r = await def.engine.start();
+  if (token !== runToken) return;
   setMode("result");
-  ringNext.visible = ringSel.visible = false;
   Sound.fx(r.stars >= 2 ? "win" : "phase");
-  setTimeout(() => Ch1.clearItems(), 900);
   if (!solo) {
-    const best = Journey.state.scores.ch1 || 0;
-    Journey.state.stars.ch1 = Math.max(Journey.state.stars.ch1 || 0, r.stars);
-    Journey.state.scores.ch1 = Math.max(best, r.score);
+    Journey.state.stars[id] = Math.max(Journey.state.stars[id] || 0, r.stars);
+    Journey.state.scores[id] = Math.max(Journey.state.scores[id] || 0, r.score);
     Journey.save();
     Cast.set("stage");
-    camTo(shotPose("belt"), 2.2);
+    camTo(def.endShot(), 2.2);
     await new Promise(res => setTimeout(res, 700));
-    const lines = (STORY.ch1.end[r.stars] || STORY.ch1.end[1]).map(([who, text]) => ({ who, text, act: r.stars >= 2 ? "celebrate" : "think" }));
+    const lines = (def.end[r.stars] || def.end[1]).map(([who, text]) => ({ who, text, act: r.stars >= 2 ? "celebrate" : "think" }));
     await Caption.play(lines, { skippable: true });
   }
-  showResult(r, solo);
+  if (token !== runToken) return;
+  def.after();
+  showResult(r, solo, id);
 }
+const runChapter1 = solo => runChapter("ch1", solo);
 
-function showResult(r, solo) {
+function showResult(r, solo, id = "ch1") {
+  const def = CH[id];
   Cast.set("off");
   setMode("result");
   camTo(shotPose("map"), 2.4);
   UI.show("scrResult");
-  const titles = ["A esteira venceu desta vez", "Carga classificada!", "Ótima classificação!", "Classificação perfeita!"];
-  $("#jrResKicker").textContent = solo ? "DESAFIO DA CLASSIFICAÇÃO" : (r.stars > 0 ? "CAPÍTULO 1 CONCLUÍDO" : "CAPÍTULO 1");
-  $("#jrResTitle").textContent = titles[r.stars];
-  $("#jrResText").textContent = r.stars === 3 ? "Precisão de especialista. Os cooperados agradecem!" : r.stars === 2 ? "Quase tudo no lugar certo. Mais um pouco e chega às 3 estrelas." : r.stars === 1 ? "Você classificou a carga. Tente mais acertos seguidos para subir de nível." : "Tente de novo: comece pelo item com o anel amarelo.";
+  $("#jrResKicker").textContent = solo ? def.result.soloKicker : (r.stars > 0 ? `CAPÍTULO ${def.n} CONCLUÍDO` : `CAPÍTULO ${def.n}`);
+  $("#jrResTitle").textContent = def.result.titles[r.stars];
+  $("#jrResText").textContent = def.result.texts[r.stars];
   const scoreEl = $("#jrResScore");
   const t0 = performance.now();
   (function count() { const k = Math.min(1, (performance.now() - t0) / 1100); scoreEl.textContent = fmt(r.score * easeOut(k)); if (k < 1) requestAnimationFrame(count); })();
-  $("#jrResStats").innerHTML = `<div><b>${r.sorted}</b><small>itens certos</small></div><div><b>${r.accuracy}%</b><small>precisão</small></div><div><b>x${r.best}</b><small>melhor combo</small></div><div><b>${r.seconds}s</b><small>tempo</small></div>`;
+  $("#jrResStats").innerHTML = def.result.stats(r);
   $$("#jrStars i").forEach((s, i) => { s.classList.remove("is-on"); if (i < r.stars) setTimeout(() => { s.classList.add("is-on"); Sound.fx("star", i); }, 500 + i * 380); });
   const acts = $("#jrResActions"); acts.innerHTML = "";
   const add = (label, cls, fn) => { const b = document.createElement("button"); b.type = "button"; b.className = "jr-btn " + cls; b.textContent = label; b.onclick = () => { Sound.fx("tap"); fn(); }; acts.appendChild(b); };
   if (solo) {
-    add("Jogar de novo", "jr-btn--primary", () => runChapter1(true));
-    add("Ver ranking", "jr-btn--soft", () => goRanking("classificacao"));
+    add("Jogar de novo", "jr-btn--primary", () => runChapter(id, true));
+    add("Ver ranking", "jr-btn--soft", () => goRanking(def.rank));
     add("Outros jogos", "jr-btn--soft", goGames);
   } else {
     add("Continuar a jornada", "jr-btn--primary", goMap);
-    add("Jogar de novo", "jr-btn--soft", () => runChapter1(false));
+    add("Jogar de novo", "jr-btn--soft", () => runChapter(id, false));
   }
   /* ranking do evento: pede o nome se entrou no top 5 */
   setTimeout(() => {
     if (mode !== "result" || !window.CoamoLeaderboard || r.score <= 0) return;
-    window.CoamoLeaderboard.maybeCapture("classificacao", { score: r.score, duration: r.seconds, accuracy: r.accuracy, phase: r.phase, stars: r.stars });
+    window.CoamoLeaderboard.maybeCapture(def.rank, def.result.entry(r));
   }, 1900 + r.stars * 380);
 }
 
@@ -863,18 +947,18 @@ document.addEventListener("click", e => {
   if (go) {
     Sound.fx("tap");
     const g = go.dataset.go;
-    if (g === "journey") { Journey.state.seen ? goMap() : runChapter1(false); }
+    if (g === "journey") { Journey.state.seen ? goMap() : runChapter("ch1", false); }
     else if (g === "games") goGames();
     else if (g === "ranking") goRanking();
     else if (g === "title") goTitle();
     return;
   }
   const solo = e.target.closest("[data-solo]");
-  if (solo) { Sound.fx("tap"); runChapter1(true); return; }
+  if (solo) { Sound.fx("tap"); runChapter(solo.dataset.solo, true); return; }
   const tab = e.target.closest("[data-rank]");
   if (tab) { Sound.fx("tap"); renderRanking(tab.dataset.rank); }
 });
-$("#jrMapPlay").addEventListener("click", () => { Sound.fx("tap"); runChapter1(false); });
+$("#jrMapPlay").addEventListener("click", e => { Sound.fx("tap"); runChapter(e.currentTarget.dataset.ch || "ch1", false); });
 
 /* som */
 const soundBtn = $("#jrSound");
@@ -905,7 +989,7 @@ function resize() {
   renderer.setSize(w, h, false);
   camera.aspect = w / h; camera.updateProjectionMatrix();
   if (composer) composer.setSize(w, h);
-  if (mode === "play" || mode === "chapter") camSnap(gamePose());
+  if (mode === "play" || mode === "chapter") camSnap(Ch2.running || (Ch2._state() && Ch2._state().showTags) ? shotPose("ch2") : gamePose());
   else if (cam.to && cam.to.drift && cam.to.drift.orbit) camSnap(shotPose(mode === "title" ? "title" : "map"));
 }
 addEventListener("resize", resize);
@@ -922,6 +1006,7 @@ function setQuality(q) {
 function loop() {
   const dt = Math.min(clock.getDelta(), .1), time = clock.elapsedTime;
   Ch1.update(dt);
+  Ch2.update(dt);
   updateCamera(dt, time);
   W.update(dt, time, camera);
   Cast.update(dt);
@@ -944,7 +1029,9 @@ function loop() {
 document.fonts && document.fonts.ready.then(() => {});
 camSnap(shotPose("title"));
 const start = params.get("tela");
-if (start === "jogo" || params.get("jogo") === "classificacao") runChapter1(true);
+if (params.get("jogo") === "silo" || start === "silo") runChapter("ch2", true);
+else if (start === "cap2") runChapter("ch2", false);
+else if (start === "jogo" || params.get("jogo") === "classificacao") runChapter1(true);
 else if (start === "prologo") { Journey.clear(); runChapter1(false); }
 else if (start === "mapa") goMap();
 else if (start === "ranking") goRanking();
@@ -953,4 +1040,4 @@ else goTitle();
 requestAnimationFrame(loop);
 
 /* ganchos para testes automatizados */
-window.__jr = { shot: n => camSnap(shotPose(n)), snap: () => camSnap(mode === "title" ? shotPose("title") : gamePose()), W, setQuality, Ch1, Journey, Caption, get mode() { return mode; }, camera, renderer, goTitle, goMap, runChapter1, showResult, fps: () => fps };
+window.__jr = { Ch2, runChapter, shot: n => camSnap(shotPose(n)), snap: () => camSnap(mode === "title" ? shotPose("title") : (Ch2._state() && Ch2._state().showTags) ? shotPose("ch2") : gamePose()), W, setQuality, Ch1, Journey, Caption, get mode() { return mode; }, camera, renderer, goTitle, goMap, runChapter1, showResult, fps: () => fps };

@@ -370,3 +370,48 @@ body[data-q="low"] .jr-hud__stat, body[data-q="low"] .jr-caption__box{ backgroun
   .coamo-ranking-modal h2{ font-size:24px; }
   .coamo-ranking-modal__actions .btn{ width:100%; }
 }
+
+/* =========================================================
+   CAPÍTULO 2 · carga chegando e etiquetas dos silos
+   ========================================================= */
+.jr-load{
+  position:fixed; z-index:15; left:50%; translate:-50% 0; bottom:max(20px, env(safe-area-inset-bottom));
+  width:min(520px, calc(100% - 200px)); min-width:260px;
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:4px 14px;
+  padding:12px 18px 18px 12px; border-radius:22px; color:#fff;
+  background:rgba(6,40,22,.82); border:2px solid rgba(246,199,49,.6);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 16px 40px rgba(0,0,0,.3);
+  pointer-events:none;
+}
+.jr-load.is-new{ animation:jrLoadIn .45s cubic-bezier(.3,1.5,.5,1); }
+@keyframes jrLoadIn{ from{ transform:translateY(30px) scale(.9); opacity:0; } to{ transform:none; opacity:1; } }
+.jr-load.is-urgent{ border-color:#ff8a7a; animation:jrUrgent .5s ease-in-out infinite alternate; }
+@keyframes jrUrgent{ to{ box-shadow:0 0 0 6px rgba(255,120,100,.35), 0 16px 40px rgba(0,0,0,.3); } }
+.jr-load__icon{ width:calc(var(--u) * 3.8); height:calc(var(--u) * 3.8); border-radius:16px; background:#fff; display:grid; place-items:center; }
+.jr-load__icon svg{ width:82%; height:82%; }
+.jr-load__txt small{ display:block; font:800 calc(var(--u) * .66)/1 var(--font); letter-spacing:.2em; color:var(--gold); }
+.jr-load__txt strong{ display:block; margin-top:.25em; font:900 calc(var(--u) * 1.6)/1 var(--font); }
+.jr-load__amt{ font:900 calc(var(--u) * 1.5)/1 var(--font); color:var(--gold2); }
+.jr-load__bar{ grid-column:1 / -1; height:8px; border-radius:8px; background:rgba(255,255,255,.15); overflow:hidden; }
+.jr-load__bar u{ display:block; height:100%; width:100%; background:linear-gradient(90deg, var(--amber), var(--gold)); transform-origin:0 50%; }
+
+.jr-silo-tags{ position:fixed; inset:0; z-index:12; pointer-events:none; }
+.jr-silo-tag{
+  position:absolute; left:0; top:0; translate:-50% -50%; pointer-events:auto; cursor:pointer;
+  min-width:calc(var(--u) * 5.6); padding:8px 12px; border-radius:16px; text-align:center;
+  background:rgba(6,40,22,.78); border:2px solid rgba(255,255,255,.35); color:#fff;
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); transition:background .2s ease, transform .15s ease;
+}
+.jr-silo-tag:active{ transform:scale(.95); }
+.jr-silo-tag b{ display:block; font:900 calc(var(--u) * 1.35)/1 var(--font); font-variant-numeric:tabular-nums; }
+.jr-silo-tag small{ display:block; margin-top:4px; font:800 calc(var(--u) * .62)/1 var(--font); letter-spacing:.14em; color:rgba(255,255,255,.8); }
+.jr-silo-tag.is-warning{ border-color:#f2b630; }
+.jr-silo-tag.is-danger{ border-color:#ff6b5b; background:rgba(110,20,14,.8); }
+.jr-silo-tag.is-reveal{ background:#fff; color:var(--g800); border-color:var(--gold); }
+.jr-silo-tag.is-reveal small{ color:var(--g600); }
+.jr-silo-tag .jr-silo-tag__icon{ display:none; width:calc(var(--u) * 2.6); height:calc(var(--u) * 2.6); margin:0 auto 4px; }
+.jr-silo-tag.is-reveal .jr-silo-tag__icon{ display:block; }
+.jr-silo-tag .jr-silo-tag__icon svg{ width:100%; height:100%; }
+.jr-flash.is-light{ background:rgba(235,242,255,.85); }
+body[data-q="low"] .jr-load, body[data-q="low"] .jr-silo-tag{ background:rgba(6,40,22,.94); }
+@media (max-width:700px){ .jr-load{ width:calc(100% - 150px); min-width:0; padding:10px 12px 14px 10px; gap:4px 10px; } }
