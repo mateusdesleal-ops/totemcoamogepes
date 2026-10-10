@@ -61,11 +61,11 @@ const CHAPTERS = [
 ];
 
 const GAMES = [
-  { id: "classificacao", label: "NOVO · 3D", title: "Desafio da Classificação", text: "Separe soja, milho, trigo e impurezas na esteira.", img: "assets/games/v48/classification_banner.webp", play: "ch1", isNew: true },
-  { id: "silo3d", label: "NOVO · 3D", title: "Corrida contra a chuva", text: "Guarde cada carga no silo certo antes do temporal.", img: "assets/games/v48/silo_banner.webp", play: "ch2", isNew: true },
-  { id: "memoria3d", label: "NOVO · 3D", title: "O arquivo da Coamo", text: "Jogo da memória com curiosidades sobre a Coamo.", img: "assets/games/v48/memory_banner.webp", play: "ch4", isNew: true },
-  { id: "cadeia3d", label: "NOVO · 3D", title: "Do grão ao mercado", text: "Trace a rota da soja, do trigo e do milho até o destino.", img: "assets/games/v48/chain_banner.webp", play: "ch3", isNew: true },
-  { id: "quiz", label: "NOVO · 3D · QUIZ", title: "Onde você brilha", text: "Descubra a área da Coamo que mais combina com você.", img: "assets/games/v48/area_banner.webp", play: "ch5", isNew: true, noRank: true },
+  { id: "classificacao", label: "NOVO · 3D", title: "Desafio da Classificação", text: "Separe soja, milho, trigo e impurezas na esteira.", img: "assets/jornada/capa-jornada.webp", play: "ch1", isNew: true },
+  { id: "silo3d", label: "NOVO · 3D", title: "Corrida contra a chuva", text: "Guarde cada carga no silo certo antes do temporal.", img: "assets/jornada/capa-silo.webp", play: "ch2", isNew: true },
+  { id: "memoria3d", label: "NOVO · 3D", title: "O arquivo da Coamo", text: "Jogo da memória com curiosidades sobre a Coamo.", img: "assets/jornada/capa-memoria.webp", play: "ch4", isNew: true },
+  { id: "cadeia3d", label: "NOVO · 3D", title: "Do grão ao mercado", text: "Trace a rota da soja, do trigo e do milho até o destino.", img: "assets/jornada/capa-rotas.webp", play: "ch3", isNew: true },
+  { id: "quiz", label: "NOVO · 3D · QUIZ", title: "Onde você brilha", text: "Descubra a área da Coamo que mais combina com você.", img: "assets/jornada/capa-quiz.webp", play: "ch5", isNew: true, noRank: true },
 ];
 
 const WHO = { t: "Toninho", a: "Aroldinho", n: "Coamo" };
