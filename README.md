@@ -13,6 +13,7 @@ Toninho e Aroldinho (os mascotes aparecem só no Coamo Games). Publicado na Verc
 | `apresentacao.html` | Conheça a Coamo |
 | `sorteio.html` | Vídeo + cadastro do sorteio |
 | `jogos.html` | Menu do Coamo Games |
+| `jornada.html` | **Jornada da Safra (3D)**: história em capítulos, jogos avulsos e ranking de cada jogo. Em teste, ainda fora do menu |
 | `jogo-area.html` · `jogo-memoria.html` · `jogo-cadeia.html` · `jogo-classificacao.html` · `jogo-silo.html` | Jogos |
 | `mapa.html`, `jogo-fazenda.html`, `jogo-missao.html` | Redirecionamentos de endereços antigos |
 
@@ -34,6 +35,19 @@ Toninho e Aroldinho (os mascotes aparecem só no Coamo Games). Publicado na Verc
 O número no nome (`v42`, `v59`…) serve para o navegador do totem baixar a versão nova.
 Ao alterar um arquivo, mantenha o nome e mude o `?v=` nas páginas, ou crie a próxima versão
 e atualize as páginas — e apague a anterior. O histórico completo fica no Git.
+
+## Jornada da Safra (3D)
+
+| Arquivo | Função |
+| --- | --- |
+| `jornada.v1.js` | História (objeto `STORY`, **edite as falas aqui**), capítulos, telas, jogo do capítulo 1 |
+| `jornada-mundo.v1.js` | Cenário 3D: texturas, céu, silos, armazém, esteira, caçambas, grãos, caminhões |
+| `jornada.v1.css` | Telas, HUD, legendas |
+| `vendor/three.r169.module.min.js` · `vendor/addons/` | Biblioteca 3D (three.js, licença MIT) |
+
+Endereços úteis para teste: `jornada.html?fps=1` (mostra o desempenho), `?q=high|medium|low`
+(força a qualidade), `?tela=jogo` (abre direto o jogo avulso). Sem `?q`, a página baixa a qualidade
+sozinha se o totem não aguentar e lembra a escolha.
 
 ## Painel oculto
 

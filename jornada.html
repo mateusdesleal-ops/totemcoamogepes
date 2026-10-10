@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Coamo Games • Jornada da Safra</title>
+  <meta name="description" content="Viva uma safra inteira na Coamo com o Toninho e o Aroldinho.">
+  <meta property="og:title" content="Coamo Games · Jornada da Safra">
+  <meta property="og:image" content="https://totemcoamogepes.vercel.app/assets/compartilhar-coamo-games.jpg">
+  <link rel="icon" href="assets/pwa/icon-192.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.webmanifest?v=53.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="mascotes.v59.css?v=59.0">
+  <link rel="stylesheet" href="jornada.v1.css?v=1.0">
+  <script src="pwa.v55.js?v=55.0" defer></script>
+</head>
+<body data-page="journey" class="jr">
+  <canvas id="jrCanvas" aria-hidden="true"></canvas>
+  <div class="jr-vignette" aria-hidden="true"></div>
+  <div class="jr-flash" id="jrFlash" aria-hidden="true"></div>
+
+  <!-- mascotes (bonecos articulados com o rosto original) -->
+  <div class="jr-cast" id="jrCast" aria-hidden="true">
+    <figure class="jr-actor jr-actor--t" id="jrToninho" data-rig="g_ton2"></figure>
+    <figure class="jr-actor jr-actor--a" id="jrAroldinho" data-rig="g_aro2"></figure>
+  </div>
+
+  <!-- barra superior -->
+  <div class="jr-top">
+    <a class="jr-back" href="jogos.html" id="jrBack" aria-label="Voltar ao Coamo Games">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Coamo Games</span>
+    </a>
+    <button class="jr-skip" id="jrSkip" type="button" hidden>Pular cena <span aria-hidden="true">»</span></button>
+  </div>
+
+  <!-- ========== TELA DE ABERTURA ========== -->
+  <section class="jr-screen jr-title" id="scrTitle" hidden>
+    <div class="jr-title__brand">
+      <small class="jr-title__presents">Coamo Games apresenta</small>
+      <img class="jr-title__logo" src="assets/coamo-games/logo-coamo-games.svg" alt="Coamo Games">
+      <h1 class="jr-title__name">Jornada<br>da Safra</h1>
+      <p class="jr-title__tag">Viva uma safra inteira na Coamo, do campo até a sua vaga.</p>
+    </div>
+    <div class="jr-title__menu">
+      <button class="jr-btn jr-btn--primary jr-btn--xl" type="button" data-go="journey">
+        <span class="jr-btn__play" aria-hidden="true"></span>Começar a Jornada
+      </button>
+      <div class="jr-title__row">
+        <button class="jr-btn jr-btn--glass" type="button" data-go="games">Jogar um jogo</button>
+        <button class="jr-btn jr-btn--glass" type="button" data-go="ranking">Ranking</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MAPA DA JORNADA ========== -->
+  <section class="jr-screen jr-panel-screen" id="scrMap" hidden>
+    <div class="jr-panel">
+      <header class="jr-panel__head">
+        <small>JORNADA DA SAFRA</small>
+        <h2>Mapa da safra</h2>
+        <p id="jrMapSub">Complete os capítulos e ganhe até 3 estrelas em cada um.</p>
+      </header>
+      <ol class="jr-map" id="jrMap"></ol>
+      <div class="jr-map__total"><span>Pontuação da jornada</span><b id="jrMapTotal">0</b></div>
+      <div class="jr-panel__actions">
+        <button class="jr-btn jr-btn--primary" type="button" id="jrMapPlay">Jogar capítulo 1</button>
+        <button class="jr-btn jr-btn--soft" type="button" data-go="title">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== JOGOS AVULSOS ========== -->
+  <section class="jr-screen jr-panel-screen" id="scrGames" hidden>
+    <div class="jr-panel">
+      <header class="jr-panel__head">
+        <small>JOGOS AVULSOS</small>
+        <h2>Escolha um jogo</h2>
+        <p>Jogue só o que quiser. Cada jogo tem o seu ranking.</p>
+      </header>
+      <div class="jr-games" id="jrGames"></div>
+      <div class="jr-panel__actions">
+        <button class="jr-btn jr-btn--soft" type="button" data-go="title">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RANKING ========== -->
+  <section class="jr-screen jr-panel-screen" id="scrRank" hidden>
+    <div class="jr-panel">
+      <header class="jr-panel__head">
+        <small>RANKING DO EVENTO</small>
+        <h2 data-ranking-admin-trigger="classificacao" id="jrRankTitle">Top 5 de cada jogo</h2>
+        <p>Toque no jogo para ver os melhores.</p>
+      </header>
+      <div class="jr-tabs" role="tablist" id="jrRankTabs">
+        <button role="tab" type="button" data-rank="classificacao" aria-selected="true">Classificação</button>
+        <button role="tab" type="button" data-rank="silo" aria-selected="false">Silo</button>
+        <button role="tab" type="button" data-rank="memoria" aria-selected="false">Memória</button>
+        <button role="tab" type="button" data-rank="cadeia" aria-selected="false">Cadeia</button>
+        <button role="tab" type="button" data-rank="jornada" aria-selected="false">Jornada</button>
+      </div>
+      <div class="jr-rank-lists">
+        <ol class="coamo-ranking-list" data-ranking-list="classificacao"></ol>
+        <ol class="coamo-ranking-list" data-ranking-list="silo" hidden></ol>
+        <ol class="coamo-ranking-list" data-ranking-list="memoria" hidden></ol>
+        <ol class="coamo-ranking-list" data-ranking-list="cadeia" hidden></ol>
+        <ol class="coamo-ranking-list" data-ranking-list="jornada" hidden></ol>
+      </div>
+      <div class="jr-panel__actions">
+        <button class="jr-btn jr-btn--soft" type="button" data-go="title">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CARTÃO DO CAPÍTULO ========== -->
+  <section class="jr-screen jr-chapter" id="scrChapter" hidden>
+    <div class="jr-chapter__card">
+      <small id="jrChKicker">CAPÍTULO 1</small>
+      <h2 id="jrChTitle">A primeira carga</h2>
+      <p id="jrChGoal"></p>
+      <ul class="jr-chapter__legend" id="jrChLegend"></ul>
+      <p class="jr-chapter__how" id="jrChHow"></p>
+      <button class="jr-btn jr-btn--primary jr-btn--xl" type="button" id="jrChStart"><span class="jr-btn__play" aria-hidden="true"></span>Começar</button>
+    </div>
+  </section>
+
+  <!-- ========== HUD DO JOGO ========== -->
+  <div class="jr-hud" id="jrHud" hidden>
+    <div class="jr-hud__stat"><small>PONTOS</small><b id="hudScore">0</b></div>
+    <div class="jr-hud__stat jr-hud__time"><small>TEMPO</small><b id="hudTime">01:00</b><i><u id="hudTimeBar"></u></i></div>
+    <div class="jr-hud__stat"><small>VIDAS</small><b class="jr-hearts" id="hudLives"></b></div>
+    <div class="jr-hud__combo" id="hudCombo"><span>COMBO <b id="hudComboN">x0</b></span><i><u id="hudComboBar"></u></i></div>
+    <div class="jr-hud__line" id="hudLine" aria-live="polite"></div>
+  </div>
+  <div class="jr-floaters" id="jrFloaters" aria-hidden="true"></div>
+  <div class="jr-banner" id="jrBanner" aria-live="assertive" hidden></div>
+  <div class="jr-count" id="jrCount" hidden></div>
+
+  <!-- ========== LEGENDA DE CINEMA ========== -->
+  <div class="jr-caption" id="jrCaption" hidden>
+    <div class="jr-caption__box">
+      <b class="jr-caption__who" id="jrCapWho">Toninho</b>
+      <p class="jr-caption__text" id="jrCapText" aria-live="polite"></p>
+      <span class="jr-caption__next" aria-hidden="true">Toque para continuar ▸</span>
+    </div>
+  </div>
+
+  <!-- ========== RESULTADO ========== -->
+  <section class="jr-screen jr-panel-screen" id="scrResult" hidden>
+    <div class="jr-panel jr-result">
+      <small class="jr-result__kicker" id="jrResKicker">CAPÍTULO 1 CONCLUÍDO</small>
+      <div class="jr-stars" id="jrStars"><i></i><i></i><i></i></div>
+      <h2 id="jrResTitle">Carga classificada!</h2>
+      <p id="jrResText"></p>
+      <div class="jr-result__score"><b id="jrResScore">0</b><span>pontos</span></div>
+      <div class="jr-result__stats" id="jrResStats"></div>
+      <div class="jr-panel__actions" id="jrResActions"></div>
+    </div>
+  </section>
+
+  <!-- ========== SEM 3D ========== -->
+  <section class="jr-screen jr-panel-screen" id="scrNo3d" hidden>
+    <div class="jr-panel">
+      <header class="jr-panel__head"><small>COAMO GAMES</small><h2>Este aparelho não roda o modo 3D</h2>
+      <p>Sem problema: os jogos continuam disponíveis na versão clássica.</p></header>
+      <div class="jr-panel__actions"><a class="jr-btn jr-btn--primary" href="jogos.html">Ir para o Coamo Games</a></div>
+    </div>
+  </section>
+
+  <button class="cg-sound" id="jrSound" type="button" aria-pressed="true" aria-label="Som ligado. Toque para desligar"></button>
+  <div class="jr-fps" id="jrFps" hidden></div>
+
+  <script src="mascotes-falas.v59.js?v=59.0"></script>
+  <script src="mascotes-rigs.v58.js?v=58.0"></script>
+  <script src="mascotes.v59.js?v=59.0"></script>
+  <script src="ranking.v55.js?v=65.0"></script>
+  <script type="importmap">{ "imports": { "three": "./vendor/three.r169.module.min.js", "three/addons/": "./vendor/addons/" } }</script>
+  <script type="module" src="jornada.v1.js?v=1.1"></script>
+</body>
+</html>

@@ -6,6 +6,10 @@
   const GAME_LABELS = {
     grain: "Desafio da Classificação",
     silo: "Silo em Equilíbrio",
+    classificacao: "Classificação 3D",
+    memoria: "Desafio Coamo (Memória)",
+    cadeia: "Monte a cadeia Coamo",
+    jornada: "Jornada da Safra",
   };
 
   const $ = (s, r = document) => r.querySelector(s);
@@ -61,7 +65,8 @@
   function metaText(game, entry) {
     const parts = [];
     if (entry.duration != null) parts.push(formatTime(entry.duration));
-    if (game === "grain" && entry.phase) parts.push(`Fase ${entry.phase}`);
+    if ((game === "grain" || game === "classificacao") && entry.phase) parts.push(`Fase ${entry.phase}`);
+    if (entry.stars) parts.push("★".repeat(entry.stars));
     if (entry.accuracy != null) parts.push(`${Math.round(entry.accuracy)}%`);
     return parts.join(" · ");
   }
@@ -291,7 +296,9 @@
   }
 
   function boot() {
-    ["grain", "silo"].forEach(render);
+    const games = new Set(["grain", "silo"]);
+    $$("[data-ranking-list]").forEach(el => games.add(el.dataset.rankingList));
+    games.forEach(render);
     armAdminTriggers();
   }
 
@@ -300,6 +307,8 @@
     qualifies,
     maybeCapture: playerCapture,
     formatTime,
+    top: game => sorted(game),
+    openAdmin,
   };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, {once:true});
