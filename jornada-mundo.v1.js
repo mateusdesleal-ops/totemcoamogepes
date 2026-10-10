@@ -202,11 +202,20 @@ export function createWorld(renderer) {
   const envGround = new THREE.Mesh(new THREE.CircleGeometry(9, 32), new THREE.MeshBasicMaterial({ color: "#6f7f5a" }));
   envGround.rotation.x = -Math.PI / 2; envGround.position.y = -.4; envScene.add(envGround);
   const pmrem = new THREE.PMREMGenerator(renderer);
-  let envRT = null;
+  let envRT = null, lite = false;
   function refreshEnv() {
+    if (lite) { scene.environment = null; return; }
     const rt = pmrem.fromScene(envScene, .02);
     if (envRT) envRT.dispose();
     envRT = rt; scene.environment = rt.texture;
+  }
+  /* modo leve (totens fracos): sem reflexos do céu, luz ambiente mais forte */
+  function setLite(on) {
+    lite = !!on;
+    if (lite) scene.environment = null; else refreshEnv();
+    sun.shadow.mapSize.set(lite ? 1024 : 2048, lite ? 1024 : 2048);
+    if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
+    applySky(clamp(skyState.t / skyState.dur, 0, 1));
   }
 
   const hemi = new THREE.HemisphereLight("#d6eaff", "#6c8a4a", .45);
@@ -226,7 +235,7 @@ export function createWorld(renderer) {
     mixHex(A.hemi, B.hemi, t, hemi.color); mixHex(A.ground, B.ground, t, hemi.groundColor);
     mixHex(A.sun, B.sun, t, sun.color); mixHex(A.fog, B.fog, t, scene.fog.color);
     scene.fog.near = lerp(A.fogN, B.fogN, t); scene.fog.far = lerp(A.fogF, B.fogF, t);
-    hemi.intensity = lerp(A.hemiI, B.hemiI, t); sun.intensity = lerp(A.light, B.light, t);
+    hemi.intensity = lerp(A.hemiI, B.hemiI, t) * (lite ? 2.6 : 1); sun.intensity = lerp(A.light, B.light, t);
     scene.environmentIntensity = lerp(A.env, B.env, t);
     renderer.toneMappingExposure = lerp(A.exp, B.exp, t);
     const elev = lerp(A.elev, B.elev, t), az = lerp(A.az, B.az, t);
@@ -415,7 +424,7 @@ export function createWorld(renderer) {
     const leafGeo = (() => {
       const parts = [];
       for (let k = 0; k < 5; k++) {
-        const s = new THREE.IcosahedronGeometry(1 + hash(k, 2) * .5, 2);
+        const s = new THREE.IcosahedronGeometry(1 + hash(k, 2) * .5, 1);
         const p = s.attributes.position;
         for (let i = 0; i < p.count; i++) { const n = 1 + (noise(p.getX(i) * 2.3 + k, p.getY(i) * 2.3 + p.getZ(i)) - .5) * .35; p.setXYZ(i, p.getX(i) * n, p.getY(i) * n * .85, p.getZ(i) * n); }
         s.translate((hash(k, 5) - .5) * 1.6, (hash(k, 7) - .2) * 1.1, (hash(k, 9) - .5) * 1.6);
@@ -496,7 +505,7 @@ export function createWorld(renderer) {
 
   /* ===================================================== caminhões graneleiros */
   function buildTruck(color) {
-    const g = new THREE.Group();
+    const g = new THREE.Group(); g.userData.dynamic = true;
     const paint = new THREE.MeshStandardMaterial({ color, roughness: .25, metalness: .35 });
     const chrome = std("chrome", { color: "#dfe3e5", roughness: .12, metalness: 1 });
     const tire = std("tire", { color: "#1b1d1c", roughness: .85 });
@@ -669,7 +678,7 @@ export function createWorld(renderer) {
   const PILE_N = 520;
   const binObjs = BINS.map((b, i) => {
     const g = new THREE.Group(), x = (i - 1.5) * (BIN.w + BIN.gap);
-    g.position.set(x, 0, BIN.z); play.add(g);
+    g.position.set(x, 0, BIN.z); g.userData.dynamic = true; play.add(g);
     const sideTex = TEX.ribN.clone(); sideTex.needsUpdate = true; sideTex.repeat.set(6, 1);
     const body = new THREE.MeshStandardMaterial({ color: b.color, roughness: .38, metalness: .35, normalMap: sideTex, normalScale: new THREE.Vector2(.8, .8) });
     const inner = new THREE.MeshStandardMaterial({ color: tmp.set(b.color).multiplyScalar(.5).getHex(), roughness: .8, metalness: .2 });
@@ -738,9 +747,9 @@ export function createWorld(renderer) {
 
   /* ---------- marcadores ---------- */
   const ringNext = new THREE.Mesh(new THREE.TorusGeometry(.8, .06, 10, 48), new THREE.MeshBasicMaterial({ color: "#ffd84a", transparent: true, opacity: .95, toneMapped: false }));
-  ringNext.rotation.x = Math.PI / 2; ringNext.visible = false; play.add(ringNext);
+  ringNext.rotation.x = Math.PI / 2; ringNext.visible = false; ringNext.userData.dynamic = true; play.add(ringNext);
   const ringSel = new THREE.Mesh(new THREE.RingGeometry(.62, .95, 48), new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: .85, side: THREE.DoubleSide, toneMapped: false }));
-  ringSel.rotation.x = -Math.PI / 2; ringSel.visible = false; play.add(ringSel);
+  ringSel.rotation.x = -Math.PI / 2; ringSel.visible = false; ringSel.userData.dynamic = true; play.add(ringSel);
 
   /* ===================================================== ITENS da esteira */
   const IM = {
@@ -873,6 +882,35 @@ export function createWorld(renderer) {
     }
   }
 
+
+  /* ===================================================== junta as peças fixas (menos chamadas de desenho) */
+  (function bakeStatic() {
+    scene.updateMatrixWorld(true);
+    const groups = new Map(), victims = [];
+    world.traverse(o => {
+      if (!o.isMesh || o.isInstancedMesh || o.isSprite) return;
+      for (let p = o; p; p = p.parent) if (p.userData && p.userData.dynamic) return;
+      const m = o.material;
+      if (!m || Array.isArray(m) || m.transparent || !o.visible) return;
+      const key = m.uuid + (o.castShadow ? "s" : "n");
+      let geo = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
+      for (const a of Object.keys(geo.attributes)) if (!["position", "normal", "uv"].includes(a)) geo.deleteAttribute(a);
+      if (!geo.attributes.uv) geo.setAttribute("uv", new THREE.Float32BufferAttribute(new Float32Array(geo.attributes.position.count * 2), 2));
+      if (!geo.attributes.normal) geo.computeVertexNormals();
+      geo.clearGroups();
+      geo.applyMatrix4(o.matrixWorld);
+      if (!groups.has(key)) groups.set(key, { m, cast: o.castShadow, geos: [] });
+      groups.get(key).geos.push(geo); victims.push(o);
+    });
+    victims.forEach(o => o.parent.remove(o));
+    groups.forEach(g => {
+      const merged = mergeGeometries(g.geos);
+      if (!merged) return;
+      const me = new THREE.Mesh(merged, g.m); me.castShadow = g.cast; me.receiveShadow = true; me.matrixAutoUpdate = false;
+      scene.add(me);
+    });
+  })();
+
   /* ===================================================== atualização por quadro */
   function update(dt, time, camera) {
     if (skyState.t < skyState.dur) {
@@ -906,7 +944,7 @@ export function createWorld(renderer) {
   }
 
   return {
-    scene, sun, setSky, refreshEnv, update,
+    scene, sun, setSky, refreshEnv, setLite, update,
     play, BELT, BIN, BINS, binObjs, beltTex: [TEX.belt, TEX.beltN], setFill,
     ringNext, ringSel, makeItem, hitGeo, hitMat, burst,
     trucks, driveTrucks, parkTrucks, hideTrucks,

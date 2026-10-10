@@ -219,6 +219,12 @@
     }, reduce ? 0 : 250); });
   }
 
+  /* ---------- ranking do evento também na Memória e na Cadeia ---------- */
+  function rankLater(game, entry) {
+    if (!window.CoamoLeaderboard || !entry.score) return;
+    setTimeout(function () { try { window.CoamoLeaderboard.maybeCapture(game, entry); } catch (_) {} }, 2600);
+  }
+
   /* ---------- eventos dos jogos ---------- */
   document.addEventListener("coamo:game", function (e) {
     var d = e.detail || {}, g = d.game, t = d.type;
@@ -250,10 +256,12 @@
       if (t === "finish") window.CoamoGameSound("win");
     }
     if (g === "memory") {
+      if (t === "finish") rankLater("memoria", { score: Math.max(100, Math.round(3200 - (d.moves || 0) * 60 - (d.seconds || 0) * 8)), duration: d.seconds, accuracy: d.moves ? Math.round((d.matches || 8) / d.moves * 100) : null });
       if (t === "match") buzz(18);
       if (t === "miss") buzz([30, 30, 30]);
     }
     if (g === "chain") {
+      if (t === "finish") rankLater("cadeia", { score: (d.score || 0) + (d.hearts || 0) * 150 });
       if (t === "correct") { snapNext = true; buzz(18); setTimeout(paintChain, 30); }
       if (t === "wrong") buzz([40, 40, 40]);
       if (t === "start") setTimeout(paintChain, 30);

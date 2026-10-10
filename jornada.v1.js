@@ -204,6 +204,8 @@ const GradeShader = {
 let composer = null, gtao = null, bloom = null;
 function buildComposer() {
   if (composer) { composer.dispose && composer.dispose(); composer = null; }
+  W.setLite(quality === "low");
+  document.body.dataset.q = quality;
   if (quality === "low") return;
   const size = renderer.getDrawingBufferSize(new THREE.Vector2());
   const rt = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType, samples: 4 });
@@ -523,7 +525,7 @@ const Ch1 = (() => {
       const gain = 100 + Math.min(S.combo, 10) * 20;
       S.combo++; S.best = Math.max(S.best, S.combo); S.sorted++; S.score += gain;
       W.setFill(bin, bin.fill + .04); bin.pulse = 1;
-      burst(V(bin.x, BIN.h + .5, BIN.z), bin.type, 14);
+      W.burst(V(bin.x, BIN.h + .5, BIN.z), bin.type, 14);
       play.remove(it.g); it.state = "gone";
       const p = toScreen(V(bin.x, BIN.h + 1.6, BIN.z));
       floater(p.x, p.y, "+" + gain, S.combo >= 5 ? "is-gold" : "");
