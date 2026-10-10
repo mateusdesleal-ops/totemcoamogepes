@@ -304,9 +304,9 @@ function tablePose() {
 }
 function regionPose() {
   const a = camera.aspect, portrait = a < .9, fov = portrait ? 50 : 40, half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
-  const look = V(20, 0, portrait ? 100 : 84);
-  const fitW = portrait ? 236 : 250, fitH = 240;
-  const d = Math.max((fitW / 2) / (half * a), portrait ? 0 : (fitH / 2) / half * .72);
+  const look = V(20, 0, portrait ? 100 : 82);
+  const fitW = portrait ? 236 : 260;
+  const d = Math.max((fitW / 2) / (half * a), portrait ? 0 : 136 / half);
   const el = THREE.MathUtils.degToRad(portrait ? 60 : 55);
   return pose(V(look.x, Math.sin(el) * d, look.z + Math.cos(el) * d), look, fov, { orbit: false });
 }
