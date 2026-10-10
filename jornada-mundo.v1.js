@@ -257,8 +257,8 @@ export function createWorld(renderer) {
   const std = (key, o) => M[key] || (M[key] = new THREE.MeshStandardMaterial(o));
   const concrete = std("concrete", { map: TEX.concrete, normalMap: TEX.concreteN, roughness: .92, color: "#e9e6dc" });
   TEX.concrete.repeat.set(9, 7); TEX.concreteN.repeat.set(9, 7);
-  const coamoGreen = std("green", { color: "#17703f", roughness: .42, metalness: .35 });
-  const coamoGreenDark = std("greenDark", { color: "#0e5531", roughness: .5, metalness: .3 });
+  const coamoGreen = std("blue", { color: "#1d5fa8", roughness: .42, metalness: .35 });
+  const coamoGreenDark = std("blueDark", { color: "#164a85", roughness: .5, metalness: .3 });
   const steel = std("steel", { color: "#b8bfc3", roughness: .32, metalness: .85 });
   const steelDark = std("steelDark", { color: "#5d666b", roughness: .45, metalness: .8 });
   const galv = std("galv", { color: "#dde2e4", roughness: .3, metalness: .9, normalMap: TEX.corrugN, normalScale: new THREE.Vector2(1, 1.2) });
@@ -391,11 +391,11 @@ export function createWorld(renderer) {
     TEX.ribN.repeat.set(14, 2);
     const wall = new THREE.MeshStandardMaterial({ color: "#f1f2ee", roughness: .55, metalness: .25, normalMap: TEX.ribN });
     add(new THREE.BoxGeometry(22, 7, 11), wall, 0, 3.5, 0, g);
-    add(new THREE.BoxGeometry(22.2, 1.4, 11.2), std("wallBand", { color: "#17703f", roughness: .5, metalness: .25, normalMap: TEX.ribN }), 0, .7, 0, g);
+    add(new THREE.BoxGeometry(22.2, 1.4, 11.2), std("wallBand", { color: "#1d5fa8", roughness: .5, metalness: .25, normalMap: TEX.ribN }), 0, .7, 0, g);
     const roofShape = new THREE.Shape(); roofShape.moveTo(-6, 0); roofShape.lineTo(0, 3.1); roofShape.lineTo(6, 0); roofShape.lineTo(-6, 0);
     const roofG = new THREE.ExtrudeGeometry(roofShape, { depth: 22.8, bevelEnabled: false });
     const roofTex = TEX.corrugN.clone(); roofTex.needsUpdate = true; roofTex.repeat.set(1, 18); roofTex.rotation = Math.PI / 2;
-    const roof = add(roofG, new THREE.MeshStandardMaterial({ color: "#1c7a46", roughness: .4, metalness: .45, normalMap: roofTex }), -11.4, 7, 0, g);
+    const roof = add(roofG, new THREE.MeshStandardMaterial({ color: "#2266b3", roughness: .4, metalness: .45, normalMap: roofTex }), -11.4, 7, 0, g);
     roof.rotation.y = Math.PI / 2;
     /* portões de enrolar */
     const doorTex = TEX.corrugN.clone(); doorTex.needsUpdate = true; doorTex.repeat.set(2, 4);
@@ -521,7 +521,7 @@ export function createWorld(renderer) {
       add(RB(.3, .7, .9, .06), glass, 4.6, 2.7, z * 1.31, g);
     }
     add(RB(.4, .35, 2.7, .1), chrome, 6.0, .85, 0, g);
-    add(new THREE.BoxGeometry(.08, .32, 2.6), std("stripe", { color: "#17703f", roughness: .4 }), 5.97, 2.0, 0, g);
+    add(new THREE.BoxGeometry(.08, .32, 2.6), std("stripe", { color: "#1d5fa8", roughness: .4 }), 5.97, 2.0, 0, g);
     add(CY(.12, .12, 2.6, 10), chrome, 3.25, 3.1, -1.1, g);
     /* chassi e carroceria graneleira */
     add(new THREE.BoxGeometry(11, .35, 1.6), steelDark, -.4, .95, 0, g);
@@ -545,7 +545,7 @@ export function createWorld(renderer) {
     g.userData.wheels = wheels;
     return g;
   }
-  const trucks = [buildTruck("#ffffff"), buildTruck("#f2b400"), buildTruck("#17703f")];
+  const trucks = [buildTruck("#ffffff"), buildTruck("#f2b400"), buildTruck("#1d5fa8")];
   trucks.forEach((t, i) => { t.userData.stopX = [-20, -36, -52][i]; t.position.set(t.userData.stopX, 0, -8); world.add(t); t.userData.t0 = -1; });
   function driveTrucks(now) { trucks.forEach((t, i) => { t.userData.t0 = now + i * 1.1; t.position.x = t.userData.stopX - 140; }); }
   function parkTrucks() { trucks.forEach(t => { t.userData.t0 = -1; t.position.x = t.userData.stopX; }); }
@@ -561,7 +561,7 @@ export function createWorld(renderer) {
     const belt = add(new THREE.PlaneGeometry(L, BELT.d), beltMat, cx, BELT.y, BELT.z, play, false); belt.rotation.x = -Math.PI / 2;
     /* tambores nas pontas */
     for (const x of [BELT.x0, BELT.x1]) { const d = add(CY(.32, .32, BELT.d + .1, 28), steel, x, BELT.y - .32, BELT.z, play); d.rotation.x = Math.PI / 2; }
-    /* longarinas em perfil U (verde Coamo) */
+    /* longarinas em perfil U (azul Coamo) */
     const prof = new THREE.Shape(); prof.moveTo(0, 0); prof.lineTo(.22, 0); prof.lineTo(.22, .62); prof.lineTo(0, .62); prof.lineTo(0, .54); prof.lineTo(.14, .54); prof.lineTo(.14, .08); prof.lineTo(0, .08); prof.lineTo(0, 0);
     const profG = new THREE.ExtrudeGeometry(prof, { depth: L + .7, bevelEnabled: true, bevelSize: .015, bevelThickness: .015, bevelSegments: 2 });
     profG.rotateY(Math.PI / 2); profG.translate(BELT.x0 - .35, 0, 0);
@@ -590,7 +590,7 @@ export function createWorld(renderer) {
     /* moega de entrada (funil) */
     const hop = new THREE.Group(); hop.position.set(BELT.x0 + .2, 0, BELT.z); play.add(hop);
     const funnel = new THREE.CylinderGeometry(1.9, .9, 2.0, 4, 1, true); funnel.rotateY(Math.PI / 4);
-    add(funnel, new THREE.MeshStandardMaterial({ color: "#17703f", roughness: .4, metalness: .4, side: THREE.DoubleSide }), -.3, 3.3, 0, hop).scale.set(.75, 1, 1.05);
+    add(funnel, new THREE.MeshStandardMaterial({ color: "#1d5fa8", roughness: .4, metalness: .4, side: THREE.DoubleSide }), -.3, 3.3, 0, hop).scale.set(.75, 1, 1.05);
     add(RB(1.5, .8, 1.8, .05), coamoGreenDark, -.3, 2.0, 0, hop);
     for (const [x, z] of [[-1.3, -1.25], [.7, -1.25], [-1.3, 1.25], [.7, 1.25]]) add(RB(.16, 4.4, .16, .03), steelDark, x - .3, 2.2, z, hop);
     const plate = add(new THREE.PlaneGeometry(1.8, .38), new THREE.MeshStandardMaterial({ map: TEX.hazard, roughness: .5 }), .2, 1.62, 0, hop); plate.rotation.y = Math.PI / 2;
@@ -607,7 +607,7 @@ export function createWorld(renderer) {
     add(CY(.12, .14, .12, 18), new THREE.MeshStandardMaterial({ color: "#d1281e", roughness: .3, emissive: "#600", emissiveIntensity: .2 }), 0, 1.15, .2, eb).rotation.x = Math.PI / 2;
     /* placa "Classificação" sobre a esteira */
     const signT = plateTexture((x, w, h) => {
-      x.fillStyle = "#0f5a33"; roundRect(x, 4, 4, w - 8, h - 8, 26); x.fill();
+      x.fillStyle = "#154d8f"; roundRect(x, 4, 4, w - 8, h - 8, 26); x.fill();
       x.strokeStyle = "#f3c331"; x.lineWidth = 8; roundRect(x, 14, 14, w - 28, h - 28, 20); x.stroke();
       x.fillStyle = "#ffffff"; x.font = "900 74px Montserrat, Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
       x.fillText("CLASSIFICAÇÃO", w / 2, h / 2 - 22, w - 70);
@@ -671,7 +671,7 @@ export function createWorld(renderer) {
   const BIN = { w: 2.36, gap: .3, z: 2.65, h: 1.3, d: 1.9 };
   const GRAIN = {
     soja: { geo: (() => { const g = new THREE.SphereGeometry(.062, 10, 8); g.scale(1, .82, .9); return g; })(), mat: new THREE.MeshStandardMaterial({ color: "#dcb661", roughness: .45 }) },
-    milho: { geo: new RoundedBoxGeometry(.11, .07, .12, 2, .025), mat: new THREE.MeshStandardMaterial({ color: "#f3b922", roughness: .4 }) },
+    milho: { geo: (() => { const g = new THREE.SphereGeometry(.06, 10, 8), p = g.attributes.position; for (let i = 0; i < p.count; i++) { const t = (p.getZ(i) + .06) / .12; p.setX(i, p.getX(i) * (.5 + t * .8)); p.setY(i, p.getY(i) * (.45 + t * .3)); } g.computeVertexNormals(); return g; })(), mat: new THREE.MeshStandardMaterial({ color: "#f2b01e", roughness: .35 }) },
     trigo: { geo: (() => { const g = new THREE.SphereGeometry(.05, 8, 6); g.scale(.8, .7, 1.5); return g; })(), mat: new THREE.MeshStandardMaterial({ color: "#c98f3c", roughness: .5 }) },
     impureza: { geo: new THREE.IcosahedronGeometry(.085, 0), mat: new THREE.MeshStandardMaterial({ color: "#8a7a66", roughness: .95, flatShading: true }) },
   };
@@ -754,7 +754,12 @@ export function createWorld(renderer) {
   /* ===================================================== ITENS da esteira */
   const IM = {
     bean: new THREE.MeshStandardMaterial({ color: "#d9b25c", roughness: .42 }),
-    hilum: new THREE.MeshStandardMaterial({ color: "#6b4a2a", roughness: .6 }),
+    soyBean: new THREE.MeshPhysicalMaterial({ color: "#dbb256", roughness: .35, clearcoat: .35, clearcoatRoughness: .4 }),
+    hilumLight: new THREE.MeshStandardMaterial({ color: "#b98d58", roughness: .5 }),
+    kernelBig: new THREE.MeshPhysicalMaterial({ vertexColors: true, color: "#ffffff", roughness: .3, clearcoat: .6, clearcoatRoughness: .25 }),
+    germ: new THREE.MeshStandardMaterial({ color: "#f8e3a4", roughness: .45 }),
+    tipCap: new THREE.MeshStandardMaterial({ color: "#8a5a2a", roughness: .7 }),
+    hilum: new THREE.MeshStandardMaterial({ color: "#5c3a1d", roughness: .5 }),
     pod: new THREE.MeshStandardMaterial({ color: "#7d8f3a", roughness: .8 }),
     kernel: new THREE.MeshStandardMaterial({ color: "#f5bd1f", roughness: .35 }),
     cobCore: new THREE.MeshStandardMaterial({ color: "#e9d39a", roughness: .7 }),
@@ -777,48 +782,36 @@ export function createWorld(renderer) {
     geo.computeVertexNormals(); return geo;
   }
   const PROTO = {};
-  /* SOJA: punhado de grãos com uma vagem por cima */
+  /* SOJA: um grão grande, arredondado, com o hilo (a "cicatriz" marrom) na lateral */
   {
-    const beans = [], dots = [];
-    const bean = new THREE.SphereGeometry(.105, 14, 10); bean.scale(1, .82, .9);
-    const dot = new THREE.SphereGeometry(.03, 6, 4); dot.scale(1.6, .5, .8);
-    for (let k = 0; k < 34; k++) {
-      const a = k * 2.4, r = Math.sqrt(k / 34) * .52, y = .1 + (1 - r / .52) * .24 + (k % 3) * .02;
-      const b = bean.clone(); b.rotateY(a); b.rotateX(hash(k, 1) * .8); b.translate(Math.cos(a) * r, y, Math.sin(a) * r); beans.push(b);
-      if (k % 2 === 0) { const d = dot.clone(); d.translate(Math.cos(a) * r, y + .085, Math.sin(a) * r); dots.push(d); }
-    }
-    const podG = (() => {
-      const parts = [];
-      for (let k = 0; k < 3; k++) { const s = new THREE.SphereGeometry(.13, 12, 8); s.scale(1, .7, .8); s.translate(-.22 + k * .22, 0, 0); parts.push(s); }
-      const m = mergeGeometries(parts); m.rotateY(.6); m.rotateZ(.15); m.translate(.05, .5, .05); return m;
-    })();
-    PROTO.soja = [[mergeGeometries(beans), IM.bean], [mergeGeometries(dots), IM.hilum], [podG, IM.pod]];
+    const bean = new THREE.SphereGeometry(.4, 40, 28); bean.scale(1.1, .84, .95);
+    const p = bean.attributes.position;
+    for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i); const k = 1 + (noise(x * 3 + 2, y * 3 + z * 3) - .5) * .04; p.setXYZ(i, x * k, y * k, z * k); }
+    bean.computeVertexNormals(); bean.translate(0, .34, 0);
+    const hil = new THREE.SphereGeometry(.17, 20, 12); hil.scale(1.25, .32, .5);
+    hil.translate(0, .34 + .3, .12); hil.rotateX(0);
+    const hilLine = new THREE.SphereGeometry(.13, 16, 8); hilLine.scale(1.15, .12, .14); hilLine.translate(0, .34 + .335, .12);
+    PROTO.soja = [[bean, IM.soyBean], [hil, IM.hilum], [hilLine, IM.hilumLight]];
   }
-  /* MILHO: espiga com fileiras de grãos e palha aberta */
+  /* MILHO: um grão grande em forma de dente (coroa larga, ponta estreita), germe claro e ponta escura */
   {
-    const kern = new RoundedBoxGeometry(.075, .06, .09, 2, .02), parts = [];
-    const rows = 14, cols = 16, len = 1.25;
-    for (let c = 0; c < cols; c++) {
-      const t = c / (cols - 1), x = -len / 2 + t * len, rad = .25 * (1 - Math.pow(Math.abs(t - .45) / .6, 2.2) * .45);
-      for (let r = 0; r < rows; r++) {
-        const a = r / rows * Math.PI * 2 + (c % 2) * (Math.PI / rows);
-        const k = kern.clone(); k.rotateX(a); k.translate(x, Math.cos(a) * rad, Math.sin(a) * rad);
-        k.scale(1, 1, 1); parts.push(k);
-      }
-    }
-    const kernels = mergeGeometries(parts); kernels.translate(0, .32, 0);
-    const core = new THREE.CylinderGeometry(.2, .16, len + .05, 16); core.rotateZ(Math.PI / 2); core.translate(0, .32, 0);
-    /* palha: folhas curvas presas na base */
-    const huskParts = [];
-    for (let k = 0; k < 4; k++) {
-      const g = new THREE.PlaneGeometry(.9, .32, 8, 2), p = g.attributes.position;
-      for (let i = 0; i < p.count; i++) { const x = p.getX(i) + .45, y = p.getY(i); const w = 1 - Math.pow(x / .9, 1.5) * .8; p.setXYZ(i, x, y * w, Math.pow(x, 2) * .5); }
-      g.computeVertexNormals(); g.rotateX(k / 4 * Math.PI * 2); g.translate(.5, .32, 0);
-      huskParts.push(g);
-    }
-    const silkParts = [];
-    for (let k = 0; k < 8; k++) { const s = new THREE.CylinderGeometry(.008, .006, .3, 3); s.rotateZ(Math.PI / 2 + (hash(k, 2) - .5) * .9); s.rotateY((hash(k, 3) - .5) * .8); s.translate(-.76, .34 + (hash(k, 5) - .5) * .08, (hash(k, 4) - .5) * .08); silkParts.push(s); }
-    PROTO.milho = [[kernels, IM.kernel], [core, IM.cobCore], [mergeGeometries(huskParts), IM.husk], [mergeGeometries(silkParts), IM.silk]];
+    const sh = new THREE.Shape();
+    sh.moveTo(-.1, -.42); sh.quadraticCurveTo(0, -.5, .1, -.42);           /* ponta */
+    sh.quadraticCurveTo(.3, -.12, .36, .2);                                 /* lateral direita */
+    sh.quadraticCurveTo(.4, .42, .2, .46); sh.quadraticCurveTo(0, .5, -.2, .46); /* coroa */
+    sh.quadraticCurveTo(-.4, .42, -.36, .2);
+    sh.quadraticCurveTo(-.3, -.12, -.1, -.42);
+    const k = new THREE.ExtrudeGeometry(sh, { depth: .16, bevelEnabled: true, bevelThickness: .09, bevelSize: .07, bevelSegments: 6, curveSegments: 24 });
+    k.translate(0, 0, -.08);
+    /* cor: coroa amarela, ponta alaranjada */
+    const p = k.attributes.position, col = new Float32Array(p.count * 3), c1 = new THREE.Color("#f9cf3f"), c2 = new THREE.Color("#e2860f"), c = new THREE.Color();
+    for (let i = 0; i < p.count; i++) { const t = clamp((p.getY(i) + .45) / .95, 0, 1); c.copy(c2).lerp(c1, Math.pow(t, .8)); col.set([c.r, c.g, c.b], i * 3); }
+    k.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    k.computeVertexNormals();
+    k.rotateX(-Math.PI / 2); k.translate(0, .24, 0);                         /* deitado, face do germe para cima */
+    const germ = new THREE.SphereGeometry(.15, 28, 16); germ.scale(.95, .2, 1.6); germ.translate(0, .24 + .17, .08);
+    const tip = new THREE.SphereGeometry(.07, 16, 10); tip.scale(1.3, .9, .9); tip.translate(0, .24, .47);
+    PROTO.milho = [[k, IM.kernelBig], [germ, IM.germ], [tip, IM.tipCap]];
   }
   /* TRIGO: feixe de 3 espigas com barbas, amarrado */
   {

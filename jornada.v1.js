@@ -12,7 +12,7 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
-import { createWorld, V } from "./jornada-mundo.v1.js";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=1.2";
 
 /* ===================================================== HISTÓRIA */
 const STORY = {
@@ -240,23 +240,29 @@ function pose(pos, look, fov = 40, drift) { return { pos, look, fov, drift }; }
 function shotPose(name) {
   const a = camera.aspect, portrait = a < .9;
   switch (name) {
-    case "title": return pose(V(-6, portrait ? 9 : 7.5, portrait ? 36 : 26), V(4, portrait ? 6.5 : 5, -12), portrait ? 46 : 40, { orbit: true });
+    case "title": {
+      if (portrait) return pose(V(-6, 9, 36), V(4, 6.5, -12), 46, { orbit: true });
+      /* tela deitada: câmera mais longe e mais alta, unidade inteira abaixo do título */
+      const fov = 40, look = V(3, 4.5, -16), dir = V(-.34, .3, 1).normalize();
+      const d = Math.max(44, 23 / (Math.tan(THREE.MathUtils.degToRad(fov / 2)) * Math.min(a, 1.8)));
+      return pose(look.clone().addScaledVector(dir, d), look, fov, { orbit: true });
+    }
     case "dawn": return pose(V(-60, 24, 48), V(2, 9, -18), portrait ? 52 : 42, { to: V(-38, 15, 40), dur: 9 });
     case "hello": return pose(V(-4, 4.2, portrait ? 21 : 15), V(-2, 4.2, -10), portrait ? 50 : 42, { to: V(-1, 4.6, portrait ? 19 : 13.5), dur: 12 });
     case "trucks": return pose(V(-56, 6.5, 8), V(-30, 2, -8), portrait ? 56 : 44, { to: V(-48, 5.5, 6), dur: 8 });
     case "yard": return pose(V(-26, 9, 16), V(-6, 2, -8), portrait ? 54 : 42, { to: V(-20, 8, 15), dur: 8 });
     case "belt": return gamePose(true);
-    case "map": return pose(V(26, 16, 34), V(4, 6, -14), portrait ? 50 : 40, { orbit: true });
+    case "map": return portrait ? pose(V(26, 16, 34), V(4, 6, -14), 50, { orbit: true }) : pose(V(34, 20, 44), V(2, 4, -14), 40, { orbit: true });
     default: return gamePose();
   }
 }
 function gamePose(cine) {
   const a = camera.aspect, portrait = a < .9, o = window.__gp || {};
   const fov = o.fov || (portrait ? 50 : 38), half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
-  const fitW = o.fitW || (portrait ? 11.4 : 12);                 /* largura que precisa caber */
+  const fitW = o.fitW || (portrait ? 11.4 : a > 1.15 ? 17.5 : 13);                 /* largura que precisa caber */
   const elev = THREE.MathUtils.degToRad(o.elev || (portrait ? 34 : 42));
-  const dist = Math.max((fitW / 2) / (half * a), portrait ? 0 : 14.5);
-  const look = V(0, o.lookY != null ? o.lookY : .9, o.lookZ != null ? o.lookZ : (portrait ? .5 : .6));
+  const dist = Math.max((fitW / 2) / (half * a), portrait ? 0 : 15.5);
+  const look = V(0, o.lookY != null ? o.lookY : .9, o.lookZ != null ? o.lookZ : (portrait ? .5 : 1.4));
   const pos = V(0, look.y + Math.sin(elev) * dist, look.z + Math.cos(elev) * dist);
   if (cine) pos.add(V(-1.5, 1.2, 2));
   return pose(pos, look, fov);
@@ -317,6 +323,7 @@ const Cast = (() => {
   let mode = "off", speaker = null, first = true;
   const WORLD = {
     game: { t: V(-2.7, 0, 7.6), a: V(2.7, 0, 7.6), h: 3.2 },
+    gameWide: { t: V(-7.1, 0, 3.6), a: V(7.1, 0, 3.6), h: 3.3 },
     hello: { t: V(-4.6, 0, 0), a: V(.6, 0, 0), h: 3.3 },
     yard: { t: V(-10.5, 0, -2.8), a: V(-6.8, 0, -2.4), h: 3.3 },
     title: { t: V(-3.2, 0, 3), a: V(3.6, 0, 3.4), h: 3.3 },
@@ -356,7 +363,8 @@ const Cast = (() => {
     act(who, name) { const o = A[who]; if (!o) return; try { window.CoamoMascots && window.CoamoMascots.play(o.el, name); } catch (_) {} },
     update(dt, snap) {
       if (mode === "off") return;
-      if (mode === "stage") stageTargets(); else if (mode === "title") titleTargets(); else worldTargets(WORLD[mode] || WORLD.game);
+      if (mode === "stage") stageTargets(); else if (mode === "title") titleTargets();
+      else worldTargets(mode === "game" && camera.aspect > 1.15 ? WORLD.gameWide : (WORLD[mode] || WORLD.game));
       const k = snap ? 1 : 1 - Math.pow(.0005, dt);
       for (const key of ["t", "a"]) {
         const o = A[key];
