@@ -215,3 +215,14 @@
   .grain-conveyor__rollers, .grain-item__icon, .silo-unit.is-danger, .cg-combo.is-hot .cg-combo__bar i,
   .profile-question, .profile-result, .cg-phase, .chain-slot.cg-snap{ animation:none !important; }
 }
+
+/* =========================================================
+   V65 · JORNADA DA SAFRA (3D) NO MENU
+   ========================================================= */
+.game-menu-card--journey{ grid-column:1 / -1 !important; border:3px solid #f6c731 !important; box-shadow:0 18px 40px rgba(214,163,10,.25) !important; }
+.game-menu-card--journey .game-menu-card__poster{ object-fit:cover !important; }
+.game-menu-card--journey .game-menu-card__label{ background:#f6c731 !important; color:#073a20 !important; }
+.game-menu-card--ranking{ grid-column:1 / -1 !important; min-height:0 !important; background:linear-gradient(135deg, #0b4d2b, #146b3c) !important; }
+.game-menu-card--ranking .game-menu-card__content{ color:#fff !important; }
+.game-menu-card--ranking .game-menu-card__content strong, .game-menu-card--ranking .game-menu-card__content span{ color:#fff !important; }
+.game-menu-card--ranking .game-menu-card__label{ color:#f6c731 !important; }
