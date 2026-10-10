@@ -73,7 +73,7 @@ body.is-playing .jr-back{ opacity:.0; pointer-events:none; }
   transition:opacity .45s ease;
 }
 .jr-actor.is-on{ opacity:1; }
-.jr-actor img{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:50% 100%; }
+.jr-actor > .coamo-rig{ position:absolute !important; inset:0 !important; width:100% !important; height:100% !important; }
 .jr-actor .coamo-rig{ pointer-events:auto; }
 .jr-actor::after{
   content:""; position:absolute; left:18%; right:18%; bottom:-2%; height:7%; z-index:-1;
