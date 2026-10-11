@@ -105,8 +105,8 @@ function buildRegion(W) {
   const gable = (w, d, h, m) => { const sh = new THREE.Shape(); sh.moveTo(-d / 2 - .4, 0); sh.lineTo(0, h); sh.lineTo(d / 2 + .4, 0); sh.lineTo(-d / 2 - .4, 0); const g = new THREE.ExtrudeGeometry(sh, { depth: w + .8, bevelEnabled: false }); g.rotateY(Math.PI / 2); g.translate(-(w + .8) / 2, 0, 0); return new THREE.Mesh(g, m); };
   const building = (x, z, w, h, d, ry = 0, roofH = 2.4) => {
     const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g);
-    add(new THREE.BoxGeometry(w, h, d), wallM, 0, h / 2, 0, g);
-    add(new THREE.BoxGeometry(w + .1, h * .14, d + .1), blue, 0, h * .07, 0, g);
+    add(RB(w, h, d, .3, 3), wallM, 0, h / 2, 0, g);
+    add(RB(w + .1, h * .14, d + .1, .3, 3), blue, 0, h * .07, 0, g);
     const r = gable(w, d, roofH, roofM); r.position.y = h; r.castShadow = true; g.add(r);
     return g;
   };
@@ -135,7 +135,7 @@ function buildRegion(W) {
     add(RB(5, 2, 2.6, .2), new THREE.MeshStandardMaterial({ color: "#1d5fa8", roughness: .4, metalness: .3 }), -5.2, 2, 0, tr);
     /* casa do cooperado */
     const h = new THREE.Group(); h.position.set(st.x - 22, 0, st.z - 26); root.add(h);
-    add(new THREE.BoxGeometry(8, 3.6, 6), std("houseWall", { color: "#f4efe3", roughness: .8 }), 0, 1.8, 0, h);
+    add(RB(8, 3.6, 6, .25, 3), std("houseWall", { color: "#f4efe3", roughness: .8 }), 0, 1.8, 0, h);
     const hr = gable(8, 6, 2.4, std("houseRoof", { color: "#a2522f", roughness: .7 })); hr.position.y = 3.6; h.add(hr);
   }
   /* ---------- indústria de óleo: prédio, tanques, colunas e chaminé ---------- */
@@ -173,18 +173,18 @@ function buildRegion(W) {
   {
     const st = S.mercado; pad("mercado", 46, 36);
     const g = new THREE.Group(); g.position.set(st.x, 0, st.z - 6); root.add(g);
-    add(new THREE.BoxGeometry(24, 7, 14), std("marketWall", { color: "#fbf8f1", roughness: .7 }), 0, 3.5, 0, g);
-    add(new THREE.BoxGeometry(24.4, .8, 14.4), blue, 0, 7.2, 0, g);
+    add(RB(24, 7, 14, .35, 3), std("marketWall", { color: "#fbf8f1", roughness: .7 }), 0, 3.5, 0, g);
+    add(RB(24.4, .8, 14.4, .3, 3), blue, 0, 7.2, 0, g);
     add(new THREE.BoxGeometry(18, 3.6, .2), glass, 0, 2, 7.05, g);
     const aw = plateTexture((c, Wd, H) => { for (let i = 0; i < 16; i++) { c.fillStyle = i % 2 ? "#ffffff" : "#1d5fa8"; c.fillRect(i * Wd / 16, 0, Wd / 16, H); } }, 512, 64);
     const awn = add(new THREE.BoxGeometry(22, .2, 3), new THREE.MeshStandardMaterial({ map: aw, roughness: .7 }), 0, 4.6, 8.4, g); awn.rotation.x = .28;
     const sg = sign("MERCADO", 12, 3, "#e0742a"); sg.position.set(0, 9.6, 7.1); g.add(sg);
-    add(new THREE.BoxGeometry(12.4, 3.4, .3), std("signBack", { color: "#ffffff" }), 0, 9.6, 6.9, g);
+    add(RB(12.4, 3.4, .3, .12), std("signBack", { color: "#ffffff" }), 0, 9.6, 6.9, g);
     const carCols = ["#c0392b", "#2c3e50", "#ecf0f1", "#2980b9", "#7f8c8d"];
     for (let k = 0; k < 5; k++) { const c = add(RB(2, 1.2, 4, .35), std("car" + k, { color: carCols[k], roughness: .3, metalness: .5 }), st.x - 12 + k * 5.5, .8, st.z + 12); add(RB(1.7, .8, 2.2, .3), glass, st.x - 12 + k * 5.5, 1.7, st.z + 11.8); }
     for (let k = 0; k < 4; k++) {
       const hx = st.x - 34 + (k % 2) * 10, hz = st.z - 20 + Math.floor(k / 2) * 12;
-      add(new THREE.BoxGeometry(6, 3.4, 6), std("houseWall"), hx, 1.7, hz);
+      add(RB(6, 3.4, 6, .25, 3), std("houseWall"), hx, 1.7, hz);
       const hr = gable(6, 6, 2, std("houseRoof")); hr.position.set(hx, 3.4, hz); root.add(hr);
     }
   }
@@ -211,7 +211,7 @@ function buildRegion(W) {
     const hs = new THREE.Shape(); hs.moveTo(-24, -4.6); hs.lineTo(20, -4.6); hs.quadraticCurveTo(27, -4.6, 29, 0); hs.quadraticCurveTo(27, 4.6, 20, 4.6); hs.lineTo(-24, 4.6); hs.lineTo(-24, -4.6);
     const hull = new THREE.ExtrudeGeometry(hs, { depth: 5, bevelEnabled: true, bevelThickness: .4, bevelSize: .4, bevelSegments: 2 }); hull.rotateX(-Math.PI / 2); hull.translate(0, -2, 0);
     add(hull, new THREE.MeshStandardMaterial({ color: "#8f2c24", roughness: .5, metalness: .2 }), 0, 0, 0, ship);
-    add(new THREE.BoxGeometry(52, .8, 9.6), std("deck", { color: "#3d4a52", roughness: .7 }), 1, 3.4, 0, ship);
+    add(RB(52, .8, 9.6, .3, 3), std("deck", { color: "#3d4a52", roughness: .7 }), 1, 3.4, 0, ship);
     for (let k = 0; k < 5; k++) add(RB(5.6, 1.2, 6.4, .2), new THREE.MeshStandardMaterial({ color: "#1d5fa8", roughness: .4, metalness: .3 }), -14 + k * 7.6, 4.3, 0, ship);
     add(RB(7, 7, 8.6, .3), white, -20, 7.4, 0, ship);
     add(RB(6, 1.6, 8.8, .2), glass, -20, 9.4, 0, ship);

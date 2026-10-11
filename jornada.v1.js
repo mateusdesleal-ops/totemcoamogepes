@@ -11,10 +11,11 @@ import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
-import { createWorld, V } from "./jornada-mundo.v1.js?v=1.6";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=2.0";
 import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.6";
-import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=1.6";
+import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=2.0";
 import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.6";
 import { createCh5, STORY5, FOCUS } from "./jornada-cap5.v1.js?v=1.7";
 
@@ -209,17 +210,37 @@ const driveTrucks = t => W.driveTrucks(t), parkTrucks = () => W.parkTrucks(), tr
 
 /* pós-processamento */
 const GradeShader = {
-  uniforms: { tDiffuse: { value: null }, vignette: { value: .34 }, warmth: { value: .045 }, contrast: { value: 1.08 }, saturation: { value: 1.14 } },
+  uniforms: { tDiffuse: { value: null }, vignette: { value: .34 }, warmth: { value: .045 }, contrast: { value: 1.08 }, saturation: { value: 1.14 },
+    sunPos: { value: new THREE.Vector2(.5, .5) }, sunK: { value: 0 }, aspect: { value: 1 }, flareCol: { value: new THREE.Color("#ffd9a0") } },
   vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
-  fragmentShader: `uniform sampler2D tDiffuse; uniform float vignette, warmth, contrast, saturation; varying vec2 vUv;
+  fragmentShader: `uniform sampler2D tDiffuse; uniform float vignette, warmth, contrast, saturation, sunK, aspect; uniform vec2 sunPos; uniform vec3 flareCol; varying vec2 vUv;
+    float disc(vec2 p, vec2 c, float r, float soft){ vec2 d = (p - c) * vec2(aspect, 1.); return 1. - smoothstep(r * (1. - soft), r, length(d)); }
     void main(){ vec4 c = texture2D(tDiffuse, vUv); vec3 col = c.rgb;
       col = (col - .5) * contrast + .5;
       float l = dot(col, vec3(.2126,.7152,.0722)); col = mix(vec3(l), col, saturation);
       col += vec3(warmth, warmth * .4, -warmth * .6);
+      /* reflexo de lente: só aparece se o sol estiver visível (céu claro no ponto do sol) */
+      if (sunK > .001) {
+        float vis = 0.;
+        for (int i = 0; i < 5; i++) { vec2 o = vec2(float(i - 2) * .006, float(i % 2) * .006 - .003); vec3 s = texture2D(tDiffuse, sunPos + o).rgb; vis += smoothstep(.82, .97, dot(s, vec3(.3333))); }
+        vis = vis / 5. * sunK;
+        if (vis > .001) {
+          vec2 d = (vUv - sunPos) * vec2(aspect, 1.); float r = length(d);
+          vec3 f = flareCol * (exp(-r * 9.) * .55 + exp(-r * 2.6) * .12);
+          f += flareCol * exp(-abs(d.y) * 160.) * exp(-abs(d.x) * 2.2) * .22;                /* raio horizontal */
+          vec2 axis = vec2(.5) - sunPos;
+          f += vec3(.55, .75, 1.) * disc(vUv, sunPos + axis * .55, .035, .6) * .07;
+          f += vec3(1., .85, .55) * disc(vUv, sunPos + axis * .95, .075, .25) * .05;
+          f += vec3(.6, 1., .75) * disc(vUv, sunPos + axis * 1.3, .022, .5) * .09;
+          f += vec3(1., .7, .5) * disc(vUv, sunPos + axis * 1.65, .12, .15) * .04;
+          f += vec3(.7, .8, 1.) * (disc(vUv, sunPos + axis * 2., .19, .06) - disc(vUv, sunPos + axis * 2., .17, .2)) * .05;   /* anel */
+          col += f * vis;
+        }
+      }
       vec2 d = vUv - .5; col *= 1. - vignette * smoothstep(.25, .85, length(d * vec2(1., 1.15)));
       gl_FragColor = vec4(clamp(col, 0., 1.), c.a); }`,
 };
-let composer = null, gtao = null, bloom = null;
+let composer = null, gtao = null, bloom = null, grade = null, bokeh = null;
 function buildComposer() {
   if (composer) { composer.dispose && composer.dispose(); composer = null; }
   W.setLite(quality === "low");
@@ -242,13 +263,35 @@ function buildComposer() {
       scene.traverse(o => { if (o.userData.noAO || o.isSprite || (o.material && o.material.transparent && !o.isInstancedMesh)) o.visible = false; });
     };
     composer.addPass(gtao);
-  }
+    /* profundidade de campo nas cenas da história (só na qualidade alta) */
+    bokeh = new BokehPass(scene, camera, { focus: 30, aperture: .00006, maxblur: .006 });
+    bokeh.enabled = false; composer.addPass(bokeh);
+  } else bokeh = null;
   bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .28, .55, .92);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
-  composer.addPass(new ShaderPass(GradeShader));
+  grade = new ShaderPass(GradeShader); composer.addPass(grade);
 }
-function renderFrame() {
+const _sun = new THREE.Vector3(), _fwd = new THREE.Vector3();
+let dofK = 0;
+function renderFrame(dt = 0) {
+  if (grade) {
+    /* posição do sol na tela para o reflexo de lente */
+    const U = grade.uniforms; camera.getWorldDirection(_fwd);
+    _sun.copy(W.sunDir).multiplyScalar(1000).add(camera.position).project(camera);
+    const front = _fwd.dot(W.sunDir) > .15, edge = Math.max(Math.abs(_sun.x), Math.abs(_sun.y));
+    U.sunPos.value.set(_sun.x * .5 + .5, _sun.y * .5 + .5); U.aspect.value = camera.aspect;
+    U.sunK.value = front ? W.flareK() * (1 - THREE.MathUtils.smoothstep(edge, .85, 1.05)) : 0;
+    U.flareCol.value.copy(W.sun.color);
+  }
+  if (bokeh) {
+    dofK = lerp(dofK, (mode === "cutscene" || mode === "title") ? 1 : 0, 1 - Math.pow(.02, dt));
+    bokeh.enabled = dofK > .02;
+    if (bokeh.enabled) {
+      const u = bokeh.uniforms; u.focus.value = camera.position.distanceTo(camera.userData.look || _fwd);
+      u.aperture.value = .00006 * dofK; u.maxblur.value = .006 * dofK;
+    }
+  }
   if (composer) composer.render(); else renderer.render(scene, camera);
 }
 
@@ -1143,7 +1186,7 @@ function loop() {
   updateCamera(dt, time);
   W.update(dt, time, camera);
   Cast.update(dt);
-  renderFrame();
+  renderFrame(dt);
   /* qualidade automática: se o totem não aguentar, alivia os efeitos */
   frames++;
   const nowW = performance.now();
