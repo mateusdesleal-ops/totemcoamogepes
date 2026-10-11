@@ -37,6 +37,15 @@ const QUESTIONS = [
   { q: "Escolha a área que mais desperta curiosidade.", o: [["Tecnologia e dados", "tecnologia", { tecnologia: 3 }], ["Indústria e processos", "industria", { industria: 3 }], ["Pessoas e desenvolvimento", "pessoas", { pessoas: 3 }]] },
 ];
 
+/* ponto de foco (rosto) de cada foto, de 0 a 1 */
+export const FOCUS = {
+  "assets/agro_01.jpg": [.52, .45],
+  "assets/vaga_fotos/ajudantes.jpg": [.62, .35],
+  "assets/industria_01.jpg": [.66, .4],
+  "assets/vaga_fotos/outra_opcao_vaga_de_ti.jpg": [.84, .3],
+  "assets/vaga_fotos/vagas_de_ti.jpg": [.62, .4],
+  "assets/img_carreira.jpg": [.62, .4],
+};
 function loadImg(src) { return new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; }); }
 const imgCache = {};
 function img(src) { return imgCache[src] || (imgCache[src] = loadImg(src)); }
@@ -59,7 +68,13 @@ export function createCh5(ctx) {
     const c = t.canvas2, x = c.getContext("2d");
     const im = photo ? await img(photo) : null;
     x.fillStyle = "#0b2a4a"; x.fillRect(0, 0, 512, 768);
-    if (im) { x.save(); roundRect(x, 20, 20, 472, 470, 26); x.clip(); const s = Math.max(472 / im.width, 470 / im.height); x.drawImage(im, 256 - im.width * s / 2, 255 - im.height * s / 2, im.width * s, im.height * s); x.restore(); }
+    if (im) {
+      /* enquadra no rosto da pessoa (ponto de foco de cada foto) */
+      const [fx, fy] = FOCUS[photo] || [.5, .4];
+      const s = Math.max(472 / im.width, 470 / im.height), w = im.width * s, h = im.height * s;
+      const ox = Math.min(0, Math.max(472 - w, 236 - fx * w)), oy = Math.min(0, Math.max(470 - h, 235 - fy * h));
+      x.save(); roundRect(x, 20, 20, 472, 470, 26); x.clip(); x.drawImage(im, 20 + ox, 20 + oy, w, h); x.restore();
+    }
     const gr = x.createLinearGradient(0, 380, 0, 768); gr.addColorStop(0, "rgba(11,42,74,0)"); gr.addColorStop(.3, "#0b2a4a"); x.fillStyle = gr; x.fillRect(0, 380, 512, 388);
     if (kicker) { x.fillStyle = "#f6c731"; x.font = "800 26px Montserrat, Arial, sans-serif"; x.textAlign = "center"; x.fillText(kicker, 256, 548); }
     x.fillStyle = "#ffffff"; x.font = `900 ${label.length > 30 ? 40 : 46}px Montserrat, Arial, sans-serif`; x.textAlign = "center";
@@ -74,7 +89,7 @@ export function createCh5(ctx) {
     const flip = new THREE.Group(); flip.position.y = 1.4 + PH / 2; g.add(flip);
     add(RB(PW + .4, PH + .4, .35, .12), frameM, 0, 0, 0, flip);
     const tex = panelTex();
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(PW, PH), new THREE.MeshStandardMaterial({ map: tex, emissive: "#ffffff", emissiveMap: tex, emissiveIntensity: .55, roughness: .4 }));
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(PW, PH), new THREE.MeshBasicMaterial({ map: tex, color: "#e6e6e6", toneMapped: false }));
     face.position.z = .19; flip.add(face);
     const strip = add(RB(PW + .5, .22, .4, .08), glowM(), 0, -PH / 2 - .35, 0, flip, false);
     add(CY(1.4, 1.6, .35, 24), std("standBase", { color: "#1d2a35", roughness: .5, metalness: .5 }), 0, .18, 0, g);
@@ -87,7 +102,7 @@ export function createCh5(ctx) {
     const g = new THREE.Group(); g.position.set(STAGE.x, -12, STAGE.z - 2.5); g.userData.dynamic = true; root.add(g);
     add(RB(9, 10.4, .5, .2), frameM, 0, 7.4, 0, g);
     const tex = panelTex();
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(8.4, 9.8), new THREE.MeshStandardMaterial({ map: tex, emissive: "#ffffff", emissiveMap: tex, emissiveIntensity: .6 }));
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(8.4, 9.8), new THREE.MeshBasicMaterial({ map: tex, color: "#e6e6e6", toneMapped: false }));
     face.position.set(0, 7.4, .26); g.add(face);
     add(RB(9.4, .36, .6, .1), new THREE.MeshStandardMaterial({ color: "#f6c731", emissive: "#f6c731", emissiveIntensity: 1.6 }), 0, 2.1, 0, g, false);
     return { g, tex, y: -12, yTo: -12 };
@@ -206,7 +221,7 @@ export function createCh5(ctx) {
       p.y += (targetY - p.y) * Math.min(1, dt * 5); p.g.position.y = p.y;
       p.strip.material.emissiveIntensity = p.sel > 0 ? 3.4 : 1 + Math.sin(time * 2 + i) * .25;
       p.strip.material.emissive.set(p.sel > 0 ? "#f6c731" : "#2f86ff");
-      p.face.material.emissiveIntensity = p.sel < 0 ? .2 : .55;
+      p.face.material.color.setScalar(p.sel < 0 ? .42 : .9);
     });
     big.y += (big.yTo - big.y) * Math.min(1, dt * 2.6); big.g.position.y = big.y;
     if (S) S.lock = Math.max(0, S.lock - dt);

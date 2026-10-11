@@ -16,7 +16,7 @@ import { createWorld, V } from "./jornada-mundo.v1.js?v=1.6";
 import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.6";
 import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=1.6";
 import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.6";
-import { createCh5, STORY5 } from "./jornada-cap5.v1.js?v=1.6";
+import { createCh5, STORY5, FOCUS } from "./jornada-cap5.v1.js?v=1.7";
 
 /* ===================================================== HISTÓRIA */
 const STORY = {
@@ -935,7 +935,7 @@ CH.ch5 = {
   n: 5, engine: Ch5, rank: null,
   kicker: STORY5.kicker, title: STORY5.title, soloKicker: "QUIZ · ONDE VOCÊ BRILHA", soloTitle: "Onde você brilha",
   goal: STORY5.goal, how: STORY5.how,
-  legend: () => ["campo", "industria", "tecnologia", "pessoas"].map(k => `<li><img src="${Ch5.AREAS[k].photo}" alt="" style="width:calc(var(--u)*3.4);height:calc(var(--u)*3.4);object-fit:cover;border-radius:12px"><span>${Ch5.AREAS[k].title.split(" &")[0]}</span></li>`).join(""),
+  legend: () => ["campo", "industria", "tecnologia", "pessoas"].map(k => `<li><img src="${Ch5.AREAS[k].photo}" alt="" style="width:calc(var(--u)*3.4);height:calc(var(--u)*3.4);object-fit:cover;object-position:${(FOCUS[Ch5.AREAS[k].photo] || [.5, .4]).map(v => v * 100 + "%").join(" ")};border-radius:12px"><span>${Ch5.AREAS[k].title.split(" &")[0]}</span></li>`).join(""),
   setup() { clearChapters(Ch5); setSky("night", 1.2); Ch5.show(true); Ch5.reset(); camTo(shotPose("ch5"), 2.2); Cast.set("corners"); },
   intro: () => { clearChapters(Ch5); setSky("night", 2); Ch5.show(true); Ch5.reset(); return playIntro(STORY5.intro); },
   endShot: () => shotPose("nightStage"),
@@ -1021,6 +1021,7 @@ function showBadge(r, solo) {
   const complete = !solo && chs.every(c => st.stars[c] != null);
   $("#jrBadgeKicker").textContent = solo ? "SEU PERFIL NA COAMO" : complete ? "JORNADA DA SAFRA CONCLUÍDA" : "CAPÍTULO 5 CONCLUÍDO";
   $("#jrBadgePhoto").style.backgroundImage = `url("${r.photo}")`;
+  const f = FOCUS[r.photo] || [.5, .4]; $("#jrBadgePhoto").style.backgroundPosition = `${f[0] * 100}% ${f[1] * 100}%`;
   $("#jrBadgeArea").textContent = r.areaTitle;
   $("#jrBadgeText").textContent = r.areaText;
   $("#jrBadgeSecond").textContent = r.second ? `Também combina com você: ${r.second}` : "";
