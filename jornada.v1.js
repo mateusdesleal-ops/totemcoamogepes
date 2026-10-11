@@ -13,7 +13,7 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
-import { createWorld, V } from "./jornada-mundo.v1.js?v=2.0";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=2.1";
 import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.6";
 import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=2.0";
 import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.6";
@@ -414,9 +414,22 @@ function toScreen(v) {
 const Cast = (() => {
   const BASE = 520;
   const A = {
-    t: { el: $("#jrToninho"), x: 0, y: 0, s: .3, tx: 0, ty: 0, ts: .3, on: false, anchor: null },
-    a: { el: $("#jrAroldinho"), x: 0, y: 0, s: .3, tx: 0, ty: 0, ts: .3, on: false, anchor: null },
+    t: { el: $("#jrToninho"), x: 0, y: 0, s: .3, tx: 0, ty: 0, ts: .3, on: false, anchor: null, enter: 0, side: -1 },
+    a: { el: $("#jrAroldinho"), x: 0, y: 0, s: .3, tx: 0, ty: 0, ts: .3, on: false, anchor: null, enter: 0, side: 1 },
   };
+  /* integração com o cenário: luz do céu, sombra no chão, balanço com a câmera, entrada caminhando */
+  const look = { light: "", shadow: .35, sway: 0, yaw: null, nextIdle: 12, time: 0 };
+  const _dir = new THREE.Vector3();
+  function sceneLight() {
+    const c = W.sun.color, I = W.sun.intensity;
+    const k = clamp((I - .35) / (3.6 - .35), 0, 1);                       /* 0 = noite/temporal, 1 = sol forte */
+    const bright = (.74 + .28 * k).toFixed(3), sat = (.86 + .14 * k).toFixed(3);
+    const warm = clamp((c.r - c.b - .28) * .45, 0, .16).toFixed(3);       /* pôr do sol/amanhecer: tom dourado */
+    const cool = k < .35 ? ` hue-rotate(${(-8 * (1 - k / .35)).toFixed(1)}deg)` : "";
+    const rim = `rgba(${Math.round(255 * Math.min(1, c.r * 1.05))},${Math.round(255 * Math.min(1, c.g * 1.05))},${Math.round(255 * Math.min(1, c.b * 1.05))},${(.25 + .4 * k).toFixed(2)})`;
+    look.light = `brightness(${bright}) saturate(${sat}) sepia(${warm})${cool}` + (quality === "low" ? "" : ` drop-shadow(0 0 1.6px ${rim}) drop-shadow(0 10px 14px rgba(0,0,0,${(.12 + .14 * k).toFixed(2)}))`);
+    look.shadow = .16 + .3 * k;
+  }
   Object.values(A).forEach(o => {
     o.el.style.width = BASE + "px"; o.el.style.height = BASE + "px";
     /* boneco articulado (rosto original), montado direto no palco */
@@ -464,7 +477,11 @@ const Cast = (() => {
       mode = m;
       const on = m !== "off";
       Object.values(A).forEach(o => { o.on = on; o.el.classList.toggle("is-on", on); });
-      if (on && (wasOff || first)) { first = false; this.update(1, true); }
+      if (on && (wasOff || first)) {
+        first = false; this.update(1, true);
+        /* entram caminhando pelas laterais */
+        if (!reduce) Object.values(A).forEach((o, i) => { o.enter = 1 + i * .12; o.x += o.side * innerWidth * .32; });
+      }
     },
     speak(who, act) {
       speaker = who;
@@ -477,12 +494,25 @@ const Cast = (() => {
       if (mode === "stage") stageTargets(); else if (mode === "title") titleTargets(); else if (mode === "corners") cornerTargets();
       else worldTargets(mode === "game" && camera.aspect > 1.15 ? WORLD.gameWide : (WORLD[mode] || WORLD.game));
       const k = snap ? 1 : 1 - Math.pow(.0005, dt);
+      look.time += dt;
+      if (Math.floor(look.time * 4) !== Math.floor((look.time - dt) * 4) || snap) sceneLight();
+      /* balanço: quando a câmera gira, os mascotes ficam um pouco para trás (sensação de profundidade) */
+      camera.getWorldDirection(_dir); const yaw = Math.atan2(_dir.x, _dir.z);
+      if (look.yaw !== null && !snap) { let d = yaw - look.yaw; if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; look.sway = clamp(look.sway + d * 900, -26, 26); }
+      look.yaw = yaw; look.sway *= Math.pow(.04, dt);
+      /* gesto espontâneo de vez em quando (fora do jogo valendo) */
+      look.nextIdle -= dt;
+      if (look.nextIdle <= 0) { look.nextIdle = 11 + Math.random() * 8; if (mode === "title" || mode === "stage") { const who = Math.random() < .5 ? "t" : "a"; if (speaker !== who) this.act(who, Math.random() < .6 ? "wave" : "think"); } }
       for (const key of ["t", "a"]) {
         const o = A[key];
-        o.x = lerp(o.x, o.tx, k); o.y = lerp(o.y, o.ty, k); o.s = lerp(o.s, o.ts, k);
+        const ke = o.enter > 0 ? 1 - Math.pow(.02, dt) : k;
+        o.x = lerp(o.x, o.tx, ke); o.y = lerp(o.y, o.ty, k); o.s = lerp(o.s, o.ts, k);
+        let hop = 0, rot = look.sway * -.08;
+        if (o.enter > 0) { o.enter = Math.max(0, o.enter - dt * 1.25); const w = Math.min(1, o.enter * 2.5); hop = -Math.abs(Math.sin(o.enter * Math.PI * 4.5)) * 9 * w; rot += Math.sin(o.enter * Math.PI * 4.5) * 2.4 * w; }
         const sp = mode === "stage" && speaker ? (speaker === key ? 1.04 : .96) : 1;
-        o.el.style.transform = `translate(${(o.x - BASE / 2).toFixed(1)}px, ${(o.y - BASE).toFixed(1)}px) scale(${(o.s * sp).toFixed(4)})`;
-        o.el.style.filter = mode === "stage" && speaker && speaker !== key && speaker !== "n" ? "brightness(.82) saturate(.9)" : "";
+        o.el.style.transform = `translate(${(o.x + look.sway - BASE / 2).toFixed(1)}px, ${(o.y + hop - BASE).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${(o.s * sp).toFixed(4)})`;
+        o.el.style.filter = (mode === "stage" && speaker && speaker !== key && speaker !== "n" ? "brightness(.82) saturate(.9) " : "") + look.light;
+        o.el.style.setProperty("--sh", (look.shadow * (1 + hop / 30)).toFixed(3));
       }
     },
     screenPos(who) { const o = A[who]; return { x: o.x, y: o.y - BASE * o.s * .9 }; },

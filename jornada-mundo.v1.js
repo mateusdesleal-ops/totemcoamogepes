@@ -9,6 +9,7 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { ICONS } from "./jornada-icones.v1.js";
 import { buildVegetation } from "./jornada-vegetacao.v1.js?v=2.0";
+import { buildLife } from "./jornada-vida.v1.js?v=1.0";
 
 /* ===================================================== utilidades */
 export const V = (x, y, z) => new THREE.Vector3(x, y, z);
@@ -245,6 +246,7 @@ export function createWorld(renderer) {
     if (renderer.shadowMap.enabled === lite) { renderer.shadowMap.enabled = !lite; scene.traverse(o => { if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.needsUpdate = true; }); }); }
     sun.shadow.mapSize.set(lite ? 1024 : 2048, lite ? 1024 : 2048);
     if (typeof veg !== "undefined") veg.setDetail(lite ? "low" : "high");
+    if (typeof life !== "undefined") life.setDetail(lite ? "low" : "high");
     if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
     applySky(clamp(skyState.t / skyState.dur, 0, 1));
   }
@@ -509,7 +511,6 @@ export function createWorld(renderer) {
   const CLOUD_LAYERS = [
     { n: 18, w: [150, 120], y: [80, 70], z: [-420, 180], spread: 1100, op: .95 },   /* fundo, grandes */
     { n: 12, w: [80, 60], y: [55, 40], z: [-250, 80], spread: 800, op: .9 },        /* meio */
-    { n: 10, w: [110, 90], y: [95, 60], z: [140, 260], spread: 900, op: .9 },       /* atrás da câmera (vistas aéreas) */
   ];
   CLOUD_LAYERS.forEach((L, li) => {
     for (let i = 0; i < L.n; i++) {
@@ -614,9 +615,12 @@ export function createWorld(renderer) {
   }
   const trucks = [buildTruck("#ffffff"), buildTruck("#f2b400"), buildTruck("#1d5fa8")];
   trucks.forEach((t, i) => { t.userData.stopX = [-20, -36, -52][i]; t.position.set(t.userData.stopX, 0, -8); world.add(t); t.userData.t0 = -1; });
-  function driveTrucks(now) { trucks.forEach((t, i) => { t.userData.t0 = now + i * 1.1; t.position.x = t.userData.stopX - 140; }); }
-  function parkTrucks() { trucks.forEach(t => { t.userData.t0 = -1; t.position.x = t.userData.stopX; }); }
-  function hideTrucks() { trucks.forEach(t => { t.userData.t0 = -1; t.position.x = t.userData.stopX - 220; }); }
+  function driveTrucks(now) { life.pauseTraffic(18); trucks.forEach((t, i) => { t.visible = true; t.userData.t0 = now + i * 1.1; t.position.x = t.userData.stopX - 140; }); }
+  function parkTrucks() { trucks.forEach(t => { t.visible = true; t.userData.t0 = -1; t.position.x = t.userData.stopX; }); }
+  function hideTrucks() { trucks.forEach(t => { t.userData.t0 = -1; t.position.x = t.userData.stopX - 220; t.visible = false; }); }
+
+  /* ===================================================== vida: funcionários, empilhadeira, estrada */
+  const life = buildLife({ world, buildTruck, rnd, kit: { mergeGroup, RB, CY, std, TEX } });
 
   /* ===================================================== ESTEIRA */
   const play = new THREE.Group(); world.add(play);
@@ -1124,6 +1128,7 @@ export function createWorld(renderer) {
     updateBins(dt);
     updateSparks(dt);
     veg.update(time);
+    life.update(dt, time, camera);
     updateSilos(dt);
     updateStreams(dt);
     updateWeather(dt, camera);

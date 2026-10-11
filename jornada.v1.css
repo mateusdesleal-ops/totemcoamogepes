@@ -77,7 +77,7 @@ body.is-playing .jr-back{ opacity:.0; pointer-events:none; }
 .jr-actor .coamo-rig{ pointer-events:auto; }
 .jr-actor::after{
   content:""; position:absolute; left:18%; right:18%; bottom:-2%; height:7%; z-index:-1;
-  border-radius:50%; background:radial-gradient(ellipse, rgba(0,0,0,.35), rgba(0,0,0,0) 70%);
+  border-radius:50%; background:radial-gradient(ellipse, rgba(0,0,0,var(--sh,.35)), rgba(0,0,0,0) 70%);
 }
 
 /* ---------- telas ---------- */
