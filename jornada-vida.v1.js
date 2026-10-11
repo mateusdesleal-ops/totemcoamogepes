@@ -21,23 +21,61 @@ function paint(g, hex) {
 }
 const at = (g, x, y, z) => { g.translate(x, y, z); return g; };
 
-/* ---------- peças do funcionário (altura ~1,75 m) ---------- */
+/* cor por altura (faixas do uniforme numa peça só) */
+function bands(g, fn) {
+  g = g.index ? g.toNonIndexed() : g;
+  const P = g.attributes.position, a = new Float32Array(P.count * 3), c = new THREE.Color();
+  for (let i = 0; i < P.count; i++) { c.set(fn(P.getY(i), P.getX(i), P.getZ(i))); a[i * 3] = c.r; a[i * 3 + 1] = c.g; a[i * 3 + 2] = c.b; }
+  g.setAttribute("color", new THREE.BufferAttribute(a, 3));
+  if (g.attributes.uv) g.deleteAttribute("uv");
+  return g;
+}
+const lathe = (pts, seg = 20) => new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r, y)), seg);
+
+/* ---------- funcionário articulado (altura ~1,76 m): cada osso é uma peça ---------- */
+const DIM = { hip: .92, thigh: .43, shin: .42, shX: .19, shY: .43, upper: .27, neck: .5 };
 function workerGeometries(RB) {
-  const PANTS = "#27324c", SHIRT = "#8db8e6", SKIN = "#d9a27a", HELMET = "#f4f5f2", VEST = "#d9e34a", BOOT = "#2a2420";
-  const body = mergeGeometries([
-    paint(at(RB(.36, .2, .22, .07), 0, .93, 0), PANTS),
-    paint(at(RB(.42, .48, .24, .1), 0, 1.24, 0), SHIRT),
-    paint(at(RB(.43, .05, .25, .02), 0, 1.13, 0), VEST),             /* faixa refletiva */
-    paint(at(RB(.43, .05, .25, .02), 0, 1.3, 0), VEST),
-    paint(at(new THREE.CylinderGeometry(.055, .06, .08, 10), 0, 1.5, 0), SKIN),
-    paint(at(new THREE.SphereGeometry(.11, 16, 12).scale(1, 1.1, 1), 0, 1.6, .005), SKIN),
-    paint(at(new THREE.SphereGeometry(.13, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2).scale(1, .85, 1.08), 0, 1.65, 0), HELMET),
-    paint(at(new THREE.CylinderGeometry(.15, .15, .018, 18).scale(1, 1, 1.12), 0, 1.655, .02), HELMET),
+  const PANTS = "#2a3552", BELT = "#1c1c1c", SHIRT = "#8fbbe8", VEST = "#c6d43c", REFL = "#d9dde0", SKIN = "#d39a72", HELMET = "#f5f6f2", BOOT = "#3a2c22", HAIR = "#3b2a20";
+  /* tronco: quadril, cintura, peito e ombros arredondados */
+  const torsoPts = [[0, -.1], [.15, -.1], [.165, -.03], [.158, .06], [.148, .15], [.163, .27], [.178, .36], [.172, .43], [.13, .48], [.06, .515], [0, .515]];
+  const torsoGeo = () => { const g = lathe(torsoPts, 24); g.scale(1, 1, .64); return g; };
+  const torsoVest = mergeGeometries([
+    bands(torsoGeo(), y => y < .035 ? PANTS : y < .07 ? BELT : (y > .19 && y < .225) || (y > .32 && y < .355) ? REFL : y > .47 ? SHIRT : VEST),
+    bands(new THREE.CylinderGeometry(.06, .065, .05, 14, 1, true).translate(0, .51, 0), () => SHIRT),
   ]);
-  const legParts = [paint(new THREE.CapsuleGeometry(.075, .62, 4, 10).translate(0, -.38, 0), PANTS), paint(at(RB(.13, .1, .26, .04), 0, -.82, .05), BOOT)];
-  const leg = mergeGeometries(legParts);
-  const arm = mergeGeometries([paint(new THREE.CapsuleGeometry(.058, .44, 4, 10).translate(0, -.27, 0), SHIRT), paint(at(new THREE.SphereGeometry(.058, 10, 8), 0, -.55, 0), SKIN)]);
-  return { body, leg, arm };
+  const torsoShirt = mergeGeometries([
+    bands(torsoGeo(), y => y < .035 ? PANTS : y < .07 ? BELT : SHIRT),
+    bands(new THREE.CylinderGeometry(.06, .065, .05, 14, 1, true).translate(0, .51, 0), () => SHIRT),
+    bands(RB(.035, .03, .012, .006).translate(0, .053, .1), () => "#c9ced2"),                 /* fivela */
+    bands(new THREE.BoxGeometry(.06, .07, .01).translate(.075, .37, .108), () => "#7aa6d6"),     /* bolso */
+  ]);
+  /* cabeça com capacete, cabelo, orelhas e nariz (dá direção ao rosto) */
+  const head = mergeGeometries([
+    bands(new THREE.CylinderGeometry(.048, .055, .1, 12).translate(0, .04, 0), () => SKIN),
+    bands(new THREE.SphereGeometry(.1, 18, 14).scale(.92, 1.08, 1).translate(0, .14, .01), () => SKIN),
+    bands(new THREE.SphereGeometry(.102, 16, 10, 0, Math.PI * 2, 0, Math.PI * .62).scale(.94, 1.06, 1).rotateX(-.5).translate(0, .15, -.004), () => HAIR),
+    bands(new THREE.SphereGeometry(.022, 8, 6).scale(.5, 1, .8).translate(-.093, .135, 0), () => SKIN),
+    bands(new THREE.SphereGeometry(.022, 8, 6).scale(.5, 1, .8).translate(.093, .135, 0), () => SKIN),
+    bands(new THREE.SphereGeometry(.017, 8, 6).scale(.9, 1.1, 1).translate(0, .13, .1), () => "#c88b65"),
+    bands(new THREE.SphereGeometry(.118, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2).scale(1, .82, 1.1).translate(0, .19, .005), () => HELMET),
+    bands(new THREE.CylinderGeometry(.124, .124, .012, 22).scale(1, 1, 1.12).translate(0, .19, .006), () => HELMET),
+    bands(new THREE.CylinderGeometry(.075, .075, .012, 16, 1, false, -Math.PI / 2, Math.PI).scale(1, 1, .9).translate(0, .188, .1), () => HELMET),
+    bands(new THREE.BoxGeometry(.018, .02, .2).translate(0, .285, 0), () => "#e9eae6"),          /* nervura */
+  ]);
+  const upper = mergeGeometries([bands(new THREE.SphereGeometry(.068, 14, 10).scale(1, .92, .95), () => SHIRT), bands(new THREE.CapsuleGeometry(.056, .2, 4, 12).translate(0, -.13, 0), () => SHIRT)]);
+  const fore = mergeGeometries([
+    bands(new THREE.CapsuleGeometry(.046, .17, 4, 12).translate(0, -.11, 0), y => y < -.19 ? "#7fabd9" : SHIRT),
+    bands(new THREE.SphereGeometry(.045, 12, 10).scale(.85, 1.15, .65).translate(0, -.27, .005), () => SKIN),
+    bands(new THREE.CapsuleGeometry(.014, .03, 3, 6).rotateZ(.5).translate(.03, -.255, .02), () => SKIN),
+  ]);
+  const thigh = bands(lathe([[0, .02], [.094, 0], [.097, -.08], [.084, -.3], [.073, -.43], [0, -.45]], 16), () => PANTS);
+  const shin = bands(lathe([[0, .02], [.074, 0], [.072, -.12], [.06, -.36], [.063, -.42], [0, -.43]], 16), () => PANTS);
+  const foot = mergeGeometries([
+    bands(RB(.12, .09, .21, .036, 3).translate(0, -.035, .04), () => BOOT),
+    bands(new THREE.SphereGeometry(.055, 12, 8).scale(1, .7, 1.1).translate(0, -.045, .12), () => BOOT),
+    bands(RB(.118, .02, .25, .008).translate(0, -.075, .055), () => "#151210"),
+  ]);
+  return { torsoVest, torsoShirt, head, upper, fore, thigh, shin, foot };
 }
 
 export function buildLife(o) {
@@ -65,36 +103,74 @@ export function buildLife(o) {
   });
   STAND.forEach(([x, z, yaw]) => W.push({ walk: false, x, z, yaw, ph: rnd() * 6 }));
   const N = W.length;
-  const bodies = new THREE.InstancedMesh(G.body, mat, N), legs = new THREE.InstancedMesh(G.leg, mat, N * 2), arms = new THREE.InstancedMesh(G.arm, mat, N * 2);
-  [bodies, legs, arms].forEach(m => { m.castShadow = true; m.receiveShadow = true; m.frustumCulled = false; group.add(m); });
+  W.forEach((w, i) => { w.vest = i % 3 !== 2; w.k = .95 + rnd() * .09; w.look = 0; });
+  const nVest = W.filter(w => w.vest).length;
+  const mk = (geo, n) => { const m = new THREE.InstancedMesh(geo, mat, Math.max(1, n)); m.castShadow = true; m.receiveShadow = true; m.frustumCulled = false; group.add(m); return m; };
+  const I = {
+    tv: mk(G.torsoVest, nVest), ts: mk(G.torsoShirt, N - nVest), head: mk(G.head, N),
+    upper: mk(G.upper, N * 2), fore: mk(G.fore, N * 2), thigh: mk(G.thigh, N * 2), shin: mk(G.shin, N * 2), foot: mk(G.foot, N * 2),
+  };
+  if (N - nVest === 0) I.ts.count = 0;
   /* sombra de contato */
   const blobs = new THREE.InstancedMesh(new THREE.PlaneGeometry(.9, .9).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: TEX.blob, transparent: true, depthWrite: false }), N);
   blobs.frustumCulled = false; blobs.userData.noAO = true; group.add(blobs);
 
-  function placeWorker(w, i, time) {
-    let swing = 0, bob = 0;
+  const R = new THREE.Matrix4(), PEL = new THREE.Matrix4(), TOR = new THREE.Matrix4(), A1 = new THREE.Matrix4(), A2 = new THREE.Matrix4(), tmp = new THREE.Matrix4();
+  const rot = (x, y, z, px = 0, py = 0, pz = 0) => tmp.makeRotationFromEuler(e.set(x, y, z, "YXZ")).setPosition(px, py, pz);
+  function placeWorker(w, i, time, slot) {
+    let ph = 0, gait = 0;
     if (w.walk) {
-      /* posição ao longo da rota, indo e voltando */
+      /* posição ao longo da rota, indo e voltando; diminui o passo nas pontas para virar */
       const t2 = w.s % (w.total * 2), back = t2 > w.total; let d = back ? w.total * 2 - t2 : t2;
       let k = 0; while (k < w.seg.length - 1 && d > w.len[k]) { d -= w.len[k]; k++; }
       const [a, b] = w.seg[k], f = clamp(d / w.len[k], 0, 1);
       w.x = a[0] + (b[0] - a[0]) * f; w.z = a[1] + (b[1] - a[1]) * f;
       const dir = back ? -1 : 1, ty = Math.atan2((b[0] - a[0]) * dir, (b[1] - a[1]) * dir);
       let dy = ty - w.yaw; while (dy > Math.PI) dy -= Math.PI * 2; while (dy < -Math.PI) dy += Math.PI * 2;
-      w.yaw += dy * .2;
-      const ph = w.s * 4.6 + w.ph; swing = Math.sin(ph) * .55; bob = Math.abs(Math.cos(ph)) * .035;
-    } else { swing = Math.sin(time * 1.3 + w.ph) * .05; }
-    q.setFromEuler(e.set(0, w.yaw, 0));
-    m4.compose(p.set(w.x, bob, w.z), q, one);
-    bodies.setMatrixAt(i, m4);
+      w.yaw += dy * .12;
+      ph = w.s / (.72 * w.k) * Math.PI + w.ph; gait = 1 - Math.min(1, Math.abs(dy) * 1.4) * .35;
+    }
+    const sinP = Math.sin(ph), cosP = Math.cos(ph);
+    /* raiz */
+    q.setFromEuler(e.set(0, w.yaw, 0, "XYZ")); R.compose(p.set(w.x, 0, w.z), q, sc.set(w.k, w.k, w.k));
     blobs.setMatrixAt(i, part.makeTranslation(w.x, .05, w.z));
+    /* quadril: sobe e desce, balança e gira com o passo */
+    const bob = w.walk ? -.035 * Math.cos(ph * 2) * gait : Math.sin(time * 1.6 + w.ph) * .004;
+    const hipYaw = w.walk ? .14 * sinP * gait : Math.sin(time * .5 + w.ph) * .05;
+    const sway = w.walk ? .02 * sinP : Math.sin(time * .45 + w.ph) * .015;
+    PEL.copy(R).multiply(rot(0, hipYaw, -sway * 1.5, sway, DIM.hip + bob, 0));
+    /* tronco: inclina para frente e gira ao contrário do quadril */
+    const lean = w.walk ? .07 : .01, chestYaw = w.walk ? -.24 * sinP * gait : 0;
+    TOR.copy(PEL).multiply(rot(lean, chestYaw, sway * 2.5));
+    (w.vest ? I.tv : I.ts).setMatrixAt(slot, TOR);
+    /* cabeça: estável, olha em volta quando parado */
+    if (!w.walk) w.look = Math.sin(time * .35 + w.ph) * .5 + Math.sin(time * 1.1 + w.ph * 2) * .1;
+    A1.copy(TOR).multiply(rot(-lean * .8 + (w.walk ? Math.sin(ph * 2) * .02 : Math.sin(time * 1.4 + w.ph) * .04), -chestYaw * .7 - hipYaw + w.look, -sway * 2, 0, DIM.neck, 0));
+    I.head.setMatrixAt(i, A1);
     for (const s of [-1, 1]) {
-      const j = i * 2 + (s > 0 ? 1 : 0);
-      part.makeRotationX(swing * s).setPosition(s * .1, .9, 0); legs.setMatrixAt(j, m4.clone().multiply(part));
-      const talk = !w.walk && s > 0 ? -.5 + Math.sin(time * 2.4 + w.ph) * .25 : 0;
-      part.makeRotationFromEuler(e.set(-swing * s * .8 + talk, 0, s * .1)).setPosition(s * .26, 1.43, 0); arms.setMatrixAt(j, m4.clone().multiply(part));
+      const j = i * 2 + (s > 0 ? 1 : 0), sp = s > 0 ? sinP : -sinP, cp = s > 0 ? cosP : -cosP;
+      /* braços: balançam ao contrário das pernas, cotovelo dobra mais na frente */
+      let ax, ez = 0, ex;
+      if (w.walk) { ax = .42 * sp * gait; ex = -.25 - Math.max(0, -sp) * .45 * gait; }
+      else {
+        const talking = s > 0 && Math.sin(time * .4 + w.ph) > -.2;
+        ax = talking ? -.35 + Math.sin(time * 2.2 + w.ph) * .15 : .05; ex = talking ? -1.2 + Math.sin(time * 3.1 + w.ph) * .25 : -.18;
+      }
+      A1.copy(TOR).multiply(rot(ax, 0, s * .1, s * DIM.shX, DIM.shY, 0)); I.upper.setMatrixAt(j, A1);
+      A2.copy(A1).multiply(rot(ex, 0, ez, 0, -DIM.upper, 0)); I.fore.setMatrixAt(j, A2);
+      /* pernas: coxa vai e volta, joelho dobra na fase de balanço, pé fica no chão */
+      let th = 0, kn = .04, an = 0;
+      if (w.walk) {
+        th = -.46 * sp * gait;
+        kn = (.08 + .85 * Math.pow(Math.max(0, cp), 1.6)) * gait;
+        an = -(th + kn) * .85 + (sp < 0 ? -.12 * Math.max(0, -cp) : 0);
+      } else if (s < 0) { th = -.04; kn = .1; an = -.06; }
+      A1.copy(PEL).multiply(rot(th, 0, 0, s * .088, -.02, 0)); I.thigh.setMatrixAt(j, A1);
+      A1.multiply(rot(kn, 0, 0, 0, -DIM.thigh, 0)); I.shin.setMatrixAt(j, A1);
+      A1.multiply(rot(an, 0, 0, 0, -DIM.shin, 0)); I.foot.setMatrixAt(j, A1);
     }
   }
+  const sc = new THREE.Vector3();
 
   /* ===================================================== empilhadeira trabalhando */
   const fk = new THREE.Group(); fk.userData.dynamic = true; group.add(fk);
@@ -109,7 +185,8 @@ export function buildLife(o) {
   for (const x of [-.32, .32]) add(RB(.1, 2.3, .1, .03), dark, x, 1.3, 1.2, fkBody);
   for (const [x, z, r] of [[-.72, .7, .4], [.72, .7, .4], [-.72, -.75, .33], [.72, -.75, .33]]) { const w = add(CY(r, r, .3, 18), std("tire", { color: "#1b1d1c", roughness: .85 }), x, r, z, fkBody); w.rotation.z = Math.PI / 2; }
   /* operador */
-  const op = new THREE.Mesh(G.body, mat); op.position.set(0, .45, -.25); op.scale.setScalar(.92); op.castShadow = true; op.userData.keep = true; fkBody.add(op);
+  const op = new THREE.Mesh(G.torsoVest, mat); op.position.set(0, 1.8, -.25); op.castShadow = true; op.userData.keep = true; fkBody.add(op);
+  const opHead = new THREE.Mesh(G.head, mat); opHead.position.set(0, 2.3, -.25); opHead.castShadow = true; opHead.userData.keep = true; fkBody.add(opHead);
   mergeGroup(fkBody);
   /* garfo com palete de sacaria (sobe e desce) */
   const forks = new THREE.Group(); forks.position.set(0, .12, 1.3); fk.add(forks);
@@ -161,8 +238,9 @@ export function buildLife(o) {
     pauseTraffic(sec) { pause = Math.max(pause, sec); },
     setDetail(level) { trafficOn = level !== "low"; },
     update(dt, time, camera) {
-      W.forEach((w, i) => { if (w.walk) w.s += w.v * dt; placeWorker(w, i, time); });
-      [bodies, legs, arms, blobs].forEach(m => { m.instanceMatrix.needsUpdate = true; });
+      let sv = 0, ss = 0;
+      W.forEach((w, i) => { if (w.walk) w.s += w.v * dt; placeWorker(w, i, time, w.vest ? sv++ : ss++); });
+      Object.values(I).concat([blobs]).forEach(m => { m.instanceMatrix.needsUpdate = true; });
       /* empilhadeira: anda, ergue o palete, volta de ré */
       FK.t += dt; const T = 24, t = FK.t % T;
       let x, lift, yaw = Math.PI / 2;

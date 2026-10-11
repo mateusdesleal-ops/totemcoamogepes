@@ -9,7 +9,7 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { ICONS } from "./jornada-icones.v1.js";
 import { buildVegetation } from "./jornada-vegetacao.v1.js?v=2.0";
-import { buildLife } from "./jornada-vida.v1.js?v=1.0";
+import { buildLife } from "./jornada-vida.v1.js?v=2.0";
 
 /* ===================================================== utilidades */
 export const V = (x, y, z) => new THREE.Vector3(x, y, z);
@@ -1147,7 +1147,7 @@ export function createWorld(renderer) {
 
   return {
     scene, sun, setSky, refreshEnv, setLite, update,
-    sunDir: skyU.sunDir.value,
+    sunDir: skyU.sunDir.value, life,
     flareK: () => clamp((sun.intensity - 1.2) / 1.6, 0, 1) * (1 - stormK) * (1 - nightK),
     play, BELT, BIN, BINS, binObjs, beltTex: [TEX.belt, TEX.beltN], setFill,
     ringNext, ringSel, makeItem, hitGeo, hitMat, burst,
