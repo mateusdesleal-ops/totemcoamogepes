@@ -16,10 +16,70 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="stylesheet" href="mascotes.v59.css?v=59.0">
-  <link rel="stylesheet" href="jornada.v1.css?v=1.7">
+  <link rel="stylesheet" href="jornada.v1.css?v=1.8">
   <script src="pwa.v55.js?v=55.0" defer></script>
 </head>
 <body data-page="journey" class="jr">
+  <!-- ========== CARREGAMENTO (inline: aparece na hora, antes do 3D) ========== -->
+  <div class="jr-boot" id="jrBoot" role="status" aria-live="polite">
+    <style>
+      html,body{ background:#06301a; }
+      .jr-boot{ position:fixed; inset:0; z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3.2vmin;
+        background:radial-gradient(ellipse 90% 70% at 50% 38%, #0f6b3a 0%, #0a4a29 45%, #052615 100%); color:#fff;
+        font-family:Montserrat, system-ui, sans-serif; overflow:hidden; transition:opacity .6s ease, visibility .6s; }
+      .jr-boot.is-done{ opacity:0; visibility:hidden; pointer-events:none; }
+      .jr-boot::before{ content:""; position:absolute; inset:-20%; background:repeating-linear-gradient(115deg, rgba(255,255,255,.035) 0 2px, transparent 2px 46px);
+        animation:jrBootRows 18s linear infinite; }
+      .jr-boot::after{ content:""; position:absolute; left:50%; top:36%; width:120vmin; height:120vmin; transform:translate(-50%,-50%);
+        background:radial-gradient(circle, rgba(255,206,72,.18), rgba(255,206,72,0) 60%); animation:jrBootGlow 3.2s ease-in-out infinite; }
+      @keyframes jrBootRows{ to{ transform:translateX(46px); } }
+      @keyframes jrBootGlow{ 50%{ opacity:.55; transform:translate(-50%,-50%) scale(1.06); } }
+      .jr-boot__logo{ position:relative; z-index:1; width:min(70vw, 620px); height:auto; filter:drop-shadow(0 12px 26px rgba(0,0,0,.35)); animation:jrBootIn .7s cubic-bezier(.2,.9,.3,1.2) both; }
+      .jr-boot__name{ position:relative; z-index:1; margin:0; font-weight:900; font-size:min(11vmin, 100px); line-height:.95; letter-spacing:-.03em; text-transform:uppercase; text-align:center;
+        text-shadow:0 5px 0 #063a1f, 0 10px 26px rgba(0,0,0,.35); animation:jrBootIn .7s .12s cubic-bezier(.2,.9,.3,1.2) both; }
+      @keyframes jrBootIn{ from{ opacity:0; transform:translateY(16px) scale(.96); } }
+      .jr-boot__bar{ position:relative; z-index:1; width:min(74vw, 640px); height:20px; border-radius:99px; background:rgba(0,0,0,.32); box-shadow:inset 0 0 0 2px rgba(255,255,255,.14); overflow:hidden; margin-top:2vmin; }
+      .jr-boot__fill{ position:absolute; inset:0; border-radius:inherit; background:linear-gradient(90deg, #f2b705, #ffd85a); transform-origin:0 50%; transform:scaleX(.04);
+        transition:transform 14s cubic-bezier(.12,.7,.2,1); will-change:transform; }
+      .jr-boot__fill::after{ content:""; position:absolute; inset:0; background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%); background-size:220% 100%; animation:jrBootShine 1.3s linear infinite; }
+      @keyframes jrBootShine{ from{ background-position:130% 0; } to{ background-position:-90% 0; } }
+      .jr-boot__msg{ position:relative; z-index:1; height:1.4em; width:90vw; text-align:center; font-weight:700; font-size:min(3.8vmin, 30px); color:#d9f2e1; }
+      .jr-boot__msg span{ position:absolute; inset:0; opacity:0; animation:jrBootMsg 12s infinite; }
+      .jr-boot__msg span:nth-child(2){ animation-delay:3s; } .jr-boot__msg span:nth-child(3){ animation-delay:6s; } .jr-boot__msg span:nth-child(4){ animation-delay:9s; }
+      @keyframes jrBootMsg{ 0%{ opacity:0; transform:translateY(8px); } 4%,22%{ opacity:1; transform:none; } 26%,100%{ opacity:0; transform:translateY(-8px); } }
+      .jr-boot__m{ position:absolute; z-index:1; bottom:-1vmin; width:min(34vmin, 380px); height:auto; filter:drop-shadow(0 10px 18px rgba(0,0,0,.35)); animation:jrBootBob 2.4s ease-in-out infinite; transform-origin:50% 100%; }
+      .jr-boot__m--t{ left:3vmin; } .jr-boot__m--a{ right:3vmin; animation-delay:-1.2s; }
+      @keyframes jrBootBob{ 50%{ transform:translateY(-1.4vmin) rotate(-1.5deg); } }
+      @media (prefers-reduced-motion: reduce){ .jr-boot *, .jr-boot::before, .jr-boot::after{ animation:none !important; } .jr-boot__msg span:first-child{ opacity:1; } }
+    </style>
+    <img class="jr-boot__logo" src="assets/coamo-games/logo-coamo-games.svg" alt="Coamo Games">
+    <h1 class="jr-boot__name">Jornada<br>da Safra</h1>
+    <div class="jr-boot__bar" aria-hidden="true"><i class="jr-boot__fill" id="jrBootFill"></i></div>
+    <div class="jr-boot__msg"><span>Abastecendo os caminhões…</span><span>Ligando a esteira…</span><span>Conferindo os silos…</span><span>Preparando o cenário 3D…</span></div>
+    <img class="jr-boot__m jr-boot__m--t" src="assets/mascote_toninho.webp" alt="">
+    <img class="jr-boot__m jr-boot__m--a" src="assets/mascote_aroldinho.webp" alt="">
+    <script>
+      /* a barra anda sozinha (animação da placa de vídeo, não trava enquanto o 3D é montado) e acelera nos marcos */
+      (function () {
+        var el = document.getElementById("jrBoot"), fill = document.getElementById("jrBootFill"), t0 = Date.now(), done = false;
+        requestAnimationFrame(function () { requestAnimationFrame(function () { fill.style.transform = "scaleX(.82)"; }); });
+        window.__boot = {
+          step: function (k) { if (done) return; fill.style.transition = "transform 1.2s cubic-bezier(.2,.8,.2,1)"; fill.style.transform = "scaleX(" + Math.max(.3, Math.min(.96, k)) + ")"; },
+          done: function () {
+            if (done) return; done = true;
+            var wait = Math.max(0, 900 - (Date.now() - t0));
+            setTimeout(function () {
+              fill.style.transition = "transform .35s ease-out"; fill.style.transform = "scaleX(1)";
+              setTimeout(function () { el.classList.add("is-done"); setTimeout(function () { el.remove(); }, 700); }, 380);
+            }, wait);
+          }
+        };
+        /* garantia: nunca fica preso no carregamento */
+        setTimeout(function () { window.__boot && window.__boot.done(); }, 25000);
+      })();
+    </script>
+  </div>
+
   <canvas id="jrCanvas" aria-hidden="true"></canvas>
   <div class="jr-vignette" aria-hidden="true"></div>
   <div class="jr-flash" id="jrFlash" aria-hidden="true"></div>
@@ -42,7 +102,6 @@
   <!-- ========== TELA DE ABERTURA ========== -->
   <section class="jr-screen jr-title" id="scrTitle" hidden>
     <div class="jr-title__brand">
-      <small class="jr-title__presents">Coamo Games apresenta</small>
       <img class="jr-title__logo" src="assets/coamo-games/logo-coamo-games.svg" alt="Coamo Games">
       <h1 class="jr-title__name">Jornada<br>da Safra</h1>
       <p class="jr-title__tag">Viva uma safra inteira na Coamo, do campo até a sua vaga.</p>
@@ -213,6 +272,6 @@
   <script src="mascotes.v59.js?v=59.0"></script>
   <script src="ranking.v55.js?v=68.0"></script>
   <script type="importmap">{ "imports": { "three": "./vendor/three.r169.module.min.js", "three/addons/": "./vendor/addons/" } }</script>
-  <script type="module" src="jornada.v1.js?v=2.2"></script>
+  <script type="module" src="jornada.v1.js?v=2.3"></script>
 </body>
 </html>

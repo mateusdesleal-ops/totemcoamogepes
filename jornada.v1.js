@@ -13,7 +13,7 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
-import { createWorld, V } from "./jornada-mundo.v1.js?v=2.2";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=2.3";
 import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.6";
 import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=2.0";
 import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.6";
@@ -185,6 +185,7 @@ if (!renderer) {
   /* sem 3D: abre a versão clássica do jogo pedido, ou a lista de jogos clássicos */
   const classic = { classificacao: "jogo-classificacao.html", silo: "jogo-silo.html", cadeia: "jogo-cadeia.html", memoria: "jogo-memoria.html", quiz: "jogo-area.html" }[params.get("jogo")];
   if (classic) location.replace(classic);
+  window.__boot && window.__boot.done();
   $("#scrNo3d").hidden = false; throw new Error("WebGL indisponível");
 }
 
@@ -198,8 +199,12 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1;
+/* carregamento: acompanha as texturas para tirar a tela de carregamento só com tudo pronto */
+const bootLoad = { loaded: 0, total: 0, frames: 0, t0: performance.now(), off: !window.__boot };
+THREE.DefaultLoadingManager.onProgress = (url, l, t) => { bootLoad.loaded = l; bootLoad.total = t; };
 
 const W = createWorld(renderer);
+window.__boot && window.__boot.step(.72);
 const scene = W.scene, play = W.play, BELT = W.BELT, BIN = W.BIN, BINS = W.BINS, binObjs = W.binObjs;
 const ringNext = W.ringNext, ringSel = W.ringSel, hitGeo = W.hitGeo, hitMat = W.hitMat;
 const camera = new THREE.PerspectiveCamera(40, 1, .4, 1600);
@@ -1217,6 +1222,13 @@ function loop() {
   W.update(dt, time, camera);
   Cast.update(dt);
   renderFrame(dt);
+  if (!bootLoad.off) {
+    /* primeiros quadros já desenhados (shaders prontos) e texturas carregadas */
+    bootLoad.frames++;
+    const ready = bootLoad.loaded >= bootLoad.total, waited = performance.now() - bootLoad.t0;
+    if (bootLoad.frames === 2) window.__boot.step(.9);
+    if (bootLoad.frames >= 4 && (ready || waited > 9000)) { bootLoad.off = true; window.__boot.done(); }
+  }
   /* qualidade automática: se o totem não aguentar, alivia os efeitos */
   frames++;
   const nowW = performance.now();

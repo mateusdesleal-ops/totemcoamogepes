@@ -94,5 +94,29 @@
   <script src="app.v59.js?v=64.0"></script>
   <script src="site.v61.js?v=61.0"></script>
   <script src="games.v63.js?v=64.0"></script>
+  <!-- transição para a Jornada 3D: mostra o carregamento na hora do toque -->
+  <div id="cgGo" style="position:fixed;inset:0;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:3vmin;background:radial-gradient(ellipse 90% 70% at 50% 38%,#0f6b3a 0%,#0a4a29 45%,#052615 100%);color:#fff;font-family:Montserrat,system-ui,sans-serif">
+    <img src="assets/coamo-games/logo-coamo-games.svg" alt="Coamo Games" style="width:min(70vw,620px);height:auto;filter:drop-shadow(0 12px 26px rgba(0,0,0,.35))">
+    <div style="width:min(74vw,640px);height:20px;border-radius:99px;background:rgba(0,0,0,.32);box-shadow:inset 0 0 0 2px rgba(255,255,255,.14);overflow:hidden;margin-top:2vmin"><i style="display:block;height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,#f2b705,#ffd85a);transform-origin:0 50%;transform:scaleX(.03);transition:transform 2.5s cubic-bezier(.12,.7,.2,1)"></i></div>
+    <b style="font-size:min(3.8vmin,30px);color:#d9f2e1">Carregando o jogo…</b>
+  </div>
+  <script>
+    (function () {
+      var go = document.getElementById("cgGo");
+      document.addEventListener("click", function (e) {
+        var a = e.target.closest && e.target.closest('a[href^="jornada.html"]');
+        if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey) return;
+        e.preventDefault(); go.style.display = "flex";
+        var bar = go.querySelector("i");
+        requestAnimationFrame(function () { requestAnimationFrame(function () { bar.style.transform = "scaleX(.2)"; setTimeout(function () { location.href = a.getAttribute("href"); }, 60); }); });
+      });
+      /* voltar pelo histórico não deixa a tela presa */
+      addEventListener("pageshow", function () { go.style.display = "none"; var i = go.querySelector("i"); i.style.transition = "none"; i.style.transform = "scaleX(.03)"; void i.offsetWidth; i.style.transition = ""; });
+      /* adianta o download do 3D enquanto a pessoa escolhe o jogo */
+      addEventListener("load", function () { setTimeout(function () {
+        ["vendor/three.r169.module.min.js", "assets/mascote_toninho.webp", "assets/mascote_aroldinho.webp"].forEach(function (u) { var l = document.createElement("link"); l.rel = "prefetch"; l.href = u; document.head.appendChild(l); });
+      }, 1500); });
+    })();
+  </script>
 </body>
 </html>

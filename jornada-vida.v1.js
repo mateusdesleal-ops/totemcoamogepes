@@ -1,8 +1,7 @@
 /* =========================================================
    COAMO GAMES — JORNADA DA SAFRA · VIDA NA UNIDADE (v1)
-   Funcionários andando (uniforme, capacete), empilhadeira
-   trabalhando e fila de caminhões na estrada.
-   Tudo leve: funcionários em instâncias (5 chamadas de desenho).
+   Empilhadeira trabalhando (com operador) e fila de caminhões
+   na estrada.
    ========================================================= */
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
@@ -87,90 +86,6 @@ export function buildLife(o) {
   /* ===================================================== funcionários */
   const G = workerGeometries(RB);
   const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .7 });
-  /* rotas (vai e volta) e grupinhos parados conversando */
-  const ROUTES = [
-    { pts: [[-26, -9.6], [-6, -9.6]], n: 2 },
-    { pts: [[3, -16.6], [29, -16.6]], n: 2 },
-    { pts: [[-38, 4.6], [-46, 4.6], [-46, -3]], n: 1 },
-    { pts: [[15, -5], [31, -5], [31, 7]], n: 1 },
-  ];
-  const STAND = [[-31, -14, .9], [-29.8, -13.6, -2.2], [33, -12, 2.6]];
-  const W = [];
-  ROUTES.forEach(R => {
-    const seg = [], len = []; let total = 0;
-    for (let i = 0; i < R.pts.length - 1; i++) { const a = R.pts[i], b = R.pts[i + 1], l = Math.hypot(b[0] - a[0], b[1] - a[1]); seg.push([a, b]); len.push(l); total += l; }
-    for (let k = 0; k < R.n; k++) W.push({ seg, len, total, s: rnd() * total * 2, v: 1.15 + rnd() * .3, ph: rnd() * 6, walk: true, x: 0, z: 0, yaw: 0 });
-  });
-  STAND.forEach(([x, z, yaw]) => W.push({ walk: false, x, z, yaw, ph: rnd() * 6 }));
-  const N = W.length;
-  W.forEach((w, i) => { w.vest = i % 3 !== 2; w.k = .95 + rnd() * .09; w.look = 0; });
-  const nVest = W.filter(w => w.vest).length;
-  const mk = (geo, n) => { const m = new THREE.InstancedMesh(geo, mat, Math.max(1, n)); m.castShadow = true; m.receiveShadow = true; m.frustumCulled = false; group.add(m); return m; };
-  const I = {
-    tv: mk(G.torsoVest, nVest), ts: mk(G.torsoShirt, N - nVest), head: mk(G.head, N),
-    upper: mk(G.upper, N * 2), fore: mk(G.fore, N * 2), thigh: mk(G.thigh, N * 2), shin: mk(G.shin, N * 2), foot: mk(G.foot, N * 2),
-  };
-  if (N - nVest === 0) I.ts.count = 0;
-  /* sombra de contato */
-  const blobs = new THREE.InstancedMesh(new THREE.PlaneGeometry(.9, .9).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: TEX.blob, transparent: true, depthWrite: false }), N);
-  blobs.frustumCulled = false; blobs.userData.noAO = true; group.add(blobs);
-
-  const R = new THREE.Matrix4(), PEL = new THREE.Matrix4(), TOR = new THREE.Matrix4(), A1 = new THREE.Matrix4(), A2 = new THREE.Matrix4(), tmp = new THREE.Matrix4();
-  const rot = (x, y, z, px = 0, py = 0, pz = 0) => tmp.makeRotationFromEuler(e.set(x, y, z, "YXZ")).setPosition(px, py, pz);
-  function placeWorker(w, i, time, slot) {
-    let ph = 0, gait = 0;
-    if (w.walk) {
-      /* posição ao longo da rota, indo e voltando; diminui o passo nas pontas para virar */
-      const t2 = w.s % (w.total * 2), back = t2 > w.total; let d = back ? w.total * 2 - t2 : t2;
-      let k = 0; while (k < w.seg.length - 1 && d > w.len[k]) { d -= w.len[k]; k++; }
-      const [a, b] = w.seg[k], f = clamp(d / w.len[k], 0, 1);
-      w.x = a[0] + (b[0] - a[0]) * f; w.z = a[1] + (b[1] - a[1]) * f;
-      const dir = back ? -1 : 1, ty = Math.atan2((b[0] - a[0]) * dir, (b[1] - a[1]) * dir);
-      let dy = ty - w.yaw; while (dy > Math.PI) dy -= Math.PI * 2; while (dy < -Math.PI) dy += Math.PI * 2;
-      w.yaw += dy * .12;
-      ph = w.s / (.72 * w.k) * Math.PI + w.ph; gait = 1 - Math.min(1, Math.abs(dy) * 1.4) * .35;
-    }
-    const sinP = Math.sin(ph), cosP = Math.cos(ph);
-    /* raiz */
-    q.setFromEuler(e.set(0, w.yaw, 0, "XYZ")); R.compose(p.set(w.x, 0, w.z), q, sc.set(w.k, w.k, w.k));
-    blobs.setMatrixAt(i, part.makeTranslation(w.x, .05, w.z));
-    /* quadril: sobe e desce, balança e gira com o passo */
-    const bob = w.walk ? -.035 * Math.cos(ph * 2) * gait : Math.sin(time * 1.6 + w.ph) * .004;
-    const hipYaw = w.walk ? .14 * sinP * gait : Math.sin(time * .5 + w.ph) * .05;
-    const sway = w.walk ? .02 * sinP : Math.sin(time * .45 + w.ph) * .015;
-    PEL.copy(R).multiply(rot(0, hipYaw, -sway * 1.5, sway, DIM.hip + bob, 0));
-    /* tronco: inclina para frente e gira ao contrário do quadril */
-    const lean = w.walk ? .07 : .01, chestYaw = w.walk ? -.24 * sinP * gait : 0;
-    TOR.copy(PEL).multiply(rot(lean, chestYaw, sway * 2.5));
-    (w.vest ? I.tv : I.ts).setMatrixAt(slot, TOR);
-    /* cabeça: estável, olha em volta quando parado */
-    if (!w.walk) w.look = Math.sin(time * .35 + w.ph) * .5 + Math.sin(time * 1.1 + w.ph * 2) * .1;
-    A1.copy(TOR).multiply(rot(-lean * .8 + (w.walk ? Math.sin(ph * 2) * .02 : Math.sin(time * 1.4 + w.ph) * .04), -chestYaw * .7 - hipYaw + w.look, -sway * 2, 0, DIM.neck, 0));
-    I.head.setMatrixAt(i, A1);
-    for (const s of [-1, 1]) {
-      const j = i * 2 + (s > 0 ? 1 : 0), sp = s > 0 ? sinP : -sinP, cp = s > 0 ? cosP : -cosP;
-      /* braços: balançam ao contrário das pernas, cotovelo dobra mais na frente */
-      let ax, ez = 0, ex;
-      if (w.walk) { ax = .42 * sp * gait; ex = -.25 - Math.max(0, -sp) * .45 * gait; }
-      else {
-        const talking = s > 0 && Math.sin(time * .4 + w.ph) > -.2;
-        ax = talking ? -.35 + Math.sin(time * 2.2 + w.ph) * .15 : .05; ex = talking ? -1.2 + Math.sin(time * 3.1 + w.ph) * .25 : -.18;
-      }
-      A1.copy(TOR).multiply(rot(ax, 0, s * .1, s * DIM.shX, DIM.shY, 0)); I.upper.setMatrixAt(j, A1);
-      A2.copy(A1).multiply(rot(ex, 0, ez, 0, -DIM.upper, 0)); I.fore.setMatrixAt(j, A2);
-      /* pernas: coxa vai e volta, joelho dobra na fase de balanço, pé fica no chão */
-      let th = 0, kn = .04, an = 0;
-      if (w.walk) {
-        th = -.46 * sp * gait;
-        kn = (.08 + .85 * Math.pow(Math.max(0, cp), 1.6)) * gait;
-        an = -(th + kn) * .85 + (sp < 0 ? -.12 * Math.max(0, -cp) : 0);
-      } else if (s < 0) { th = -.04; kn = .1; an = -.06; }
-      A1.copy(PEL).multiply(rot(th, 0, 0, s * .088, -.02, 0)); I.thigh.setMatrixAt(j, A1);
-      A1.multiply(rot(kn, 0, 0, 0, -DIM.thigh, 0)); I.shin.setMatrixAt(j, A1);
-      A1.multiply(rot(an, 0, 0, 0, -DIM.shin, 0)); I.foot.setMatrixAt(j, A1);
-    }
-  }
-  const sc = new THREE.Vector3();
 
   /* ===================================================== empilhadeira trabalhando */
   const fk = new THREE.Group(); fk.userData.dynamic = true; group.add(fk);
@@ -187,6 +102,17 @@ export function buildLife(o) {
   /* operador */
   const op = new THREE.Mesh(G.torsoVest, mat); op.position.set(0, 1.8, -.25); op.castShadow = true; op.userData.keep = true; fkBody.add(op);
   const opHead = new THREE.Mesh(G.head, mat); opHead.position.set(0, 2.3, -.25); opHead.castShadow = true; opHead.userData.keep = true; fkBody.add(opHead);
+  /* operador sentado: pernas dobradas, mãos no volante */
+  const opPart = (geo, x, y, z, rx, rz = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx, 0, rz); m.castShadow = true; m.userData.keep = true; fkBody.add(m); return m; };
+  for (const s of [-1, 1]) {
+    opPart(G.thigh, s * .088, 1.78, -.25, -Math.PI / 2 + .1);
+    opPart(G.shin, s * .1, 1.76, .17, -.15);
+    opPart(G.foot, s * .1, 1.34, .23, 0);
+    const up = opPart(G.upper, s * .19, 2.23, -.25, -.75, s * .12);
+    opPart(G.fore, s * .17, 2.03, -.07, -1.45, -s * .2);
+  }
+  { const wheel = new THREE.Mesh(new THREE.TorusGeometry(.17, .025, 8, 20), std("tire", { color: "#1b1d1c", roughness: .85 })); wheel.position.set(0, 1.98, .26); wheel.rotation.x = -1.0; wheel.castShadow = true; fkBody.add(wheel);
+    const col = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, .45, 8), dark); col.position.set(0, 1.78, .38); col.rotation.x = -.45; fkBody.add(col); }
   mergeGroup(fkBody);
   /* garfo com palete de sacaria (sobe e desce) */
   const forks = new THREE.Group(); forks.position.set(0, .12, 1.3); fk.add(forks);
@@ -238,9 +164,6 @@ export function buildLife(o) {
     pauseTraffic(sec) { pause = Math.max(pause, sec); },
     setDetail(level) { trafficOn = level !== "low"; },
     update(dt, time, camera) {
-      let sv = 0, ss = 0;
-      W.forEach((w, i) => { if (w.walk) w.s += w.v * dt; placeWorker(w, i, time, w.vest ? sv++ : ss++); });
-      Object.values(I).concat([blobs]).forEach(m => { m.instanceMatrix.needsUpdate = true; });
       /* empilhadeira: anda, ergue o palete, volta de ré */
       FK.t += dt; const T = 24, t = FK.t % T;
       let x, lift, yaw = Math.PI / 2;
