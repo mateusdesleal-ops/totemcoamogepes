@@ -16,7 +16,7 @@ import { ICONS } from "./jornada-icones.v1.js";
 import { createWorld, V } from "./jornada-mundo.v1.js?v=2.3";
 import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.6";
 import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=2.0";
-import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=1.6";
+import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=2.0";
 import { createCh5, STORY5, FOCUS } from "./jornada-cap5.v1.js?v=1.7";
 
 /* ===================================================== HISTÓRIA */

@@ -167,7 +167,7 @@
 
 /* ---------- Memória: verso com a logo do Coamo Games ---------- */
 .memory-card__face--front img{
-  content:url("assets/coamo-games/logo-coamo-games-mini.svg");
+  content:url("assets/coamo-games/coamo-games-v2-branco-mini.webp");
   width:86% !important; max-width:220px !important; height:auto !important;
   filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)) !important;
 }

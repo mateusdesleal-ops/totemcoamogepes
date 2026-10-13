@@ -131,7 +131,7 @@ export function createCh4(ctx) {
       if (im) { const w = 320, h = w * (im.height / im.width || .6); x.drawImage(im, 210 - w / 2, 280 - h / 2, w, h); }
       t.needsUpdate = true;
     };
-    draw(null); loadImg("assets/coamo-games/logo-coamo-games-mini.svg").then(draw);
+    draw(null); loadImg("assets/coamo-games/coamo-games-v2-branco-mini.webp").then(draw);
     return t;
   })();
   function faceTex(side) {

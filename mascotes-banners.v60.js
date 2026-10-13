@@ -227,9 +227,9 @@
     var isHero = B.key === "hero";
     root.innerHTML = B.scene(id) +
       (isHero
-        ? '<span class="cg-banner__copy cg-banner__copy--hero"><img class="cg-banner__logo" src="assets/coamo-games/logo-coamo-games.svg" alt=""><em>' + B.sub + '</em></span>' +
+        ? '<span class="cg-banner__copy cg-banner__copy--hero"><img class="cg-banner__logo" src="assets/coamo-games/coamo-games-v2-cor.webp" alt=""><em>' + B.sub + '</em></span>' +
           '<span class="cg-bubble cg-bubble--left"></span><span class="cg-bubble cg-bubble--right"></span>'
-        : '<span class="cg-banner__brand"><img src="assets/coamo-games/logo-coamo-games-mini.svg" alt=""></span>' +
+        : '<span class="cg-banner__brand"><img src="assets/coamo-games/coamo-games-v2-cor-mini.webp" alt=""></span>' +
           '<span class="cg-banner__copy"><strong>' + B.title + '</strong><em>' + B.sub + '</em></span>');
     [["left", B.left], ["right", B.right]].forEach(function (s) {
       var P = API.buildRig(s[1]);
