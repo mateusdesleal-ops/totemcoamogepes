@@ -1,0 +1,76 @@
+/* =========================================================
+   COAMO — FILME INSTITUCIONAL (modo apresentação) · v1
+   Palco fixo de 1080 × 1920 escalado para a tela.
+   ========================================================= */
+@font-face{ font-family:"Montserrat"; src:url("assets/fonts/montserrat-var.woff") format("woff"); font-weight:100 900; font-style:normal; font-display:block; }
+:root{
+  --g9:#03210f; --g8:#054d24; --g7:#0a6a33; --g5:#2f9a3f; --g4:#5db526;
+  --y:#f5b301; --y2:#ffd23f; --w:#f6f5ef; --k:#0c110e;
+  --f:"Montserrat", "Segoe UI", system-ui, sans-serif;
+  --e-out:cubic-bezier(.16,1,.3,1);
+}
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; overflow:hidden; background:var(--g8); cursor:none; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; }
+body{ font-family:var(--f); color:var(--k); -webkit-font-smoothing:antialiased; transition:background-color .0s; }
+
+.fm-stage{ position:fixed; left:50%; top:50%; width:1080px; height:1920px; transform-origin:0 0; overflow:hidden; contain:strict; }
+.fm-scene{ position:absolute; inset:0; overflow:hidden; }
+
+/* tipografia */
+.fm-t{ position:absolute; font-weight:900; letter-spacing:-.045em; line-height:.92; white-space:nowrap; }
+.fm-line{ display:block; overflow:hidden; padding:.06em .02em .1em; margin:-.06em -.02em -.1em; }
+.fm-ch{ display:inline-block; will-change:transform; }
+.fm-small{ position:absolute; font-weight:700; font-size:30px; letter-spacing:.02em; }
+.fm-label{ position:absolute; font-weight:800; letter-spacing:-.02em; line-height:1.05; }
+.fm-sub{ position:absolute; font-weight:600; font-size:34px; letter-spacing:.01em; line-height:1.3; opacity:.85; }
+
+/* contador estilo odômetro */
+.fm-odo{ position:absolute; display:flex; align-items:flex-end; font-weight:900; letter-spacing:-.05em; line-height:1; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.fm-odo__col{ display:inline-block; height:1em; overflow:hidden; }
+.fm-odo__strip{ display:flex; flex-direction:column; will-change:transform; }
+.fm-odo__strip i, .fm-odo__ch{ font-style:normal; display:block; height:1em; line-height:1em; }
+
+/* grade de cartões (multiplicação) */
+.fm-grid{ position:absolute; left:0; top:0; width:1080px; height:1920px; display:grid; grid-template-columns:repeat(4, 270px); grid-template-rows:repeat(4, 480px); transform-origin:0 0; }
+.fm-tile{ position:relative; overflow:hidden; border:2px solid rgba(0,0,0,.18); }
+.fm-tile b{ position:absolute; left:22px; top:30px; font-weight:900; font-size:60px; line-height:.95; letter-spacing:-.045em; }
+.fm-tile small{ position:absolute; right:16px; bottom:14px; font-weight:800; font-size:14px; }
+
+/* faixas diagonais */
+.fm-ticker{ position:absolute; left:-40%; width:180%; display:flex; gap:0; white-space:nowrap; font-weight:900; font-size:138px; letter-spacing:-.045em; line-height:1; will-change:transform; }
+.fm-ticker span{ padding-right:.35em; }
+.fm-ticker em{ font-style:normal; display:inline-block; transform:translateY(-.08em) scale(.55); }
+
+/* cartões inclinados */
+.fm-cards{ position:absolute; left:-20%; top:-6%; width:140%; display:grid; grid-template-columns:repeat(4, 1fr); gap:30px; transform:perspective(1600px) rotateX(28deg) rotateZ(-16deg); transform-origin:50% 50%; }
+.fm-card{ height:230px; border-radius:30px; padding:30px; display:flex; flex-direction:column; justify-content:space-between; font-weight:800; font-size:38px; line-height:1.1; letter-spacing:-.02em; box-shadow:0 20px 40px rgba(0,0,0,.12); }
+.fm-card i{ width:46px; height:46px; border-radius:50%; border:4px solid currentColor; display:grid; place-items:center; font-style:normal; font-size:24px; }
+.fm-card--d{ background:var(--g8); color:#fff; } .fm-card--w{ background:#fff; color:var(--g8); border:3px solid rgba(5,77,36,.12); } .fm-card--y{ background:var(--y); color:var(--k); }
+
+/* busca digitando */
+.fm-search{ position:absolute; left:110px; right:110px; top:880px; height:150px; border-radius:80px; background:#16231b; border:3px solid rgba(255,255,255,.08); display:flex; align-items:center; padding:0 26px 0 56px; color:#fff; font-weight:700; font-size:50px; box-shadow:0 30px 80px rgba(0,0,0,.4); }
+.fm-search__txt{ flex:1; white-space:nowrap; overflow:hidden; }
+.fm-search__caret{ display:inline-block; width:4px; height:58px; background:var(--y); vertical-align:middle; margin-left:4px; animation:fmBlink .8s steps(1) infinite; }
+@keyframes fmBlink{ 50%{ opacity:0; } }
+.fm-search__btn{ width:100px; height:100px; border-radius:50%; background:var(--y); display:grid; place-items:center; color:var(--k); font-size:54px; font-weight:900; }
+
+/* fotos */
+.fm-photo{ position:absolute; inset:0; background-size:cover; background-position:center; will-change:transform; }
+.fm-photo::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%); }
+.fm-tag{ position:absolute; left:80px; bottom:150px; z-index:2; font-weight:900; font-size:120px; letter-spacing:-.045em; color:#fff; line-height:.92; }
+.fm-tag small{ display:block; font-size:34px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:var(--y2); margin-bottom:22px; }
+.fm-bar{ position:absolute; top:0; bottom:0; z-index:3; will-change:transform; }
+
+/* logos dos programas */
+.fm-logos{ position:absolute; left:80px; right:80px; top:760px; display:grid; grid-template-columns:1fr 1fr; gap:34px; }
+.fm-logo{ height:250px; border-radius:34px; background:#fff; display:grid; place-items:center; padding:34px; box-shadow:0 20px 50px rgba(5,77,36,.12); border:3px solid rgba(5,77,36,.08); }
+.fm-logo img{ max-width:100%; max-height:150px; object-fit:contain; }
+
+/* círculo que engole a cena */
+.fm-circle{ position:absolute; width:200px; height:200px; margin:-100px 0 0 -100px; border-radius:50%; z-index:9; will-change:transform; }
+
+/* final */
+.fm-pix{ position:absolute; width:62px; height:62px; z-index:1; }
+.fm-cta{ position:absolute; left:50%; bottom:190px; transform:translateX(-50%); padding:30px 56px; border-radius:99px; background:#fff; color:var(--g8); font-weight:800; font-size:40px; white-space:nowrap; box-shadow:0 16px 40px rgba(0,0,0,.25); }
+
+.fm-hint{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:5; font:700 13px/1 var(--f); letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.55); mix-blend-mode:difference; pointer-events:none; }
