@@ -65,4 +65,28 @@
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once:true });
   else boot();
+
+  /* V67: atualização automática do totem.
+     A cada 5 min confere se a página foi publicada de novo (o HTML muda a cada atualização).
+     Se mudou e ninguém está usando há 90 s, recarrega sozinha — sem precisar mexer no totem. */
+  (function autoUpdate() {
+    if (!/^https?:/.test(location.protocol)) return;
+    let base = null, lastInput = Date.now(), pending = false;
+    ["pointerdown", "keydown", "touchstart"].forEach(ev => document.addEventListener(ev, () => { lastInput = Date.now(); }, { passive: true, capture: true }));
+    const sig = t => { let h = 0; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return h + ":" + t.length; };
+    const url = () => location.pathname + (location.pathname.endsWith("/") ? "" : "") + "?_upd=" + Date.now();
+    async function check() {
+      try {
+        const r = await fetch(url(), { cache: "no-store", credentials: "same-origin" });
+        if (!r.ok) return;
+        const s = sig(await r.text());
+        if (base === null) base = s; else if (s !== base) pending = true;
+      } catch (_) {}
+    }
+    setTimeout(check, 4000);
+    setInterval(check, 5 * 60 * 1000);
+    setInterval(() => {
+      if (pending && Date.now() - lastInput > 90 * 1000 && document.visibilityState === "visible") location.reload();
+    }, 15 * 1000);
+  })();
 })();
