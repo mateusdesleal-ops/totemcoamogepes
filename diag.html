@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coamo • Diagnóstico da tela</title>
+<style>
+  html,body{ margin:0; height:100%; background:#054d24; color:#fff; font-family:system-ui, sans-serif; }
+  body{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3vmin; text-align:center; padding:4vmin; box-sizing:border-box; }
+  h1{ margin:0; font-size:5vmin; }
+  #v{ font:800 9vmin/1.1 system-ui, sans-serif; color:#ffd23f; }
+  p{ margin:0; font-size:3vmin; opacity:.85; max-width:80vw; }
+  .ok{ color:#9be37a; } .bad{ color:#ffb199; }
+</style>
+</head>
+<body>
+  <h1>Diagnóstico da tela do totem</h1>
+  <div id="v"></div>
+  <p id="info"></p>
+  <p id="msg"></p>
+  <p>Tire uma foto desta tela e envie. Toque para voltar ao início.</p>
+<script>
+  function show() {
+    var w = innerWidth, h = innerHeight, d = devicePixelRatio || 1;
+    document.getElementById("v").textContent = w + " × " + h;
+    document.getElementById("info").textContent = "Escala: " + Math.round(d * 100) + "%  ·  Tela física: " + screen.width * d + " × " + screen.height * d + " px";
+    var m = document.getElementById("msg");
+    if (h > w && w > 1250) { m.className = "bad"; m.textContent = "A tela está sendo tratada como muito larga (" + w + " de largura). O ideal é perto de 1080. Ajuste a escala do Windows ou o zoom do navegador."; }
+    else { m.className = "ok"; m.textContent = "Tamanho adequado para o site."; }
+  }
+  show(); addEventListener("resize", show);
+  addEventListener("pointerdown", function () { location.href = "index.html?interactive=1"; });
+</script>
+</body>
+</html>
