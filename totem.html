@@ -24,7 +24,9 @@
       if (!/^[\w\-./]+(\?.*)?$/.test(u) || /^\/\//.test(u)) u = "index.html";
       function fit() {
         var z = innerWidth / 1080;
-        f.style.width = "1080px"; f.style.height = (innerHeight / z) + "px"; f.style.zoom = z;
+        /* escala por transform (funciona em todas as versões do Chrome; a página interna enxerga 1080 de largura) */
+        f.style.width = "1080px"; f.style.height = (innerHeight / z) + "px";
+        f.style.transformOrigin = "0 0"; f.style.transform = "scale(" + z + ")";
       }
       addEventListener("resize", fit); fit();
       f.src = u;
