@@ -102,8 +102,7 @@
   const IMG = {
     logoW: "assets/logo.png", logoG: "assets/logo_verde.png",
     campo: "assets/agro_01.jpg", unidade: "assets/estruturas/estrutura_unidade_aerea.jpg", ind: "assets/industria_03.jpg",
-    ind2: "assets/industria_05.jpg", parque: "assets/estruturas/estrutura_campo_mourao_aerea.jpg", ti: "assets/admin_ti_v38.jpg",
-    pessoas: "assets/img_cultura.jpg", milho: "assets/vaga_fotos/agro_2.jpg", truck: "assets/mission/coamo_truck_oficial.webp",
+    ind2: "assets/industria_05.jpg", parque: "assets/estruturas/estrutura_campo_mourao_aerea.jpg", ti: "assets/vaga_fotos/vagas_de_ti.jpg", coop: "assets/vaga_fotos/agro_2.jpg", frota: "assets/vaga_fotos/mecanico_de_veiculos.jpg",
     sede: "assets/home_cover_v38.webp", vet: "assets/vaga_fotos/medico_a_veterinario_a.jpg",
     unicoamo: "assets/logo_unicoamo_v12.webp", qv: "assets/logo_qualidade_vida_v11.webp", saude: "assets/logo_coamo_saude_v11.webp",
     fups: "assets/logo_fups_v11.webp", arcam: "assets/logo_arcam_v11.webp", estagio: "assets/logo_programa_estagios_v12.webp",
@@ -113,17 +112,20 @@
   const S = [];
   const scene = (bg, d, run) => S.push({ bg, d, run });
 
-  /* 1 · abertura: o nome cresce em frase */
-  scene(C.w, 2700, sc => {
-    const big = rise(sc, ["Coamo."], { y: 760, size: 250, color: C.g8, stagger: 55 });
-    later(1050, () => {
-      A(big, [{ transform: "none" }, { transform: "translateY(-300px) scale(.62)" }], { duration: 650, easing: E.io });
-      big.style.transformOrigin = "0 0";
-      rise(sc, ["Agroindustrial", "Cooperativa"], { y: 900, size: 112, color: C.g8, delay: 280, stagger: 22, indent: [70, 0] });
-      small(sc, ".01", { delay: 700, style: { right: "70px", bottom: "80px", fontSize: "34px", fontWeight: 800 } });
-      small(sc, "→", { delay: 700, style: { right: "70px", top: "620px", fontSize: "60px" } });
-      small(sc, "Campo Mourão · Paraná · desde 1970", { delay: 900, style: { left: "84px", top: "1320px", color: C.g7 } });
-    });
+  /* 1 · abertura: "Coamo" sobe letra por letra e o ponto vira o sol da marca */
+  scene(C.w, 2600, sc => {
+    const word = rise(sc, ["Coamo"], { y: 820, size: 250, color: C.g8, align: "center", stagger: 60, dur: 650 });
+    const ln = word.querySelector(".fm-line"), right = (1080 + ln.offsetWidth) / 2;
+    /* o ponto final é um sol: aparece no lugar do ponto e sobe para cima do nome, como na marca */
+    const sun = el("div", null, null, sc, { position: "absolute", left: right - 4 + "px", top: "988px", width: "48px", height: "48px", borderRadius: "50%",
+      background: `radial-gradient(circle at 35% 30%, #ffe27a, ${C.y} 55%, #f07f00)` });
+    A(sun, [{ transform: "scale(0)" }, { transform: "scale(1)", offset: .3 }, { transform: "scale(1)", offset: .45 }, { transform: "translate(-150px,-300px) scale(4)" }], { duration: 1900, delay: 450, easing: E.io });
+    /* a faixa verde da marca se desenhando por baixo do sol */
+    const sw = el("div", null, `<svg viewBox="0 0 1080 400" width="1080" height="400" style="position:absolute;left:0;top:540px;overflow:visible">
+      <path d="M 250 260 C 420 170, 640 150, 900 205" fill="none" stroke="${C.g4}" stroke-width="34" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+      <path d="M 330 300 C 520 230, 700 225, 860 250" fill="none" stroke="${C.g8}" stroke-width="22" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>`, sc);
+    sw.querySelectorAll("path").forEach((pa, i) => A(pa, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 700, delay: 1350 + i * 140, easing: E.io }));
+    small(sc, ".01", { delay: 900, style: { right: "70px", bottom: "80px", fontSize: "34px", fontWeight: 800 } });
   });
 
   /* 2 · multiplicação em grade */
@@ -131,7 +133,8 @@
     const grid = el("div", "fm-grid", null, sc);
     const looks = [[C.w, C.g8], [C.g8, C.w], [C.y, C.k], [C.k, C.y]];
     for (let i = 0; i < 16; i++) {
-      const L = looks[(i + Math.floor(i / 4)) % 4], t = el("div", "fm-tile", `<b>Coamo<br><span style="color:${L[1] === C.w ? C.y2 : L[1]}">Agroin-<br>dustrial</span><br>Coope-<br>rativa</b><small>.0${(i % 9) + 1}</small>`, grid, { background: L[0], color: L[1] });
+      const L = looks[(i + Math.floor(i / 4)) % 4];
+      const t = el("div", "fm-tile", `<b style="top:auto;bottom:60px;font-size:62px">Coamo<span style="color:${L[0] === C.y ? C.g8 : C.y}">.</span></b><small>.${String(i + 1).padStart(2, "0")}</small>`, grid, { background: L[0], color: L[1] });
       if (i === 0) t.style.borderColor = "transparent";
     }
     A(grid, [{ transform: "scale(4)", offset: 0 }, { transform: "scale(4)", offset: .18 }, { transform: "scale(2)", offset: .45 }, { transform: "scale(2)", offset: .6 }, { transform: "scale(1)", offset: .9 }, { transform: "scale(1)" }], { duration: 1900, easing: E.snap });
@@ -142,19 +145,25 @@
     rise(sc, ["cooperar"], { y: 800, size: 196, color: C.k, align: "center", stagger: 60, dur: 620, from: "-120%" });
   });
 
-  /* 4 · o sol nascendo com órbitas */
-  scene(C.g9, 2100, sc => {
-    const svg = el("div", null, `<svg viewBox="-500 -500 1000 1000" width="1000" height="1000" style="position:absolute;left:40px;top:460px">
-      <g fill="none" stroke="rgba(255,210,63,.35)" stroke-width="3" stroke-dasharray="2 18" stroke-linecap="round">
-        <circle r="200"/><circle r="300"/><circle r="400"/></g>
-      <g class="orb"><circle cx="200" cy="0" r="16" fill="${C.y2}"/><circle cx="-300" cy="40" r="12" fill="${C.y2}"/><circle cx="60" cy="-395" r="20" fill="${C.y}"/><circle cx="-110" cy="290" r="10" fill="${C.y2}"/></g>
-      <circle class="sun" r="110" fill="url(#sg)"/>
-      <defs><radialGradient id="sg" cx=".35" cy=".3"><stop offset="0" stop-color="#ffe27a"/><stop offset=".55" stop-color="${C.y}"/><stop offset="1" stop-color="#f07f00"/></radialGradient></defs>
+  /* 4 · uma semente brota (tudo começa no campo) */
+  scene(C.g9, 2300, sc => {
+    const svg = el("div", null, `<svg viewBox="0 0 1080 1100" width="1080" height="1100" style="position:absolute;left:0;top:260px;overflow:visible">
+      <g class="soil"><path d="M 140 900 Q 540 860 940 900" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 260 960 Q 540 930 820 960" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="6" stroke-linecap="round"/></g>
+      <ellipse class="seed" cx="540" cy="890" rx="44" ry="30" fill="${C.y}"/>
+      <path class="stem" d="M 540 880 C 540 760, 530 660, 545 540" fill="none" stroke="${C.g4}" stroke-width="26" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+      <path class="leafL" d="M 542 600 C 430 560, 330 600, 290 500 C 400 440, 510 500, 542 600 Z" fill="${C.g4}"/>
+      <path class="leafR" d="M 545 560 C 650 500, 760 520, 800 420 C 690 370, 580 440, 545 560 Z" fill="#7cc843"/>
+      <circle class="sunS" cx="840" cy="230" r="70" fill="${C.y}"/>
     </svg>`, sc);
-    const orb = svg.querySelector(".orb"), sun = svg.querySelector(".sun");
-    A(orb, [{ transform: "rotate(-90deg) scale(.4)", opacity: 0 }, { transform: "rotate(160deg) scale(1)", opacity: 1 }], { duration: 2000, easing: "cubic-bezier(.2,.7,.2,1)" });
-    A(sun, [{ transform: "scale(0)" }, { transform: "scale(1)", offset: .3 }, { transform: "scale(.82)", offset: .75 }, { transform: "scale(1.35)" }], { duration: 2100, easing: E.out });
-    rise(sc, ["Do campo"], { y: 1480, size: 96, color: C.w, align: "center", delay: 500, stagger: 30 });
+    const q = c => svg.querySelector(c);
+    A(q(".soil"), [{ opacity: 0 }, { opacity: 1 }], { duration: 400 });
+    A(q(".seed"), [{ transform: "translateY(-300px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 500, easing: "cubic-bezier(.5,0,.7,.4)" });
+    A(q(".seed"), [{ transform: "scale(1,1)" }, { transform: "scale(1.25,.8)" }, { transform: "scale(1,1)" }], { duration: 300, delay: 500, fill: "none" });
+    A(q(".stem"), [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 800, delay: 650, easing: E.io });
+    [[".leafL", "542px 600px"], [".leafR", "545px 560px"]].forEach(([c, o], i) => { const n = q(c); n.style.transformOrigin = o; A(n, [{ transform: "scale(0) rotate(-25deg)" }, { transform: "none" }], { duration: 600, delay: 1150 + i * 140, easing: E.back }); });
+    A(q(".sunS"), [{ transform: "translateY(160px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 900, delay: 900 });
+    rise(sc, ["Tudo começa", "no campo."], { y: 1330, size: 104, color: C.w, align: "center", delay: 900, stagger: 24 });
   });
 
   /* 5 · busca digitando */
@@ -251,15 +260,9 @@
   photo(IMG.parque, "Armazenagem", "Cada grão<br>bem guardado", "45% 50%", [C.g8, C.w]);
   photo(IMG.unidade, "Indústria", "Valor que<br>se transforma", "40% 50%", [C.k, C.y]);
   photo(IMG.ind, "Gente", "Feita por<br>pessoas", "50% 40%", [C.w, C.g8]);
-  photo(IMG.ti, "Tecnologia", "Uma operação<br>conectada", "70% 40%", [C.y, C.k]);
-  photo(IMG.pessoas, "Cooperação", "Lado a lado<br>com o cooperado", "62% 35%", [C.g8, C.y]);
-  /* caminhão passando */
-  scene(C.w, 1500, sc => {
-    const t = el("img", null, null, sc, { position: "absolute", left: "0", top: "760px", width: "1500px" }); t.src = IMG.truck;
-    A(t, [{ transform: "translateX(-1600px)" }, { transform: "translateX(-200px)", offset: .55 }, { transform: "translateX(-120px)" }], { duration: 1500, easing: E.out });
-    rise(sc, ["Logística", "que não para."], { y: 380, size: 110, color: C.g8, delay: 300, stagger: 18 });
-  });
-
+  photo(IMG.ti, "Tecnologia", "Uma operação<br>conectada", "55% 35%", [C.y, C.k]);
+  photo(IMG.coop, "Cooperação", "Lado a lado<br>com o cooperado", "55% 40%", [C.g8, C.y]);
+  photo(IMG.frota, "Logística", "Uma frota<br>que não para", "50% 45%", [C.k, C.w]);
   /* 11 · cuidado com as pessoas: os programas */
   scene(C.w, 2800, sc => {
     rise(sc, ["Cuidado com", "quem faz."], { y: 330, size: 140, color: C.g8, stagger: 24 });
@@ -308,7 +311,7 @@
     /* logo da Coamo */
     const logo = el("img", null, null, sc, { position: "absolute", left: "140px", top: "700px", width: "800px" }); logo.src = IMG.logoW;
     A(logo, [{ transform: "scale(.6)", opacity: 0, filter: "blur(16px)" }, { transform: "none", opacity: 1, filter: "blur(0)" }], { duration: 800, delay: 2100 });
-    const tag = el("div", "fm-t", "Uma história construída<br>em cooperação.", sc, { left: 0, right: 0, top: "1150px", textAlign: "center", fontSize: "52px", fontWeight: 700, letterSpacing: "-.01em", lineHeight: 1.2, color: "rgba(255,255,255,.85)", whiteSpace: "normal" });
+    const tag = el("div", "fm-t", "A vida é a gente<br>que transforma.", sc, { left: 0, right: 0, top: "1130px", textAlign: "center", fontSize: "72px", fontWeight: 800, letterSpacing: "-.02em", lineHeight: 1.1, color: "#fff", whiteSpace: "normal" });
     A(tag, [{ opacity: 0, transform: "translateY(20px)" }, { opacity: 1, transform: "none" }], { duration: 600, delay: 2700 });
     const cta = el("div", "fm-cta", "Toque na tela para explorar", sc);
     A(cta, [{ opacity: 0, transform: "translate(-50%, 30px)" }, { opacity: 1, transform: "translate(-50%, 0)" }], { duration: 600, delay: 3200 });
