@@ -204,3 +204,7 @@ body[data-page="home"] .home-hero{
 /* V64 · fotos reais da Coamo nos slides de Tecnologia e Gestão (enquadramento no rosto) */
 #presentationOverlay[data-slide-id="tecnologia"] .presentation-photo{ object-position:96% 24% !important; }
 #presentationOverlay[data-slide-id="gestao"] .presentation-photo{ object-position:58% 28% !important; }
+
+/* V68: sem "Conheça a Coamo" — com 3 atalhos, o terceiro (Sorteio) ocupa a linha inteira */
+.home-shortcuts:not(:has(.home-tile.is-feature-hidden)) > .home-tile:nth-child(3):last-child{ grid-column:1 / -1; }
+.home-shortcuts:not(:has(.home-tile.is-feature-hidden)) > .home-tile:nth-child(3):last-child .home-tile__img{ object-position:50% 30%; }
