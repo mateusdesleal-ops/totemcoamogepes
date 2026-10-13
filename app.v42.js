@@ -972,6 +972,12 @@
   }
 
   function startPresentation(source = "manual") {
+    /* V66: o modo apresentação agora é o filme institucional animado (filme.html).
+       ?slide=… continua abrindo os slides antigos (uso administrativo). */
+    if (!new URLSearchParams(location.search).get("slide")) {
+      window.location.href = "filme.html";
+      return;
+    }
     if (page !== "home") {
       window.location.href = "index.html?present=1";
       return;
@@ -1076,7 +1082,7 @@
     clearIdleTimers();
     resetSensitiveData();
     if (page === "home") startPresentation("idle");
-    else window.location.replace("index.html?present=1");
+    else window.location.replace("filme.html");
   }
 
   function resetIdleTimers() {
