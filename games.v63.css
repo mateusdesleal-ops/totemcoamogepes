@@ -226,3 +226,36 @@
 .game-menu-card--ranking .game-menu-card__content{ color:#fff !important; }
 .game-menu-card--ranking .game-menu-card__content strong, .game-menu-card--ranking .game-menu-card__content span{ color:#fff !important; }
 .game-menu-card--ranking .game-menu-card__label{ color:#f6c731 !important; }
+
+/* =========================================================
+   V68 · PÁGINA INICIAL DO COAMO GAMES CABENDO NA TELA DO TOTEM
+   banner menor, Jornada em destaque na horizontal e os jogos em grade de 3 colunas
+   ========================================================= */
+body[data-page="games"] .games-page{ padding:16px 18px 24px !important; box-sizing:border-box !important; }
+body[data-page="games"] .games-hero-v31{ aspect-ratio:2.4 / 1 !important; border-radius:26px !important; }
+body[data-page="games"] .games-hero-v31__poster{ object-fit:cover !important; object-position:center 8% !important; }
+body[data-page="games"] .games-menu.games-menu--v22{
+  display:grid !important; grid-template-columns:repeat(3, minmax(0, 1fr)) !important; gap:18px !important; margin-top:18px !important;
+}
+body[data-page="games"] .game-menu-card{
+  display:flex !important; flex-direction:column !important; min-height:0 !important; height:auto !important;
+  border-radius:22px !important; overflow:hidden !important; margin:0 !important;
+}
+body[data-page="games"] .game-menu-card__content{ padding:14px 16px 16px !important; gap:6px !important; display:flex !important; flex-direction:column !important; flex:1 !important; }
+body[data-page="games"] .game-menu-card__content > span{ display:none !important; }
+body[data-page="games"] .game-menu-card__content strong{ font-size:22px !important; line-height:1.1 !important; margin:0 !important; }
+body[data-page="games"] .game-menu-card__label{ font-size:11px !important; padding:4px 8px !important; align-self:flex-start !important; }
+body[data-page="games"] .game-menu-card__content b{ margin-top:auto !important; font-size:15px !important; padding:11px 14px !important; }
+/* Jornada: destaque horizontal ocupando a linha inteira */
+body[data-page="games"] .game-menu-card--journey{ grid-column:1 / -1 !important; display:grid !important; grid-template-columns:1.25fr 1fr !important; align-items:stretch !important; }
+body[data-page="games"] .game-menu-card--journey .game-menu-card__preview--poster{ aspect-ratio:3 / 2 !important; height:100% !important; }
+body[data-page="games"] .game-menu-card--journey .game-menu-card__poster{ object-fit:cover !important; }
+body[data-page="games"] .game-menu-card--journey .game-menu-card__content{ padding:24px 26px !important; justify-content:center !important; gap:12px !important; }
+body[data-page="games"] .game-menu-card--journey .game-menu-card__content > span{ display:block !important; font-size:18px !important; line-height:1.4 !important; }
+body[data-page="games"] .game-menu-card--journey .game-menu-card__content strong{ font-size:40px !important; }
+body[data-page="games"] .game-menu-card--journey .game-menu-card__content b{ margin-top:8px !important; font-size:18px !important; padding:15px 18px !important; }
+/* Ranking: ocupa a última casa da grade, do mesmo tamanho dos jogos */
+body[data-page="games"] .game-menu-card--ranking{ grid-column:auto !important; justify-content:center !important; }
+body[data-page="games"] .game-menu-card--ranking .game-menu-card__content{ justify-content:center !important; padding:22px 20px !important; }
+body[data-page="games"] .game-menu-card--ranking .game-menu-card__content > span{ display:block !important; font-size:15px !important; line-height:1.35 !important; }
+body[data-page="games"] .game-menu-card--ranking .game-menu-card__content strong{ font-size:28px !important; }
