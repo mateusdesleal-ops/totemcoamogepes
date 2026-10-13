@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0b4d2b">
+  <title>Coamo • Totem GEPES</title>
+  <link rel="icon" href="assets/pwa/icon-192.png" type="image/png">
+  <link rel="manifest" href="manifest.webmanifest?v=53.0">
+  <!-- Telas de totem muito largas (ex.: 4K em pé com escala 150% = 1440 de largura):
+       o site roda dentro de uma moldura de 1080 de largura, ampliada para ocupar a tela inteira,
+       exatamente como foi desenhado. A navegação acontece toda dentro da moldura. -->
+  <style>
+    html,body{ margin:0; height:100%; overflow:hidden; background:#06301a; }
+    #site{ position:fixed; left:0; top:0; border:0; display:block; background:#fff; }
+  </style>
+</head>
+<body>
+  <iframe id="site" title="Coamo" allow="fullscreen; autoplay; camera; microphone" allowfullscreen></iframe>
+  <script>
+    (function () {
+      var f = document.getElementById("site");
+      var q = new URLSearchParams(location.search), u = q.get("u") || "index.html";
+      if (!/^[\w\-./]+(\?.*)?$/.test(u) || /^\/\//.test(u)) u = "index.html";
+      function fit() {
+        var z = innerWidth / 1080;
+        f.style.width = "1080px"; f.style.height = (innerHeight / z) + "px"; f.style.zoom = z;
+      }
+      addEventListener("resize", fit); fit();
+      f.src = u;
+      /* mantém o endereço da moldura igual à página aberta (recarregar volta para o mesmo lugar) */
+      f.addEventListener("load", function () {
+        try { var L = f.contentWindow.location; history.replaceState(null, "", "totem.html?u=" + encodeURIComponent(L.pathname.replace(/^\//, "") + L.search)); document.title = f.contentDocument.title; } catch (e) {}
+        try { f.contentWindow.focus(); } catch (e) {}
+      });
+    })();
+  </script>
+</body>
+</html>
