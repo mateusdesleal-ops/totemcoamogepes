@@ -273,3 +273,7 @@ img.cg-banner-src{ visibility:hidden !important; }
   .silo-result__mascots > img:last-of-type{ right:-92px !important; left:auto !important; }
   .grain-result__mascot, .silo-result__mascots{ height:340px !important; }
 }
+
+/* V68: as artes antigas (raster) dos banners nunca aparecem — nem por um instante antes do banner vetorial montar */
+img[src*="assets/games/v4"][src$="_banner.webp"],
+img[src*="assets/games/v4"][src$="hero_coamo_games.webp"]{ visibility:hidden !important; }
