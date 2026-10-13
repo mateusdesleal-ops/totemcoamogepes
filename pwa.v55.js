@@ -14,9 +14,16 @@
     return ((window.matchMedia?.("(pointer: coarse)").matches ?? false) || (navigator.maxTouchPoints || 0) > 0);
   }
 
+  /* dentro da moldura do totem (totem.html), a tela cheia é pedida para a moldura inteira,
+     senão o navegador estica a página interna e ela volta ao formato largo */
+  function fullscreenDoc() {
+    try { if (window.top !== window && window.top.document && window.top.__coamoMoldura) return window.top.document; } catch (_) {}
+    return document;
+  }
   async function requestRealFullscreen() {
-    if (!isTouchTotem() || isAppMode() || document.fullscreenElement) return;
-    const el = document.documentElement;
+    const doc = fullscreenDoc();
+    if (!isTouchTotem() || isAppMode() || doc.fullscreenElement) return;
+    const el = doc.documentElement;
     const fn = el.requestFullscreen || el.webkitRequestFullscreen;
     if (!fn) return;
     try {

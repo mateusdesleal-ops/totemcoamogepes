@@ -18,8 +18,14 @@
 <body>
   <iframe id="site" title="Coamo" allow="fullscreen; autoplay; camera; microphone" allowfullscreen></iframe>
   <script>
+    window.__coamoMoldura = true;
     (function () {
       var f = document.getElementById("site");
+      /* se a página interna entrar sozinha em tela cheia (versão antiga em cache), desfaz: quem fica em tela cheia é a moldura */
+      document.addEventListener("fullscreenchange", function () {
+        if (document.fullscreenElement === f) { try { document.exitFullscreen(); } catch (e) {} }
+        setTimeout(fit, 50); setTimeout(fit, 400);
+      });
       var q = new URLSearchParams(location.search), u = q.get("u") || "index.html";
       if (!/^[\w\-./]+(\?.*)?$/.test(u) || /^\/\//.test(u)) u = "index.html";
       function fit() {
