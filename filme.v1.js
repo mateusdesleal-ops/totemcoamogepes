@@ -112,29 +112,24 @@
   const S = [];
   const scene = (bg, d, run) => S.push({ bg, d, run });
 
-  /* 1 · abertura: "Coamo" sobe letra por letra e o ponto vira o sol da marca */
-  scene(C.w, 2600, sc => {
-    const word = rise(sc, ["Coamo"], { y: 820, size: 250, color: C.g8, align: "center", stagger: 60, dur: 650 });
-    const ln = word.querySelector(".fm-line"), right = (1080 + ln.offsetWidth) / 2;
-    /* o ponto final é um sol: aparece no lugar do ponto e sobe para cima do nome, como na marca */
-    const sun = el("div", null, null, sc, { position: "absolute", left: right - 4 + "px", top: "988px", width: "48px", height: "48px", borderRadius: "50%",
-      background: `radial-gradient(circle at 35% 30%, #ffe27a, ${C.y} 55%, #f07f00)` });
-    A(sun, [{ transform: "scale(0)" }, { transform: "scale(1)", offset: .3 }, { transform: "scale(1)", offset: .45 }, { transform: "translate(-150px,-300px) scale(4)" }], { duration: 1900, delay: 450, easing: E.io });
-    /* a faixa verde da marca se desenhando por baixo do sol */
-    const sw = el("div", null, `<svg viewBox="0 0 1080 400" width="1080" height="400" style="position:absolute;left:0;top:540px;overflow:visible">
-      <path d="M 250 260 C 420 170, 640 150, 900 205" fill="none" stroke="${C.g4}" stroke-width="34" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-      <path d="M 330 300 C 520 230, 700 225, 860 250" fill="none" stroke="${C.g8}" stroke-width="22" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>`, sc);
-    sw.querySelectorAll("path").forEach((pa, i) => A(pa, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 700, delay: 1350 + i * 140, easing: E.io }));
-    small(sc, ".01", { delay: 900, style: { right: "70px", bottom: "80px", fontSize: "34px", fontWeight: 800 } });
+  /* 1 · abertura: animação oficial da marca Coamo (vídeo) */
+  const logoVid = document.createElement("video");
+  Object.assign(logoVid, { muted: true, playsInline: true, preload: "auto" });
+  logoVid.innerHTML = '<source src="assets/coamo-logo-animada.webm" type="video/webm"><source src="assets/coamo-logo-animada.mp4" type="video/mp4">';
+  logoVid.setAttribute("muted", ""); logoVid.setAttribute("playsinline", "");
+  logoVid.className = "fm-logovid";
+  scene("radial-gradient(ellipse 540px 900px at 50% 50%, #fbfbfb 0%, #f5f5f5 30%, #e6e6e6 70%, #d2d2d2 100%)", 5300, sc => {
+    sc.appendChild(logoVid);
+    try { logoVid.currentTime = 0; const p = logoVid.play(); if (p && p.catch) p.catch(() => {}); } catch (_) {}
   });
 
-  /* 2 · multiplicação em grade */
+  /* 2 · multiplicação em grade (logo verdadeira da Coamo) */
   scene(C.k, 1900, sc => {
     const grid = el("div", "fm-grid", null, sc);
-    const looks = [[C.w, C.g8], [C.g8, C.w], [C.y, C.k], [C.k, C.y]];
+    const looks = [[C.w, IMG.logoG], [C.g8, IMG.logoW], [C.y, IMG.logoG], [C.k, IMG.logoW]];
     for (let i = 0; i < 16; i++) {
       const L = looks[(i + Math.floor(i / 4)) % 4];
-      const t = el("div", "fm-tile", `<b style="top:auto;bottom:60px;font-size:62px">Coamo<span style="color:${L[0] === C.y ? C.g8 : C.y}">.</span></b><small>.${String(i + 1).padStart(2, "0")}</small>`, grid, { background: L[0], color: L[1] });
+      const t = el("div", "fm-tile", `<img src="${L[1]}" alt="" style="position:absolute;left:18px;right:18px;top:50%;width:calc(100% - 36px);transform:translateY(-50%)"><small style="color:${L[0] === C.w || L[0] === C.y ? C.g8 : "#fff"}">.${String(i + 1).padStart(2, "0")}</small>`, grid, { background: L[0] });
       if (i === 0) t.style.borderColor = "transparent";
     }
     A(grid, [{ transform: "scale(4)", offset: 0 }, { transform: "scale(4)", offset: .18 }, { transform: "scale(2)", offset: .45 }, { transform: "scale(2)", offset: .6 }, { transform: "scale(1)", offset: .9 }, { transform: "scale(1)" }], { duration: 1900, easing: E.snap });
@@ -333,6 +328,7 @@
   }
   /* carrega as imagens antes de começar (sem buracos no meio do filme) */
   const preload = Object.values(IMG).map(src => new Promise(res => { const im = new Image(); im.onload = im.onerror = res; im.src = src; }));
+  preload.push(new Promise(res => { logoVid.addEventListener("canplaythrough", res, { once: true }); logoVid.addEventListener("error", res, { once: true }); logoVid.load(); }));
   const fonts = document.fonts ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]) : Promise.resolve();
   Promise.all([fonts, Promise.race([Promise.all(preload), new Promise(r => setTimeout(r, 6000))])]).then(() => {
     const p = new URLSearchParams(location.search).get("cena");
