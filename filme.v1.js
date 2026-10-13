@@ -324,6 +324,8 @@
     if (cur) cur.remove();
     cur = node;
     idx = (idx + 1) % S.length;
+    /* loop infinito; a cada 2 h recarrega a página no fim de uma volta (memória sempre limpa no totem) */
+    if (idx === 0 && performance.now() > 2 * 3600 * 1000) { setTimeout(() => location.reload(), sc.d); return; }
     nextT = setTimeout(play, reduce ? Math.max(sc.d, 2500) : sc.d);
   }
   /* carrega as imagens antes de começar (sem buracos no meio do filme) */
