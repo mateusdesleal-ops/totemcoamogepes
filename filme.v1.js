@@ -196,7 +196,7 @@
   });
 
   /* 8 · contadores (os números da Coamo) */
-  const counter = (bg, fg, num, label, sub, o = {}) => scene(bg, o.d || 1650, sc => {
+  const counter = (bg, fg, num, label, sub, o = {}) => scene(bg, (o.d || 1650) + 3000, sc => {
     if (o.kicker) small(sc, o.kicker, { delay: 100, style: { left: "84px", top: (o.y || 700) - 80 + "px", fontSize: "30px", fontWeight: 800, letterSpacing: ".22em", color: o.kc || fg, opacity: .8 } });
     odometer(sc, num, { y: o.y || 700, size: o.size || 250, color: fg });
     const lab = el("div", "fm-label", label, sc, { left: "88px", top: (o.y || 700) + (o.size || 250) + 26 + "px", fontSize: (o.ls || 70) + "px", color: o.lc || fg, maxWidth: "900px" });
@@ -209,7 +209,7 @@
   counter(C.g8, "#fff", "9,6 mi", "de toneladas de grãos recebidas em 2025", "2,7% de toda a produção de grãos do Brasil.", { kc: C.y2, kicker: "SAFRA", lines: 2, d: 1900 });
   counter(C.w, C.k, "+6 mi t", "de capacidade de armazenagem", "A maior estrutura de armazenagem do Brasil.", { lc: C.g8, lines: 2 });
   /* 3 contadores juntos */
-  scene(C.y, 1900, sc => {
+  scene(C.y, 4900, sc => {
     [["118", "unidades"], ["76", "municípios"], ["3", "estados"]].forEach(([n, l], i) => {
       odometer(sc, n, { x: 80, y: 360 + i * 420, size: 250, color: C.k, delay: i * 160 });
       const lab = el("div", "fm-label", l, sc, { left: (n.length * 165 + 120) + "px", top: 360 + i * 420 + 120 + "px", fontSize: "76px", color: C.k });
@@ -218,7 +218,7 @@
     small(sc, "PARANÁ · SANTA CATARINA · MATO GROSSO DO SUL", { delay: 800, style: { left: "84px", top: "1660px", fontSize: "28px", fontWeight: 800, letterSpacing: ".14em" } });
   });
   /* indústrias */
-  scene(C.g8, 2600, sc => {
+  scene(C.g8, 5600, sc => {
     odometer(sc, "12", { y: 250, size: 330, color: C.y2 });
     rise(sc, ["indústrias"], { x: 90, y: 600, size: 110, color: "#fff", delay: 250, stagger: 25 });
     const list = ["Esmagamento de soja", "Refino e envase de óleo", "Moinhos de trigo", "Margarinas", "Gorduras vegetais", "Torrefação de café", "Fábrica de rações", "Fiação de algodão"];
@@ -227,7 +227,7 @@
       A(n, [{ transform: "translateX(-60px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 420, delay: 450 + i * 90 });
     });
   });
-  scene(C.y, 2100, sc => {
+  scene(C.y, 5100, sc => {
     small(sc, "EM CONSTRUÇÃO", { delay: 50, style: { left: "84px", top: "560px", fontSize: "32px", fontWeight: 800, letterSpacing: ".24em" } });
     rise(sc, ["+2 novas", "indústrias"], { y: 640, size: 150, color: C.k, stagger: 24 });
     [["Etanol de milho", "Campo Mourão (PR)"], ["Biodiesel", "Paranaguá (PR)"]].forEach(([a, b], i) => {
@@ -244,9 +244,9 @@
     scene(bg, 620, sc => { blurIn(sc, t, { color: fg, size: t.length > 9 ? 150 : 180 }); }));
 
   /* 10 · fotos reais com cortina */
-  const photo = (src, kicker, title, pos, bars) => scene(C.k, 1250, sc => {
+  const photo = (src, kicker, title, pos, bars) => scene(C.k, 4250, sc => {
     const p = el("div", "fm-photo", null, sc, { backgroundImage: `url("${src}")`, backgroundPosition: pos || "center" });
-    A(p, [{ transform: "scale(1.16)" }, { transform: "scale(1.02)" }], { duration: 1500, easing: "cubic-bezier(.2,.6,.2,1)" });
+    A(p, [{ transform: "scale(1.16)" }, { transform: "scale(1.0)" }], { duration: 4400, easing: "cubic-bezier(.25,.5,.3,1)" });
     const tag = el("div", "fm-tag", `<small>${kicker}</small>${title}`, sc);
     A(tag, [{ transform: "translateY(60px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 500, delay: 280 });
     curtain(sc, bars || [C.y, C.g8]);
