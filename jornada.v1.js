@@ -15,8 +15,8 @@ import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
 import { createMaquinas } from "./jornada-maquinas.v1.js?v=1.1";
 import { createCenario3D } from "./jornada-cenario3d.v1.js?v=1.0";
-import { createWorld, V } from "./jornada-mundo.v1.js?v=2.5";
-import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.8";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=2.6";
+import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.9";
 import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=2.1";
 import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=2.0";
 import { createCh5, STORY5, FOCUS } from "./jornada-cap5.v1.js?v=1.7";
@@ -643,8 +643,8 @@ const Ch1 = (() => {
     { at: 100, name: "Supersafra" },
     { at: 135, name: "Safra recorde" },
   ];
-  const speedAt = t => 1.45 + t * .024 + Math.max(0, t - 100) * .012;      /* 1,45 → 3,9 (100 s) → 6,7 (180 s) */
-  const spawnAt = t => Math.max(.28, 1.3 * Math.pow(.99, t));              /* 1,3 s → 0,71 s (60 s) → 0,48 s (100 s) → 0,3 s */
+  const speedAt = t => 1.45 + t * .035 + Math.max(0, t - 60) * .022;       /* 1,45 → 3,6 (60 s) → 5,8 (100 s) → 9,5 (150 s) */
+  const spawnAt = t => Math.max(.2, 1.3 * Math.pow(.984, t));              /* 1,3 s → 0,59 s (50 s) → 0,26 s (100 s) → 0,2 s */
   const WEIGHTS = [["soja", .32], ["milho", .26], ["trigo", .22], ["impureza", .2]];
   let S = null;
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();

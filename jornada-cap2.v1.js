@@ -58,7 +58,7 @@ const PRODUCTS = [
 /* 3 minutos com dificuldade sempre subindo: menos tempo para decidir, cargas maiores e
    caminhões em sequência, até ficar impossível. Quase sempre acaba quando as vidas acabam. */
 const TOTAL = 180, MAX_LIVES = 5, IDEAL_MAX = 82;
-const FASES = [0, 60, 100, 140];                                  /* início de cada fase (s) */
+const FASES = [0, 40, 75, 110];                                  /* início de cada fase (s) */
 
 export function createCh2(ctx) {
   const { W, camera, canvas, hud, Cast, Sound, buzz, banner, floater, flash, toScreen } = ctx;
@@ -83,7 +83,7 @@ export function createCh2(ctx) {
     S = {
       running: false, t: 0, score: 0, lives: MAX_LIVES, combo: 0, best: 0, correct: 0, errors: 0, attempts: 0,
       silos: W.siloObjs.map(() => ({ product: null, level: 34 + Math.random() * 22, drain: .26 + Math.random() * .16, pending: 0 })),
-      current: null, nextT: .6, said: {}, exps: [14, 30, 46, 75, 110], storm: 0, thunder: [146, 152, 160, 167, 173, 178], phase: 0, done: null,
+      current: null, nextT: .6, said: {}, exps: [14, 30, 50, 80], storm: 0, thunder: [114, 122, 131, 139, 146, 152, 158, 163, 168, 172, 176, 179], phase: 0, done: null,
     };
     S.silos.forEach((s, i) => W.setSiloLevel(W.siloObjs[i], s.level, true));
     tags.forEach(t => { t.el.classList.remove("is-reveal", "is-warning", "is-danger"); t.revealT = 0; });
@@ -97,13 +97,13 @@ export function createCh2(ctx) {
     if (S.silos.some(s => !s.product) && free.length) return free[Math.floor(Math.random() * free.length)];
     return PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)];
   }
-  /* tempo para decidir: 6,2 s no começo, 4,1 s em 1 minuto, 2,3 s em 2 minutos, 1,4 s no fim */
-  function deadline() { return Math.max(1.4, 6.2 - S.t * .035); }
+  /* tempo para decidir cai sem parar: 6,2 s no começo, 3,5 s em 40 s, 1,8 s em 75 s, 1 s a partir de ~95 s */
+  function deadline() { return Math.max(1, 6.2 - S.t * .068 + Math.max(0, S.t - 40) * .015); }
   function nextLoad() {
     if (S.silos.every(s => s.level >= 94)) S.silos.forEach(s => { s.level = Math.max(0, s.level - 16); });
     const p = chooseProduct();
     /* cargas maiores com o tempo: 8–16% no começo, até ~20–28% no fim */
-    const amount = 8 + Math.floor(Math.random() * 9) + Math.min(12, Math.floor(S.t / 15));
+    const amount = 8 + Math.floor(Math.random() * 9) + Math.min(14, Math.floor(S.t / 10));
     const elig = S.silos.filter(s => !s.product || s.product === p.id);
     /* sempre existe um silo possível (difícil, mas nunca injusto) */
     if (!elig.some(s => s.level + amount <= 100)) elig.forEach(s => { s.level = Math.max(0, s.level - Math.max(amount - 4, 12)); });
@@ -145,14 +145,15 @@ export function createCh2(ctx) {
     hud.setScore(S.score); hud.setCombo(S.combo);
     floater(pos.x, pos.y, "+" + gain, S.combo >= 5 ? "is-gold" : "");
     const amt = c.amount;
-    W.streamTo(i, c.p.id, () => { silo.pending = Math.max(0, silo.pending - amt); so.pulse = 1; Sound.fx("success"); });
+    /* a carga corre cada vez mais rápido até o silo */
+    W.streamTo(i, c.p.id, () => { silo.pending = Math.max(0, silo.pending - amt); so.pulse = 1; Sound.fx("success"); }, Math.max(.45, 1.5 - S.t * .009));
     Sound.fx("whoosh"); buzz(15);
     if (first) { reveal(i, c.p); hud.say(L.assign[0], fill(L.assign[1], { s: so.letter, p: c.p.name })); Cast.act("t", "wave"); }
     else if (S.combo === 5 && !S.said.c5) { S.said.c5 = 1; hud.say(...L.combo5); Cast.act("a", "celebrate"); }
     else if (S.combo === 10 && !S.said.c10) { S.said.c10 = 1; hud.say(...L.combo10); Cast.act("t", "celebrate"); }
     else if (S.combo % 5 === 0) { Sound.fx("combo"); Cast.act("a", "celebrate"); }
     S.current = null; loadEl.hidden = true;
-    S.nextT = Math.max(.15, .55 - S.t * .003);
+    S.nextT = Math.max(.08, .55 - S.t * .006);
   }
   /* mostra o produto do silo por um instante (depois é memória) */
   function reveal(i, p) {
@@ -212,11 +213,11 @@ export function createCh2(ctx) {
       if (ph === 2) { banner("Fila no pátio!", "FASE 3 · SEM TEMPO A PERDER", true); Sound.fx("phase"); hud.say(...L.phase3); Cast.act("t", "think"); }
     }
     /* tempo fechando */
-    const k = Math.min(1, Math.max(0, (S.t - 60) / 90));
+    const k = Math.min(1, Math.max(0, (S.t - 30) / 80));
     W.setStorm(k);
-    if (S.t >= 80 && !S.said.half) { S.said.half = 1; ctx.setSky("overcast", 30); hud.say(...L.halfway); }
-    if (S.t >= 140 && !S.said.rain) { S.said.rain = 1; ctx.setSky("storm", 12); hud.say(...L.rain); banner("Começou a chuva!", "FASE 4 · ÚLTIMOS 40 SEGUNDOS", true); Cast.act("a", "oops"); }
-    if (S.t >= 140) W.setRain(Math.min(1, (S.t - 140) / 10));
+    if (S.t >= 50 && !S.said.half) { S.said.half = 1; ctx.setSky("overcast", 30); hud.say(...L.halfway); }
+    if (S.t >= 110 && !S.said.rain) { S.said.rain = 1; ctx.setSky("storm", 12); hud.say(...L.rain); banner("Começou a chuva!", "FASE 4 · TEMPORAL", true); Cast.act("a", "oops"); }
+    if (S.t >= 110) W.setRain(Math.min(1, (S.t - 110) / 10));
     if (S.thunder.length && S.t >= S.thunder[0]) { S.thunder.shift(); lightning(); }
     if (S.current) {
       S.current.left -= dt;

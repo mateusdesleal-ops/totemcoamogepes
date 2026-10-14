@@ -1033,10 +1033,10 @@ export function createWorld(renderer) {
     const s = siloObjs[i];
     return [V(-1.5, 2.6, -18.4), V(-1.5, .4, -19.6), V(-1.5, 1.2, -25), V(-1.5, 25.6, -26), s.top.clone(), s.top.clone().add(V(0, -1.4, 0))];
   }
-  function streamTo(i, type, onArrive) {
+  function streamTo(i, type, onArrive, dur = 1.5) {
     const pts = pathFor(i), segs = []; let L = 0;
     for (let k = 1; k < pts.length; k++) { const d = pts[k].distanceTo(pts[k - 1]); segs.push(d); L += d; }
-    streams.push({ pts, segs, L, t: 0, dur: 1.5, n: 26, onArrive, done: false, color: GRAIN_COLOR[type] || "#f2b01e" });
+    streams.push({ pts, segs, L, t: 0, dur, n: 26, onArrive, done: false, color: GRAIN_COLOR[type] || "#f2b01e" });
     streamMat.color.set(GRAIN_COLOR[type] || "#f2b01e");
   }
   const _v = new THREE.Vector3();
