@@ -9,7 +9,7 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { ICONS } from "./jornada-icones.v1.js";
 import { buildVegetation } from "./jornada-vegetacao.v1.js?v=2.0";
-import { buildLife } from "./jornada-vida.v1.js?v=2.1";
+import { buildLife } from "./jornada-vida.v1.js?v=2.2";
 
 /* ===================================================== utilidades */
 export const V = (x, y, z) => new THREE.Vector3(x, y, z);
@@ -492,6 +492,7 @@ export function createWorld(renderer) {
     if (nearStation(x, z, grass ? 22 : 30) || nearRoad(x, z, grass ? 4 : 7)) return true;
     if (!grass && z > 4 && Math.abs(x) < 70 && z < 40) return true;                 /* frente livre para a câmera */
     if (!grass && z >= 40 && z < 80 && x > -60 && x < 40) return true;              /* atrás das câmeras do palco/abertura */
+    if (!grass && x > -80 && x < -38 && z > -16 && z < 22) return true;              /* linha da câmera dos caminhões chegando */
     if (grass && z > 19 && z < 64 && x > -44 && x < 22) return true;                /* sem tufos colados na lente */
     if (!grass && inField(x, z)) return true;
     return false;
@@ -610,9 +611,24 @@ export function createWorld(renderer) {
     blob.rotation.x = -Math.PI / 2; blob.position.set(-.4, .1, 0); g.add(blob);
     heap.userData.keep = true; blob.userData.keep = true;
     mergeGroup(g);
-    g.userData.wheels = [];
+    g.userData.wheels = []; g.userData.blob = blob;
+    truckList.push(g);
+    upgradeTruck(g);
     return g;
   }
+  /* caminhão GLB (modelos3d): troca a geometria procedural pelo modelo, mantendo a sombra de contato.
+     Variantes: "base" (graneleiro) e "basculante" (frota da estrada); sem a variante, usa o graneleiro. */
+  const truckList = [], truckProtos = {};
+  function upgradeTruck(g) {
+    const proto = truckProtos[g.userData.variante] || truckProtos.base; if (!proto || g.userData.glbFrom === proto) return;
+    if (g.userData.glb) g.remove(g.userData.glb);
+    g.children.forEach(c => { if (c !== g.userData.blob) c.visible = false; });
+    const holder = new THREE.Group(); holder.rotation.y = Math.PI / 2;   /* modelo olha para +z; caminhão da cena anda para +x */
+    holder.add(proto.clone(true)); g.add(holder);
+    g.userData.blob.scale.set(.66, 1.1, 1);
+    g.userData.glb = holder; g.userData.glbFrom = proto;
+  }
+  function setTruckModel(proto, variante = "base") { truckProtos[variante] = proto; truckList.forEach(upgradeTruck); }
   const trucks = [buildTruck("#ffffff"), buildTruck("#f2b400"), buildTruck("#1d5fa8")];
   trucks.forEach((t, i) => { t.userData.stopX = [-20, -36, -52][i]; t.position.set(t.userData.stopX, 0, -8); world.add(t); t.userData.t0 = -1; });
   function driveTrucks(now) { life.pauseTraffic(18); trucks.forEach((t, i) => { t.visible = true; t.userData.t0 = now + i * 1.1; t.position.x = t.userData.stopX - 140; }); }
@@ -1147,13 +1163,13 @@ export function createWorld(renderer) {
 
   return {
     scene, sun, setSky, refreshEnv, setLite, update,
-    sunDir: skyU.sunDir.value, life,
+    sunDir: skyU.sunDir.value, life, birds, storm: () => stormK, night: () => nightK,
     flareK: () => clamp((sun.intensity - 1.2) / 1.6, 0, 1) * (1 - stormK) * (1 - nightK),
     play, BELT, BIN, BINS, binObjs, beltTex: [TEX.belt, TEX.beltN], setFill,
     ringNext, ringSel, makeItem, hitGeo, hitMat, burst,
     trucks, driveTrucks, parkTrucks, hideTrucks,
     SILO, siloObjs, setSiloLevel, streamTo, setLoad, setRain, setStorm, setNight, loadTruck, CAM2_DIR,
-    STATIONS, ROADS, SEA, TABLE, STAGE, terrainH, buildTruck, logoTex, GRAIN, world, setShadowArea,
+    STATIONS, ROADS, SEA, TABLE, STAGE, FIELDS, terrainH, buildTruck, setTruckModel, logoTex, GRAIN, world, setShadowArea,
     kit: { mergeGroup, RB, CY, std, add, plateTexture, roundRect, iconImage, TEX, makeCanvas, toTex, normalFromHeight, pixels, hash, noise, fbm, rnd, clamp, lerp },
   };
 }

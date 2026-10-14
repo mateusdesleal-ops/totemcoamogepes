@@ -13,9 +13,11 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
-import { createWorld, V } from "./jornada-mundo.v1.js?v=2.3";
-import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.6";
-import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=2.0";
+import { createMaquinas } from "./jornada-maquinas.v1.js?v=1.1";
+import { createCenario3D } from "./jornada-cenario3d.v1.js?v=1.0";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=2.5";
+import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.7";
+import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=2.1";
 import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=2.0";
 import { createCh5, STORY5, FOCUS } from "./jornada-cap5.v1.js?v=1.7";
 
@@ -204,6 +206,9 @@ const bootLoad = { loaded: 0, total: 0, frames: 0, t0: performance.now(), off: !
 THREE.DefaultLoadingManager.onProgress = (url, l, t) => { bootLoad.loaded = l; bootLoad.total = t; };
 
 const W = createWorld(renderer);
+/* modelos 3D (GLB): máquinas na cena */
+const Maq = createMaquinas(W);
+let Cen = null;   /* cenário 3D (GLB), criado depois do capítulo 3 */
 window.__boot && window.__boot.step(.72);
 const scene = W.scene, play = W.play, BELT = W.BELT, BIN = W.BIN, BINS = W.BINS, binObjs = W.binObjs;
 const ringNext = W.ringNext, ringSel = W.ringSel, hitGeo = W.hitGeo, hitMat = W.hitMat;
@@ -249,6 +254,7 @@ let composer = null, gtao = null, bloom = null, grade = null, bokeh = null;
 function buildComposer() {
   if (composer) { composer.dispose && composer.dispose(); composer = null; }
   W.setLite(quality === "low");
+  Maq.setDetail(quality === "low" ? "low" : "high"); if (Cen) Cen.setDetail(quality === "low" ? "low" : "high");
   document.body.dataset.q = quality;
   if (quality === "low") return;
   const size = renderer.getDrawingBufferSize(new THREE.Vector2());
@@ -975,6 +981,10 @@ const CH = {
 };
 
 const Ch3 = createCh3({ W, camera, canvas, hud, Cast, Sound, buzz, banner, floater, flash, toScreen, setSky });
+Cen = createCenario3D(W, { regiao: Ch3.region });
+Cen.setDetail(quality === "low" ? "low" : "high");
+/* os modelos do cenário carregam depois da abertura, sem atrasá-la */
+setTimeout(() => Cen.iniciar(), 2500);
 CH.ch3 = {
   n: 3, engine: Ch3, rank: "cadeia3d",
   kicker: STORY3.kicker, title: STORY3.title, soloKicker: "JOGO AVULSO · ROTAS", soloTitle: "Do grão ao mercado",
@@ -1221,6 +1231,8 @@ function loop() {
   updateCamera(dt, time);
   W.update(dt, time, camera);
   Cast.update(dt);
+  Maq.update(dt, time);
+  Cen.update(dt, time);
   renderFrame(dt);
   if (!bootLoad.off) {
     /* primeiros quadros já desenhados (shaders prontos) e texturas carregadas */
@@ -1264,4 +1276,4 @@ else goTitle();
 requestAnimationFrame(loop);
 
 /* ganchos para testes automatizados */
-window.__jr = { showBadge, Ch5, Ch4, Ch3, Ch2, runChapter, shot: n => camSnap(shotPose(n)), snap: () => camSnap(mode === "title" ? shotPose("title") : currentPose()), W, setQuality, Ch1, Journey, Caption, get mode() { return mode; }, camera, renderer, goTitle, goMap, runChapter1, showResult, fps: () => fps };
+window.__jr = { Maq, Cen, showBadge, Ch5, Ch4, Ch3, Ch2, runChapter, shot: n => camSnap(shotPose(n)), snap: () => camSnap(mode === "title" ? shotPose("title") : currentPose()), W, setQuality, Ch1, Journey, Caption, get mode() { return mode; }, camera, renderer, goTitle, goMap, runChapter1, showResult, fps: () => fps };

@@ -111,6 +111,8 @@ function buildRegion(W) {
     return g;
   };
 
+  /* peças procedurais que os modelos 3D (GLB) podem substituir */
+  const pecas = {};
   /* ---------- lavoura: talhão de soja, colheitadeira, trator e casa ---------- */
   {
     const st = S.lavoura;
@@ -119,7 +121,7 @@ function buildRegion(W) {
     const wtex = TEX.wheat.clone(); wtex.needsUpdate = true; wtex.repeat.set(.5, 1.2);
     add(new THREE.BoxGeometry(18, .32, 44), new THREE.MeshStandardMaterial({ map: wtex, roughness: .95 }), st.x + 39, .12, st.z, root, false);
     /* colheitadeira */
-    const cb = new THREE.Group(); cb.position.set(st.x + 8, 0, st.z - 4); cb.rotation.y = -.4; root.add(cb);
+    const cb = new THREE.Group(); cb.position.set(st.x + 8, 0, st.z - 4); cb.rotation.y = -.4; cb.userData.dynamic = true; root.add(cb); pecas.colheitadeira = cb;
     const cy = new THREE.MeshStandardMaterial({ color: "#f2b705", roughness: .35, metalness: .3 });
     add(RB(7, 3.4, 4, .4), cy, 0, 2.6, 0, cb);
     add(RB(2.6, 2.4, 3, .3), cy, 2.4, 5.2, 0, cb);
@@ -128,7 +130,7 @@ function buildRegion(W) {
     const tube = add(CY(.35, .35, 6, 12), steel, -1, 5.4, 3.2, cb); tube.rotation.x = 1.2;
     for (const [x, r] of [[2.2, 1.4], [-2.4, .9]]) for (const z of [-2.1, 2.1]) { const w = add(CY(r, r, .9, 20), std("tire"), x, r, z, cb); w.rotation.x = Math.PI / 2; }
     /* trator com carreta de grãos */
-    const tr = new THREE.Group(); tr.position.set(st.x - 10, 0, st.z + 6); tr.rotation.y = .3; root.add(tr);
+    const tr = new THREE.Group(); tr.position.set(st.x - 10, 0, st.z + 6); tr.rotation.y = .3; tr.userData.dynamic = true; root.add(tr); pecas.trator = tr;
     const red = new THREE.MeshStandardMaterial({ color: "#b8322a", roughness: .35, metalness: .3 });
     add(RB(3.4, 1.6, 2, .2), red, 0, 1.8, 0, tr); add(RB(1.8, 1.8, 1.8, .2), glass, -.6, 3.4, 0, tr);
     for (const [x, r] of [[-1, 1.1], [1.3, .7]]) for (const z of [-1.2, 1.2]) { const w = add(CY(r, r, .6, 18), std("tire"), x, r, z, tr); w.rotation.x = Math.PI / 2; }
@@ -199,7 +201,7 @@ function buildRegion(W) {
     add(new THREE.BoxGeometry(60, 1.4, 9), std("pier", { color: "#cfccc2", roughness: .9 }), W.SEA.x0 + 20, .3, st.z + 2, root);
     for (let x = W.SEA.x0; x < W.SEA.x0 + 50; x += 6) add(CY(.5, .5, 4, 10), std("pile", { color: "#8d8a80", roughness: .9 }), x, -1.4, st.z + 6.2);
     /* armazém do porto */
-    building(st.x - 4, st.z - 6, 22, 8, 12, 0, 3);
+    const arm = building(st.x - 4, st.z - 6, 22, 8, 12, 0, 3); arm.userData.dynamic = true; pecas.armazemPorto = arm;
     /* carregador de navios */
     const gx = W.SEA.x0 + 26;
     for (const z of [-2, 2.5]) add(new THREE.BoxGeometry(1, 12, 1), yellow, gx, 6.8, st.z + z);
@@ -217,7 +219,7 @@ function buildRegion(W) {
     add(RB(6, 1.6, 8.8, .2), glass, -20, 9.4, 0, ship);
     add(CY(.9, 1.1, 4, 14), std("funnel", { color: "#e0742a", roughness: .5 }), -22.5, 12.6, 0, ship);
     steamOrigins.push(V(W.SEA.x0 + 28 - 22.5, 14.5, st.z + 19));
-    W.kit.mergeGroup(ship);
+    W.kit.mergeGroup(ship); pecas.navio = ship;
   }
   /* ---------- estradas ---------- */
   const asph = std("asphalt");
@@ -259,7 +261,7 @@ function buildRegion(W) {
   groups.forEach(g => { const me = new THREE.Mesh(mergeGeometries(g.geos), g.m); me.castShadow = g.cast; me.receiveShadow = true; me.matrixAutoUpdate = false; root.add(me); });
   W.scene.add(root);
   return {
-    root, routeLines, steam, water,
+    root, routeLines, steam, water, pecas,
     update(dt, time) {
       steam.forEach(sp => {
         const u = sp.userData; u.t = (u.t + dt * .12) % 1;
@@ -416,7 +418,7 @@ export function createCh3(ctx) {
     S.done && S.done({ score: Math.round(S.score), stars, routes: S.routesDone, correct: S.correct, errors: S.errors, accuracy: att ? Math.round(S.correct / att * 100) : 0, best: S.best, seconds: Math.round(Math.min(S.t, TOTAL)) });
   }
   return {
-    reset, update,
+    reset, update, region,
     start() { return new Promise(res => { S.done = res; S.running = true; hud.say(...STORY3.lines.start); }); },
     get running() { return !!(S && S.running); },
     clear() { if (S) { S.running = false; S.showLabels = false; } box.hidden = true; card.hidden = true; truck.visible = false; },

@@ -220,6 +220,7 @@ export function createCh2(ctx) {
     f.classList.add("is-light"); f.classList.remove("is-on"); void f.offsetWidth; f.classList.add("is-on");
     setTimeout(() => f.classList.remove("is-light"), 600);
     Sound.fx("thunder");
+    if (W.raio) W.raio();
   }
   function finish(survived) {
     if (!S.running) return;

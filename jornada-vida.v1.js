@@ -129,6 +129,7 @@ export function buildLife(o) {
   const colors = ["#ffffff", "#c62828", "#2e7d32", "#ffffff", "#f2b400", "#455a64"];
   colors.forEach((c, i) => {
     const t = buildTruck(c); t.visible = false; group.add(t);
+    if (i % 2) { t.userData.variante = "basculante"; t.userData.glbFrom = null; }
     t.userData.lane = i % 2 ? -1 : 1; t.userData.x = i % 2 ? -64 - (i >> 1) * 90 : -560 + (i >> 1) * 120; t.userData.v = 0; t.userData.state = "go";
     traffic.push(t);
   });
