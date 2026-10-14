@@ -16,7 +16,7 @@ import { ICONS } from "./jornada-icones.v1.js";
 import { createMaquinas } from "./jornada-maquinas.v1.js?v=1.1";
 import { createCenario3D } from "./jornada-cenario3d.v1.js?v=1.0";
 import { createWorld, V } from "./jornada-mundo.v1.js?v=2.5";
-import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.7";
+import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.8";
 import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=2.1";
 import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=2.0";
 import { createCh5, STORY5, FOCUS } from "./jornada-cap5.v1.js?v=1.7";
@@ -34,7 +34,7 @@ const STORY = {
   ch1: {
     kicker: "CAPÍTULO 1 · RECEBIMENTO",
     title: "A primeira carga",
-    goal: "Separe tudo o que chega pela esteira antes que caia no fim da linha.",
+    goal: "Separe tudo o que chega pela esteira. Ela fica cada vez mais rápida: até onde você aguenta?",
     how: "Toque na caixa certa: o item com o anel amarelo vai para ela. Se preferir, toque antes em outro item para escolhê-lo.",
     lines: {
       start: ["t", "Calma e atenção: a qualidade começa aqui."],
@@ -44,7 +44,10 @@ const STORY = {
       escape: ["a", "Passou um! Fique de olho no fim da esteira."],
       phase2: ["a", "O movimento aumentou. Mais caminhões no pátio!"],
       truck: ["t", "Chegou um caminhão extra. Segura firme!"],
-      last: ["a", "Últimos segundos! Vamos fechar bem essa carga."],
+      phase4: ["a", "Pico da safra! A esteira não para mais."],
+      phase5: ["t", "Supersafra! Poucos chegam até aqui."],
+      phase6: ["a", "Safra recorde! Você está fazendo história!"],
+      last: ["a", "Últimos segundos! Se terminar, entra para a história da Coamo."],
     },
     end: {
       3: [["t", "Classificação perfeita! Os cooperados vão ter orgulho dessa carga."], ["a", "Agora essa produção precisa ser bem guardada. Próxima parada: os silos!"]],
@@ -629,12 +632,19 @@ const Caption = (() => {
 
 /* ===================================================== JOGO: CAPÍTULO 1 */
 const Ch1 = (() => {
-  const TOTAL = 60, MAX_LIVES = 5;
+  /* 3 minutos com dificuldade sempre subindo: a esteira acelera e os itens chegam cada vez
+     mais juntos, até ficar impossível. A partida quase sempre acaba quando as vidas acabam. */
+  const TOTAL = 180, MAX_LIVES = 5;
   const PH = [
-    { at: 0, speed: 1.45, spawn: 1.3, name: "Aquecimento" },
-    { at: 20, speed: 2.05, spawn: 1.0, name: "Movimento" },
-    { at: 40, speed: 2.7, spawn: .78, name: "Safra cheia" },
+    { at: 0, name: "Aquecimento" },
+    { at: 20, name: "Movimento" },
+    { at: 40, name: "Safra cheia" },
+    { at: 70, name: "Pico da safra" },
+    { at: 100, name: "Supersafra" },
+    { at: 135, name: "Safra recorde" },
   ];
+  const speedAt = t => 1.45 + t * .024 + Math.max(0, t - 100) * .012;      /* 1,45 → 3,9 (100 s) → 6,7 (180 s) */
+  const spawnAt = t => Math.max(.28, 1.3 * Math.pow(.99, t));              /* 1,3 s → 0,71 s (60 s) → 0,48 s (100 s) → 0,3 s */
   const WEIGHTS = [["soja", .32], ["milho", .26], ["trigo", .22], ["impureza", .2]];
   let S = null;
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -743,7 +753,7 @@ const Ch1 = (() => {
   function update(dt) {
     if (!S) return;
     /* esteira anda mesmo fora do jogo (fica bonito no fundo) */
-    const speed = S.running ? PH[S.phase].speed : 1.0;
+    const speed = S.running ? speedAt(S.t) : 1.0;
     W.beltTex.forEach(t => { t.offset.x -= dt * speed / 2.4; });
     binObjs.forEach(b => {
       if (b.pulse > 0) { b.pulse = Math.max(0, b.pulse - dt * 2.6); const k = Math.sin(b.pulse * Math.PI); b.g.scale.set(1 + k * .06, 1 - k * .08 + k * .12, 1 + k * .06); }
@@ -760,13 +770,16 @@ const Ch1 = (() => {
       S.phase = ph;
       if (ph === 1) { banner("Movimento aumentando", "FASE 2"); Sound.fx("phase"); hud.say(...STORY.ch1.lines.phase2); Cast.act("a", "wave"); }
       if (ph === 2) { banner("Caminhão extra chegou!", "FASE 3 · SAFRA CHEIA", true); Sound.fx("phase"); hud.say(...STORY.ch1.lines.truck); Cast.act("t", "think"); S.spawnT = Math.min(S.spawnT, .25); }
+      if (ph === 3) { banner("A fila de caminhões cresceu", "FASE 4 · PICO DA SAFRA", true); Sound.fx("phase"); hud.say(...STORY.ch1.lines.phase4); Cast.act("a", "oops"); }
+      if (ph === 4) { banner("Esteira no máximo!", "FASE 5 · SUPERSAFRA", true); Sound.fx("phase"); hud.say(...STORY.ch1.lines.phase5); Cast.act("t", "think"); }
+      if (ph === 5) { banner("Ninguém chegou até aqui... ainda", "FASE 6 · SAFRA RECORDE", true); Sound.fx("phase"); hud.say(...STORY.ch1.lines.phase6); Cast.act("a", "celebrate"); }
     }
     if (left <= 10 && !S.said.last) { S.said.last = 1; hud.say(...STORY.ch1.lines.last); }
     if (left <= 0) { finish(true); return; }
     S.spawnT -= dt;
     const lastX = S.items.reduce((m, it) => it.state === "belt" ? Math.min(m, it.g.position.x) : m, 99);
-    if (S.spawnT <= 0 && lastX > BELT.spawnX + 1.7) { spawn(); S.spawnT = PH[S.phase].spawn * (.85 + Math.random() * .3); }
-    const sp = PH[S.phase].speed;
+    if (S.spawnT <= 0 && lastX > BELT.spawnX + 1.7) { spawn(); S.spawnT = spawnAt(S.t) * (.85 + Math.random() * .3); }
+    const sp = speedAt(S.t);
     for (let i = S.items.length - 1; i >= 0; i--) {
       const it = S.items[i], g = it.g;
       it.scale = Math.min(1, it.scale + dt * 3.5);
@@ -811,10 +824,10 @@ const Ch1 = (() => {
   }
   function stars() {
     const acc = S.attempts ? S.sorted / S.attempts * 100 : 0;
-    if (S.lives <= 0) return 0;
-    if (S.sorted >= 40 && acc >= 90) return 3;
-    if (S.sorted >= 28 && acc >= 80) return 2;
-    if (S.sorted >= 14) return 1;
+    /* as estrelas medem até onde a pessoa chegou (perder as vidas é o final esperado) */
+    if (S.sorted >= 70 && acc >= 85) return 3;
+    if (S.sorted >= 45 && acc >= 75) return 2;
+    if (S.sorted >= 20) return 1;
     return 0;
   }
   function finish(timeUp) {
@@ -955,9 +968,9 @@ const CH = {
     after() { ringNext.visible = ringSel.visible = false; setTimeout(() => Ch1.clearItems(), 900); },
     result: {
       titles: ["A esteira venceu desta vez", "Carga classificada!", "Ótima classificação!", "Classificação perfeita!"],
-      texts: ["Tente de novo: comece pelo item com o anel amarelo.", "Você classificou a carga. Tente mais acertos seguidos para subir de nível.", "Quase tudo no lugar certo. Mais um pouco e chega às 3 estrelas.", "Precisão de especialista. Os cooperados agradecem!"],
+      texts: ["Tente de novo: comece pelo item com o anel amarelo.", "Você classificou a carga. Quanto mais longe na esteira, mais estrelas.", "Foi longe! Mais um pouco de ritmo e chega às 3 estrelas.", "Precisão de especialista. Poucos chegam tão longe!"],
       soloKicker: "DESAFIO DA CLASSIFICAÇÃO",
-      stats: r => `<div><b>${r.sorted}</b><small>itens certos</small></div><div><b>${r.accuracy}%</b><small>precisão</small></div><div><b>x${r.best}</b><small>melhor combo</small></div><div><b>${r.seconds}s</b><small>tempo</small></div>`,
+      stats: r => `<div><b>${r.sorted}</b><small>itens certos</small></div><div><b>${r.accuracy}%</b><small>precisão</small></div><div><b>${r.phase}/6</b><small>fase</small></div><div><b>${r.seconds}s</b><small>tempo</small></div>`,
       entry: r => ({ score: r.score, duration: r.seconds, accuracy: r.accuracy, phase: r.phase, stars: r.stars }),
     },
   },
@@ -974,7 +987,7 @@ const CH = {
     after() { setTimeout(() => { Ch2.clear(); }, 400); },
     result: {
       titles: STORY2.result.titles, texts: STORY2.result.texts, soloKicker: "CORRIDA CONTRA A CHUVA",
-      stats: r => `<div><b>${r.correct}</b><small>cargas guardadas</small></div><div><b>${r.accuracy}%</b><small>precisão</small></div><div><b>x${r.best}</b><small>melhor combo</small></div><div><b>${r.errors}</b><small>erros</small></div>`,
+      stats: r => `<div><b>${r.correct}</b><small>cargas guardadas</small></div><div><b>${r.accuracy}%</b><small>precisão</small></div><div><b>${r.phase}/4</b><small>fase</small></div><div><b>${r.seconds}s</b><small>tempo</small></div>`,
       entry: r => ({ score: r.score, duration: r.seconds, accuracy: r.accuracy, stars: r.stars, combo: r.best }),
     },
   },

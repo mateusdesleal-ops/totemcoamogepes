@@ -11,13 +11,13 @@ import { ICONS } from "./jornada-icones.v1.js";
 export const STORY2 = {
   intro: [
     { who: "n", shot: "siloWide", text: "Meio-dia. Nuvens escuras começam a se juntar no horizonte." },
-    { who: "t", shot: "siloStage", act: "think", text: "Previsão de temporal em um minuto! Toda a carga do pátio precisa estar nos silos antes da chuva." },
+    { who: "t", shot: "siloStage", act: "think", text: "Previsão de temporal em três minutos! Toda a carga do pátio precisa estar nos silos antes da chuva." },
     { who: "a", shot: "siloStage", act: "wave", text: "A primeira carga que entra em cada silo define o produto dele. Depois é memória: não dá para misturar!" },
-    { who: "t", shot: "siloStage", act: "talk", text: "E fique de olho na régua de nível: silo cheio demais não recebe carga." },
+    { who: "t", shot: "siloStage", act: "talk", text: "E fique de olho na régua de nível: silo cheio demais não recebe carga. Quanto mais o tempo fecha, mais rápido chegam os caminhões!" },
   ],
   kicker: "CAPÍTULO 2 · ARMAZENAGEM",
   title: "Corrida contra a chuva",
-  goal: "Guarde cada carga no silo certo antes que o temporal chegue.",
+  goal: "Guarde cada carga no silo certo. Os caminhões chegam cada vez mais rápido: até onde você aguenta?",
   how: "Toque no silo para enviar a carga. A primeira carga define o produto do silo: memorize! Errar o produto ou estourar o nível custa uma vida.",
   lines: {
     start: ["a", "A primeira carga de cada silo define o produto. Memorize!"],
@@ -28,7 +28,9 @@ export const STORY2 = {
     combo5: ["a", "Que memória! Combo de 5!"],
     combo10: ["t", "Dez seguidas! Parece armazenista de carreira."],
     expedition: ["t", "A expedição liberou espaço no Silo {s}."],
-    rain: ["a", "Começou a chuviscar! Últimos segundos, rápido!"],
+    rain: ["a", "Começou a chuva! Se aguentar até o fim, entra para a história!"],
+    phase2: ["a", "Mais caminhões chegando! As cargas estão maiores."],
+    phase3: ["t", "Fila no pátio! Quase não dá tempo de pensar."],
     halfway: ["t", "As nuvens estão chegando. Mantenha o ritmo!"],
   },
   end: {
@@ -41,9 +43,9 @@ export const STORY2 = {
     titles: ["A chuva venceu desta vez", "Carga protegida!", "Ótima armazenagem!", "Armazenagem perfeita!"],
     texts: [
       "Tente de novo: lembre qual produto foi para cada silo.",
-      "A maior parte da carga ficou seca. Memorize os silos para subir de nível.",
-      "Quase tudo no silo certo. Mais um pouco e chega às 3 estrelas.",
-      "Memória de armazenista: tudo no lugar, antes do temporal!",
+      "Boa parte da carga ficou seca. Quanto mais longe, mais estrelas.",
+      "Foi longe! Mais um pouco de ritmo e chega às 3 estrelas.",
+      "Memória de armazenista: poucos chegam tão longe!",
     ],
   },
 };
@@ -53,7 +55,10 @@ const PRODUCTS = [
   { id: "milho", name: "Milho" },
   { id: "trigo", name: "Trigo" },
 ];
-const TOTAL = 60, MAX_LIVES = 5, IDEAL_MAX = 82;
+/* 3 minutos com dificuldade sempre subindo: menos tempo para decidir, cargas maiores e
+   caminhões em sequência, até ficar impossível. Quase sempre acaba quando as vidas acabam. */
+const TOTAL = 180, MAX_LIVES = 5, IDEAL_MAX = 82;
+const FASES = [0, 60, 100, 140];                                  /* início de cada fase (s) */
 
 export function createCh2(ctx) {
   const { W, camera, canvas, hud, Cast, Sound, buzz, banner, floater, flash, toScreen } = ctx;
@@ -78,7 +83,7 @@ export function createCh2(ctx) {
     S = {
       running: false, t: 0, score: 0, lives: MAX_LIVES, combo: 0, best: 0, correct: 0, errors: 0, attempts: 0,
       silos: W.siloObjs.map(() => ({ product: null, level: 34 + Math.random() * 22, drain: .26 + Math.random() * .16, pending: 0 })),
-      current: null, nextT: .6, said: {}, exps: [14, 30, 46], storm: 0, thunder: [47.5, 52.5, 57], done: null,
+      current: null, nextT: .6, said: {}, exps: [14, 30, 46, 75, 110], storm: 0, thunder: [146, 152, 160, 167, 173, 178], phase: 0, done: null,
     };
     S.silos.forEach((s, i) => W.setSiloLevel(W.siloObjs[i], s.level, true));
     tags.forEach(t => { t.el.classList.remove("is-reveal", "is-warning", "is-danger"); t.revealT = 0; });
@@ -92,14 +97,16 @@ export function createCh2(ctx) {
     if (S.silos.some(s => !s.product) && free.length) return free[Math.floor(Math.random() * free.length)];
     return PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)];
   }
-  function deadline() { const left = TOTAL - S.t; return left <= 15 ? 3.2 : left <= 30 ? 4.2 : left <= 45 ? 5.2 : 6.2; }
+  /* tempo para decidir: 6,2 s no começo, 4,1 s em 1 minuto, 2,3 s em 2 minutos, 1,4 s no fim */
+  function deadline() { return Math.max(1.4, 6.2 - S.t * .035); }
   function nextLoad() {
     if (S.silos.every(s => s.level >= 94)) S.silos.forEach(s => { s.level = Math.max(0, s.level - 16); });
     const p = chooseProduct();
-    let amount = 8 + Math.floor(Math.random() * 9);
-    const left = TOTAL - S.t; if (left <= 30) amount += 2; if (left <= 15) amount += 2;
+    /* cargas maiores com o tempo: 8–16% no começo, até ~20–28% no fim */
+    const amount = 8 + Math.floor(Math.random() * 9) + Math.min(12, Math.floor(S.t / 15));
     const elig = S.silos.filter(s => !s.product || s.product === p.id);
-    if (!elig.some(s => s.level + amount <= 100)) elig.forEach(s => { s.level = Math.max(0, s.level - 12); });
+    /* sempre existe um silo possível (difícil, mas nunca injusto) */
+    if (!elig.some(s => s.level + amount <= 100)) elig.forEach(s => { s.level = Math.max(0, s.level - Math.max(amount - 4, 12)); });
     const d = deadline();
     S.current = { p, amount, deadline: d, left: d };
     loadIcon.innerHTML = ICONS[p.id]; loadName.textContent = p.name; loadAmt.textContent = "+" + amount + "%";
@@ -145,7 +152,7 @@ export function createCh2(ctx) {
     else if (S.combo === 10 && !S.said.c10) { S.said.c10 = 1; hud.say(...L.combo10); Cast.act("t", "celebrate"); }
     else if (S.combo % 5 === 0) { Sound.fx("combo"); Cast.act("a", "celebrate"); }
     S.current = null; loadEl.hidden = true;
-    S.nextT = (TOTAL - S.t) <= 25 ? .35 : .55;
+    S.nextT = Math.max(.15, .55 - S.t * .003);
   }
   /* mostra o produto do silo por um instante (depois é memória) */
   function reveal(i, p) {
@@ -197,12 +204,19 @@ export function createCh2(ctx) {
     S.silos.forEach((s, i) => { s.level = Math.max(0, s.level - s.drain * dt); W.setSiloLevel(W.siloObjs[i], s.level - s.pending); });
     if (S.silos.every(s => s.level <= 90)) S.score += 3 * dt;
     if (S.exps.length && S.t >= S.exps[0]) { S.exps.shift(); expedition(); }
+    /* fases */
+    const ph = FASES.reduce((a, at, i) => S.t >= at ? i : a, 0);
+    if (ph !== S.phase) {
+      S.phase = ph;
+      if (ph === 1) { banner("Mais caminhões chegando", "FASE 2 · CARGAS MAIORES"); Sound.fx("phase"); hud.say(...L.phase2); }
+      if (ph === 2) { banner("Fila no pátio!", "FASE 3 · SEM TEMPO A PERDER", true); Sound.fx("phase"); hud.say(...L.phase3); Cast.act("t", "think"); }
+    }
     /* tempo fechando */
-    const k = Math.min(1, Math.max(0, (S.t - 18) / 34));
+    const k = Math.min(1, Math.max(0, (S.t - 60) / 90));
     W.setStorm(k);
-    if (S.t >= 22 && !S.said.half) { S.said.half = 1; ctx.setSky("overcast", 16); hud.say(...L.halfway); }
-    if (S.t >= 44 && !S.said.rain) { S.said.rain = 1; ctx.setSky("storm", 10); hud.say(...L.rain); banner("Começou a chuva!", "ÚLTIMOS 15 SEGUNDOS", true); Cast.act("a", "oops"); }
-    if (S.t >= 44) W.setRain(Math.min(1, (S.t - 44) / 8));
+    if (S.t >= 80 && !S.said.half) { S.said.half = 1; ctx.setSky("overcast", 30); hud.say(...L.halfway); }
+    if (S.t >= 140 && !S.said.rain) { S.said.rain = 1; ctx.setSky("storm", 12); hud.say(...L.rain); banner("Começou a chuva!", "FASE 4 · ÚLTIMOS 40 SEGUNDOS", true); Cast.act("a", "oops"); }
+    if (S.t >= 140) W.setRain(Math.min(1, (S.t - 140) / 10));
     if (S.thunder.length && S.t >= S.thunder[0]) { S.thunder.shift(); lightning(); }
     if (S.current) {
       S.current.left -= dt;
@@ -226,11 +240,12 @@ export function createCh2(ctx) {
     if (!S.running) return;
     S.running = false; S.current = null; loadEl.hidden = true;
     const precision = S.attempts ? Math.round(S.correct / S.attempts * 100) : 0;
+    /* as estrelas medem até onde a pessoa chegou (perder as vidas é o final esperado) */
     let stars = 0;
-    if (survived && precision >= 90 && S.best >= 6) stars = 3;
-    else if (survived && precision >= 75) stars = 2;
-    else if (survived && precision >= 55) stars = 1;
-    S.done && S.done({ score: Math.round(S.score), stars, correct: S.correct, accuracy: precision, best: S.best, errors: S.errors, seconds: Math.round(Math.min(S.t, TOTAL)), survived });
+    if (S.correct >= 45 && precision >= 85) stars = 3;
+    else if (S.correct >= 30 && precision >= 75) stars = 2;
+    else if (S.correct >= 12) stars = 1;
+    S.done && S.done({ score: Math.round(S.score), stars, correct: S.correct, accuracy: precision, best: S.best, errors: S.errors, seconds: Math.round(Math.min(S.t, TOTAL)), phase: S.phase + 1, survived });
   }
   return {
     reset, update,
