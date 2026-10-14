@@ -550,7 +550,7 @@ const hud = {
   setLives(n, max) { this.resetAlt(); this.lives.innerHTML = "♥".repeat(Math.max(0, n)) + "<s>" + "♥".repeat(Math.max(0, max - n)) + "</s>"; },
   setCombo(n) { this.comboN.textContent = "x" + n; this.comboBar.style.width = Math.min(100, n * 10) + "%"; this.combo.classList.toggle("is-hot", n >= 5); },
   setTime(left, total) {
-    const s = Math.ceil(left); this.time.textContent = "00:" + String(Math.max(0, s)).padStart(2, "0");
+    const s = Math.max(0, Math.ceil(left)); this.time.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
     this.timeBar.style.transform = `scaleX(${clamp(left / total, 0, 1)})`;
     this.time.parentElement.classList.toggle("is-low", left <= 10);
   },
