@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const VERSION = "55.0";
+  const VERSION = "56.0";
 
   function isAppMode() {
     return (
@@ -14,6 +14,8 @@
     return ((window.matchMedia?.("(pointer: coarse)").matches ?? false) || (navigator.maxTouchPoints || 0) > 0);
   }
 
+  let fullscreenPending = false;
+
   /* dentro da moldura do totem (totem.html), a tela cheia é pedida para a moldura inteira,
      senão o navegador estica a página interna e ela volta ao formato largo */
   function fullscreenDoc() {
@@ -22,21 +24,27 @@
   }
   async function requestRealFullscreen() {
     const doc = fullscreenDoc();
-    if (!isTouchTotem() || isAppMode() || doc.fullscreenElement) return;
+    if (!isTouchTotem() || window.innerWidth <= 760 || isAppMode() || doc.fullscreenElement || fullscreenPending) return;
     const el = doc.documentElement;
     const fn = el.requestFullscreen || el.webkitRequestFullscreen;
     if (!fn) return;
+    fullscreenPending = true;
     try {
       const result = fn.call(el, { navigationUI: "hide" });
-      if (result && typeof result.catch === "function") await result.catch(() => {});
-    } catch (_) {}
+      if (result && typeof result.then === "function") await result;
+    } catch (_) {
+      fullscreenPending = false;
+    }
   }
 
   function armFullscreenFallback() {
-    if (!isTouchTotem() || isAppMode()) return;
+    if (!isTouchTotem() || window.innerWidth <= 760 || isAppMode()) return;
     const tryFullscreen = () => requestRealFullscreen();
     document.addEventListener("pointerdown", tryFullscreen, true);
     document.addEventListener("touchend", tryFullscreen, true);
+    const doc = fullscreenDoc();
+    doc.addEventListener("fullscreenchange", () => { fullscreenPending = false; });
+    doc.addEventListener("webkitfullscreenchange", () => { fullscreenPending = false; });
   }
 
   // V55: navegação dos cards é feita diretamente para o HTML do jogo.

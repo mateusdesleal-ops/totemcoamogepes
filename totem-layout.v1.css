@@ -1,0 +1,127 @@
+/* Layout estável para telas do totem, computadores e celulares. Carregado após
+   as folhas legadas para neutralizar alturas fixas e rolagem interna conflitante. */
+html,
+body {
+  min-height: 100%;
+  height: auto;
+  overflow-x: clip;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.kiosk-shell {
+  min-height: 100svh;
+  height: auto;
+  overflow: visible;
+}
+
+/* Vagas: a página inteira rola, sem um segundo contêiner de rolagem. */
+body[data-page="vagas"] .page-main--vacancies {
+  display: block;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+body[data-page="vagas"] .vacancy-layout,
+body[data-page="vagas"] .vacancy-workspace {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+body[data-page="vagas"] .vacancy-grid {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  overscroll-behavior: auto;
+}
+
+/* Sorteio: deixa vídeo e formulário expandirem; o documento controla a rolagem. */
+body[data-page="raffle"] .raffle-main {
+  display: block;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+body[data-page="raffle"] .raffle-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+  align-items: start;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+body[data-page="raffle"] .raffle-video-card,
+body[data-page="raffle"] .raffle-form-card {
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body[data-page="raffle"] .raffle-video-frame {
+  flex: none;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+}
+
+body[data-page="raffle"] .raffle-video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body[data-page="raffle"] .raffle-form-card {
+  justify-content: flex-start;
+}
+
+@media (max-width: 900px), (orientation: portrait) and (max-width: 1250px) {
+  body[data-page="raffle"] .raffle-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-page="vagas"] .page-main--vacancies,
+  body[data-page="raffle"] .page-main {
+    padding-bottom: max(28px, env(safe-area-inset-bottom));
+  }
+
+  body[data-page="vagas"] .filter-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body[data-page="raffle"] .raffle-form-card {
+    padding: 22px 18px;
+  }
+}
+
+/* Banner: preserva a proporção real da arte, incluindo os mascotes inteiros. */
+body[data-page="games"] .games-hero-v31 {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: auto !important;
+  overflow: visible;
+}
+
+body[data-page="games"] .games-hero-v31__poster {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  object-fit: contain !important;
+  object-position: center !important;
+}
