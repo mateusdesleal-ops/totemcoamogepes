@@ -10,6 +10,9 @@ body {
 }
 
 .kiosk-shell {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 100svh;
   height: auto;
   overflow: visible;
@@ -119,9 +122,90 @@ body[data-page="games"] .games-hero-v31 {
 body[data-page="games"] .games-hero-v31__poster {
   display: block;
   width: 100%;
-  height: auto;
+  height: auto !important;
   min-height: 0;
   max-height: none;
   object-fit: contain !important;
   object-position: center !important;
+}
+
+/* Trilhas explícitas impedem que a largura natural das imagens alargue a grade. */
+body[data-page="games"] .games-page {
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
+}
+
+body[data-page="games"] .games-page > *,
+body[data-page="games"] .game-menu-card > *,
+body[data-page="vagas"] .filter-panel > *,
+body[data-page="raffle"] .raffle-layout > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+body[data-page="vagas"] .vagaBody,
+body[data-page="vagas"] .vagaTitle,
+body[data-page="vagas"] .vagaDescription {
+  overflow-wrap: anywhere;
+}
+
+@media (orientation: portrait), (max-width: 900px) {
+  .topbar {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    height: auto !important;
+    min-height: 0 !important;
+    gap: 8px !important;
+    padding: 12px 18px !important;
+  }
+
+  .topbar .topbar__context { display: none !important; }
+  .topbar .topbar__brand { width: 100% !important; justify-content: center !important; }
+  .topbar .topnav {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  .topbar .topnav__item {
+    min-width: 0 !important;
+    width: auto !important;
+    flex: 0 1 auto !important;
+    white-space: normal !important;
+    text-align: center;
+  }
+
+  body[data-page="vagas"] .filter-panel {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-page="vagas"] .filter-panel > * { grid-column: auto !important; }
+
+  body[data-page="games"] .games-menu.games-menu--v22 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  body[data-page="games"] .games-menu.games-menu--v22,
+  body[data-page="games"] .game-menu-card--journey {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-page="games"] .game-menu-card--journey .game-menu-card__content strong {
+    font-size: 28px !important;
+  }
+
+  body[data-page="vagas"] .page-heading,
+  body[data-page="raffle"] .raffle-heading {
+    flex-wrap: wrap;
+  }
+
+  body[data-page="vagas"] .page-heading h1,
+  body[data-page="raffle"] .raffle-heading h1 { font-size: 30px !important; }
 }

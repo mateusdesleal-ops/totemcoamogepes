@@ -7,6 +7,7 @@
   <title>Coamo • Totem GEPES</title>
   <link rel="icon" href="assets/pwa/icon-192.png" type="image/png">
   <link rel="manifest" href="manifest.webmanifest?v=53.0">
+  <script src="totem-viewport.v1.js?v=1.0"></script>
   <!-- Telas de totem muito largas (ex.: 4K em pé com escala 150% = 1440 de largura):
        o site roda dentro de uma moldura de 1080 de largura, ampliada para ocupar a tela inteira,
        exatamente como foi desenhado. A navegação acontece toda dentro da moldura. -->
@@ -29,12 +30,16 @@
       var q = new URLSearchParams(location.search), u = q.get("u") || "index.html";
       if (!/^[\w\-./]+(\?.*)?$/.test(u) || /^\/\//.test(u)) u = "index.html";
       function fit() {
-        var z = innerWidth / 1080;
-        /* escala por transform (funciona em todas as versões do Chrome; a página interna enxerga 1080 de largura) */
-        f.style.width = "1080px"; f.style.height = (innerHeight / z) + "px";
+        var viewport = window.coamoVisibleViewport();
+        var layoutWidth = Math.min(1080, viewport.width);
+        var z = viewport.width / layoutWidth;
+        /* A moldura nunca fica mais larga que a área visível do monitor vertical. */
+        f.style.width = layoutWidth + "px"; f.style.height = (viewport.height / z) + "px";
         f.style.transformOrigin = "0 0"; f.style.transform = "scale(" + z + ")";
       }
       addEventListener("resize", fit); fit();
+      if (window.visualViewport) window.visualViewport.addEventListener("resize", fit);
+      if (screen.orientation) screen.orientation.addEventListener("change", fit);
       f.src = u;
       /* mantém o endereço da moldura igual à página aberta (recarregar volta para o mesmo lugar) */
       f.addEventListener("load", function () {
