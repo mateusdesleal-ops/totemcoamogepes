@@ -1666,13 +1666,13 @@
 
 
   const MISSION_VISUALS = {
-    chegada: { actor: "assets/mission/v29/toninho_point.webp", actorName: "Toninho", actorClass: "mission-actor--traffic", fx: "arrival", speech: "Vou organizar esse fluxo com você!" },
-    classificacao: { actor: "assets/mission/aroldinho_inspect.webp", actorName: "Aroldinho", actorClass: "mission-actor--inspect", fx: "lab", speech: "Vamos observar os detalhes da carga." },
-    armazenagem: { actor: "assets/mission/v29/toninho_point.webp", actorName: "Toninho", actorClass: "mission-actor--storage", fx: "storage", speech: "Agora precisamos escolher o destino certo." },
-    alerta: { actor: "assets/mission/toninho_maintenance.webp", actorName: "Toninho", actorClass: "mission-actor--maintenance", fx: "maintenance", speech: "Alerta na operação. Segurança primeiro!" },
-    chuva: { actor: "assets/mission/v29/toninho_wave.webp", actorName: "Toninho", actorClass: "mission-actor--weather", fx: "weather", speech: "O tempo mudou. Vamos reorganizar a operação." },
-    fila: { actor: "assets/mission/v29/toninho_point.webp", actorName: "Toninho", actorClass: "mission-actor--queue", fx: "queue", speech: "A fila cresceu. Organização e comunicação!" },
-    expedicao: { actor: "assets/mission/v29/aroldinho_welcome.webp", actorName: "Aroldinho", actorClass: "mission-actor--logistics", fx: "dispatch", speech: "Última etapa: vamos liberar a carga com atenção." },
+    chegada: { actor: "assets/mascotes/pedrinho/pedrinho-pose2.webp", actorName: "Pedrinho", actorClass: "mission-actor--traffic", fx: "arrival", speech: "Vou organizar esse fluxo com você!" },
+    classificacao: { actor: "assets/mascotes/mateus/mateus-pose1.webp", actorName: "Mateus", actorClass: "mission-actor--inspect", fx: "lab", speech: "Vamos observar os detalhes da carga." },
+    armazenagem: { actor: "assets/mascotes/pedrinho/pedrinho-pose2.webp", actorName: "Pedrinho", actorClass: "mission-actor--storage", fx: "storage", speech: "Agora precisamos escolher o destino certo." },
+    alerta: { actor: "assets/mascotes/pedrinho/pedrinho-pose2.webp", actorName: "Pedrinho", actorClass: "mission-actor--maintenance", fx: "maintenance", speech: "Alerta na operação. Segurança primeiro!" },
+    chuva: { actor: "assets/mascotes/pedrinho/pedrinho-pose2.webp", actorName: "Pedrinho", actorClass: "mission-actor--weather", fx: "weather", speech: "O tempo mudou. Vamos reorganizar a operação." },
+    fila: { actor: "assets/mascotes/pedrinho/pedrinho-pose2.webp", actorName: "Pedrinho", actorClass: "mission-actor--queue", fx: "queue", speech: "A fila cresceu. Organização e comunicação!" },
+    expedicao: { actor: "assets/mascotes/mateus/mateus-pose2.webp", actorName: "Mateus", actorClass: "mission-actor--logistics", fx: "dispatch", speech: "Última etapa: vamos liberar a carga com atenção." },
   };
 
   function missionVisual(phase) {
@@ -1683,10 +1683,10 @@
     const base = missionVisual(phase);
     const tone = option.tone || "warn";
     let action = "Analisando a decisão...";
-    if (phase.id === "chegada") action = optionIndex === 0 ? "Toninho sinaliza a entrada e organiza o fluxo." : optionIndex === 1 ? "O fluxo acelera e exige ainda mais atenção." : "A fila aumenta enquanto a operação aguarda.";
-    else if (phase.id === "classificacao") action = optionIndex === 0 ? "Aroldinho confere a amostra e registra a classificação." : optionIndex === 1 ? "A carga segue sem conferência e acende um alerta de qualidade." : "A chegada é registrada, mas a carga permanece aguardando.";
-    else if (phase.id === "armazenagem") action = optionIndex === 0 ? "Toninho direciona o produto para a estrutura adequada." : optionIndex === 1 ? "A carga vai ao espaço mais próximo sem considerar todos os dados." : "A carga é movimentada para uma área temporária, gerando retrabalho.";
-    else if (phase.id === "alerta") action = optionIndex === 0 ? "Toninho sinaliza a parada e aciona a manutenção." : optionIndex === 1 ? "O equipamento continua operando com o alerta ativo." : "O fluxo é redirecionado enquanto o equipamento é verificado.";
+    if (phase.id === "chegada") action = optionIndex === 0 ? "Pedrinho sinaliza a entrada e organiza o fluxo." : optionIndex === 1 ? "O fluxo acelera e exige ainda mais atenção." : "A fila aumenta enquanto a operação aguarda.";
+    else if (phase.id === "classificacao") action = optionIndex === 0 ? "Mateus confere a amostra e registra a classificação." : optionIndex === 1 ? "A carga segue sem conferência e acende um alerta de qualidade." : "A chegada é registrada, mas a carga permanece aguardando.";
+    else if (phase.id === "armazenagem") action = optionIndex === 0 ? "Pedrinho direciona o produto para a estrutura adequada." : optionIndex === 1 ? "A carga vai ao espaço mais próximo sem considerar todos os dados." : "A carga é movimentada para uma área temporária, gerando retrabalho.";
+    else if (phase.id === "alerta") action = optionIndex === 0 ? "Pedrinho sinaliza a parada e aciona a manutenção." : optionIndex === 1 ? "O equipamento continua operando com o alerta ativo." : "O fluxo é redirecionado enquanto o equipamento é verificado.";
     else if (phase.id === "chuva") action = optionIndex === 0 ? "A operação é reorganizada para proteger produto e pessoas." : optionIndex === 1 ? "O ritmo aumenta justamente quando as condições ficam mais críticas." : "Parte da operação para, inclusive atividades que ainda estavam seguras.";
     else if (phase.id === "fila") action = optionIndex === 0 ? "A fila é reorganizada e todos permanecem orientados." : optionIndex === 1 ? "Sem comunicação, a fila cresce e o atendimento fica confuso." : "A sequência é mantida, mas sem adaptação ao pico de movimento.";
     else if (phase.id === "expedicao") action = optionIndex === 0 ? "Carga, destino e liberação são confirmados: missão quase concluída!" : optionIndex === 1 ? "A carga parte sem uma última conferência." : "A carga fica aguardando uma confirmação desnecessária.";
@@ -1730,7 +1730,7 @@
       locked = false;
       intro.hidden = false;
       root.innerHTML = "";
-      updateGameSpeech("Preparado para a safra?", "Aroldinho: suas decisões vão mudar o resultado da missão!");
+      updateGameSpeech("Preparado para a safra?", "Mateus: suas decisões vão mudar o resultado da missão!");
     };
 
     const metricsHtml = () => Object.entries(metrics).map(([key, value]) => `
@@ -1758,7 +1758,7 @@
       root.innerHTML = `
         <div class="mission-final mission-final--premium">
           <div class="mission-final__hero">
-            <img class="mission-final__mascot" src="assets/mission/v29/duo_highfive.webp" alt="Toninho e Aroldinho comemorando">
+            <span class="mission-final__mascot" style="display:flex"><img style="width:50%" src="assets/mascotes/pedrinho/pedrinho-pose2.webp" alt="Pedrinho"><img style="width:50%" src="assets/mascotes/mateus/mateus-pose2.webp" alt="Mateus"></span>
             <div class="mission-final__medal">${result.icon}</div>
             <span>MISSÃO CONCLUÍDA · ${result.badge}</span>
             <h2>${result.title}</h2>
@@ -1776,7 +1776,7 @@
       playGameTone("win");
       launchGameConfetti();
       pulseMascots("#gameMission", "success");
-      updateGameSpeech("Missão cumprida!", "Aroldinho: quer tentar de novo e superar sua pontuação?");
+      updateGameSpeech("Missão cumprida!", "Mateus: quer tentar de novo e superar sua pontuação?");
       $("#missionRestart")?.addEventListener("click", reset);
     };
 
@@ -1818,7 +1818,7 @@
           </div>
         </div>`;
 
-      updateGameSpeech(`Fase ${phaseIndex + 1}: atenção à decisão!`, phaseIndex === 3 ? "Aroldinho: imprevisto na operação! Pense rápido." : "Aroldinho: equilíbrio vale mais que pressa.");
+      updateGameSpeech(`Fase ${phaseIndex + 1}: atenção à decisão!`, phaseIndex === 3 ? "Mateus: imprevisto na operação! Pense rápido." : "Mateus: equilíbrio vale mais que pressa.");
 
       $$("[data-mission-option]", root).forEach(btn => btn.addEventListener("click", () => {
         if (locked) return;
@@ -2409,7 +2409,7 @@
       if(sceneTitle) sceneTitle.textContent=phase.title;
       if(sceneText) sceneText.textContent=phase.text;
       const ton=phase.mascot==="toninho";
-      if(guideMascot){ guideMascot.src=ton?"assets/mascote_toninho_pose2.webp":"assets/mascote_aroldinho.webp"; guideMascot.alt=ton?"Toninho":"Aroldinho"; }
+      if(guideMascot){ guideMascot.src=ton?"assets/mascotes/pedrinho/pedrinho-pose2.webp":"assets/mascotes/mateus/mateus-pose1.webp"; guideMascot.alt=ton?"Pedrinho":"Mateus"; }
       if(guideSpeech) guideSpeech.textContent=phase.speech;
       if(dk) dk.textContent=`DECISÃO ${state.phaseIndex+1} DE 5`;
       if(dt) dt.textContent=phase.decisionTitle;

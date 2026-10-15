@@ -25,8 +25,8 @@ import { createCh5, STORY5, FOCUS } from "./jornada-cap5.v1.js?v=1.7";
 const STORY = {
   prologue: [
     { who: "n", shot: "dawn",  text: "Amanhece em mais um dia de safra na Coamo." },
-    { who: "t", shot: "hello", act: "wave", text: "Bom dia! Eu sou o Toninho. Seja bem-vindo ao seu primeiro dia na Coamo!" },
-    { who: "a", shot: "hello", act: "celebrate", text: "E eu sou o Aroldinho! Hoje você vai viver uma safra inteira com a gente, do campo até a sua vaga." },
+    { who: "t", shot: "hello", act: "wave", text: "Bom dia! Eu sou o Pedrinho. Seja bem-vindo ao seu primeiro dia na Coamo!" },
+    { who: "a", shot: "hello", act: "celebrate", text: "E eu sou o Mateus! Hoje você vai viver uma safra inteira com a gente, do campo até a sua vaga." },
     { who: "n", shot: "trucks", text: "Os primeiros caminhões chegam à unidade, carregados com a produção dos cooperados." },
     { who: "t", shot: "yard", act: "think", text: "Tudo começa no recebimento. Antes de guardar, cada carga precisa ser classificada." },
     { who: "a", shot: "belt", act: "celebrate", text: "Soja, milho e trigo, cada um na sua caixa. Pedra, terra e palha vão para as impurezas. Bora?" },
@@ -74,7 +74,7 @@ const GAMES = [
   { id: "quiz", label: "NOVO · 3D · QUIZ", title: "Onde você brilha", text: "Descubra a área da Coamo que mais combina com você.", img: "assets/jornada/capa-quiz.webp", play: "ch5", isNew: true, noRank: true },
 ];
 
-const WHO = { t: "Toninho", a: "Aroldinho", n: "Coamo" };
+const WHO = { t: "Pedrinho", a: "Mateus", n: "Coamo" };
 
 /* ===================================================== UTILIDADES */
 const $ = (s, r = document) => r.querySelector(s);

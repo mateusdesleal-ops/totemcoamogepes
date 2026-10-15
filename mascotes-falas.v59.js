@@ -1,8 +1,8 @@
 /* =========================================================
    COAMO GAMES — V59 · FALAS DO TONINHO E DO AROLDINHO
    Edite à vontade: cada item é uma conversa curta.
-   ["t", "texto"] = Toninho (experiente, calmo, encorajador)
-   ["a", "texto"] = Aroldinho (animado, brincalhão, energia lá em cima)
+   ["t", "texto"] = Pedrinho (experiente, calmo, encorajador)
+   ["a", "texto"] = Mateus (animado, brincalhão, energia lá em cima)
    {chaves} são trocadas por informações do jogo.
    ========================================================= */
 window.COAMO_FALAS = {

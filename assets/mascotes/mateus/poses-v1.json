@@ -1,0 +1,725 @@
+{
+  "g_aro1": {
+    "W": 1254,
+    "H": 1254,
+    "up": -1,
+    "arm": "shoulder",
+    "speech": true,
+    "character": "Mateus",
+    "layers": [
+      {
+        "n": "body",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          24.8,
+          33,
+          50.5,
+          66
+        ],
+        "z": 0,
+        "atlas": [
+          87,
+          492,
+          413,
+          539
+        ],
+        "clip": "polygon(12% 0%,88% 0%,88% 42%,100% 55%,100% 100%,0% 100%,0% 55%,12% 42%)"
+      },
+      {
+        "n": "head",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          32.7,
+          1,
+          33.7,
+          40
+        ],
+        "z": 2,
+        "atlas": [
+          87,
+          17,
+          392,
+          465
+        ],
+        "p": [
+          50,
+          96
+        ]
+      },
+      {
+        "n": "eyes_closed",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          0,
+          0,
+          100,
+          100
+        ],
+        "z": 8,
+        "atlas": [
+          549,
+          18,
+          392,
+          466
+        ],
+        "parent": "head"
+      },
+      {
+        "n": "mouth_open",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          0,
+          0,
+          100,
+          100
+        ],
+        "z": 6,
+        "atlas": [
+          548,
+          1027,
+          399,
+          472
+        ],
+        "parent": "head"
+      },
+      {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          14,
+          35,
+          26,
+          24
+        ],
+        "z": 3,
+        "atlas": [
+          580,
+          582,
+          355,
+          323
+        ],
+        "p": [
+          80,
+          36
+        ],
+        "flip": true
+      },
+      {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          75,
+          21,
+          256,
+          526
+        ],
+        "g": [
+          64.80988593155894,
+          43.0,
+          14.600760456273765,
+          30
+        ],
+        "p": [
+          15,
+          20
+        ],
+        "z": 3
+      }
+    ],
+    "poseFrames": {
+      "wave": {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/acoes-v1.webp",
+        "atlas": [
+          25,
+          44,
+          531,
+          502
+        ],
+        "atlasSize": [
+          1254,
+          1254
+        ],
+        "g": [
+          9.32061752988048,
+          29.06,
+          24.328685258964143,
+          23
+        ],
+        "p": [
+          85,
+          78
+        ],
+        "z": 3,
+        "flip": false
+      },
+      "point": {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/acoes-v1.webp",
+        "atlas": [
+          586,
+          256,
+          644,
+          267
+        ],
+        "atlasSize": [
+          1254,
+          1254
+        ],
+        "g": [
+          1.8000000000000007,
+          38.91537267080746,
+          30,
+          12.437888198757763
+        ],
+        "p": [
+          94,
+          65
+        ],
+        "z": 3,
+        "flip": false
+      },
+      "celebrate": {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/acoes-v1.webp",
+        "atlas": [
+          114,
+          629,
+          454,
+          539
+        ],
+        "atlasSize": [
+          1254,
+          1254
+        ],
+        "g": [
+          9.953246753246752,
+          22.36,
+          23.584415584415584,
+          28
+        ],
+        "p": [
+          85,
+          88
+        ],
+        "z": 3,
+        "flip": false
+      },
+      "think": {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/acoes-v1.webp",
+        "atlas": [
+          792,
+          763,
+          400,
+          422
+        ],
+        "atlasSize": [
+          1254,
+          1254
+        ],
+        "g": [
+          25.104265402843602,
+          35.0,
+          18.95734597156398,
+          20
+        ],
+        "p": [
+          10,
+          80
+        ],
+        "z": 3,
+        "flip": true
+      }
+    },
+    "secondFrames": {
+      "idle": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          75,
+          21,
+          256,
+          526
+        ],
+        "g": [
+          64.80988593155894,
+          43.0,
+          14.600760456273765,
+          30
+        ],
+        "p": [
+          15,
+          20
+        ],
+        "z": 3
+      },
+      "welcome": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          543,
+          110,
+          467,
+          314
+        ],
+        "g": [
+          63.400000000000006,
+          43.35203426124197,
+          24,
+          16.137044967880087
+        ],
+        "p": [
+          15,
+          35
+        ],
+        "z": 3
+      },
+      "wave": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          51,
+          556,
+          420,
+          391
+        ],
+        "g": [
+          64.12,
+          38.94571428571429,
+          24,
+          22.34285714285714
+        ],
+        "p": [
+          12,
+          45
+        ],
+        "z": 3
+      },
+      "point": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          538,
+          676,
+          474,
+          202
+        ],
+        "g": [
+          63.64,
+          41.84050632911392,
+          28,
+          11.932489451476794
+        ],
+        "p": [
+          12,
+          60
+        ],
+        "z": 3
+      },
+      "celebrate": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          63,
+          1029,
+          403,
+          405
+        ],
+        "g": [
+          64.01481481481481,
+          31.5,
+          24.876543209876544,
+          25
+        ],
+        "p": [
+          12,
+          70
+        ],
+        "z": 3
+      },
+      "think": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          576,
+          1051,
+          411,
+          401
+        ],
+        "g": [
+          64.36,
+          43.6338199513382,
+          22,
+          21.464720194647203
+        ],
+        "p": [
+          12,
+          25
+        ],
+        "z": 3
+      }
+    }
+  },
+  "g_aro2": {
+    "W": 1254,
+    "H": 1254,
+    "up": -1,
+    "arm": "shoulder",
+    "speech": true,
+    "character": "Mateus",
+    "layers": [
+      {
+        "n": "body",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          24.8,
+          33,
+          50.5,
+          66
+        ],
+        "z": 0,
+        "atlas": [
+          87,
+          492,
+          413,
+          539
+        ],
+        "clip": "polygon(12% 0%,88% 0%,88% 42%,100% 55%,100% 100%,0% 100%,0% 55%,12% 42%)"
+      },
+      {
+        "n": "head",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          32.7,
+          1,
+          33.7,
+          40
+        ],
+        "z": 2,
+        "atlas": [
+          87,
+          17,
+          392,
+          465
+        ],
+        "p": [
+          50,
+          96
+        ]
+      },
+      {
+        "n": "eyes_closed",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          0,
+          0,
+          100,
+          100
+        ],
+        "z": 8,
+        "atlas": [
+          549,
+          18,
+          392,
+          466
+        ],
+        "parent": "head"
+      },
+      {
+        "n": "mouth_open",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          0,
+          0,
+          100,
+          100
+        ],
+        "z": 6,
+        "atlas": [
+          548,
+          1027,
+          399,
+          472
+        ],
+        "parent": "head"
+      },
+      {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/atlas-v1.webp",
+        "g": [
+          13.5,
+          39,
+          25,
+          17
+        ],
+        "z": 3,
+        "atlas": [
+          61,
+          1142,
+          423,
+          286
+        ],
+        "p": [
+          84,
+          28
+        ]
+      },
+      {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          543,
+          110,
+          467,
+          314
+        ],
+        "g": [
+          63.400000000000006,
+          43.35203426124197,
+          24,
+          16.137044967880087
+        ],
+        "p": [
+          15,
+          35
+        ],
+        "z": 3
+      }
+    ],
+    "poseFrames": {
+      "wave": {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/acoes-v1.webp",
+        "atlas": [
+          25,
+          44,
+          531,
+          502
+        ],
+        "atlasSize": [
+          1254,
+          1254
+        ],
+        "g": [
+          9.32061752988048,
+          29.06,
+          24.328685258964143,
+          23
+        ],
+        "p": [
+          85,
+          78
+        ],
+        "z": 3,
+        "flip": false
+      },
+      "point": {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/acoes-v1.webp",
+        "atlas": [
+          586,
+          256,
+          644,
+          267
+        ],
+        "atlasSize": [
+          1254,
+          1254
+        ],
+        "g": [
+          1.8000000000000007,
+          38.91537267080746,
+          30,
+          12.437888198757763
+        ],
+        "p": [
+          94,
+          65
+        ],
+        "z": 3,
+        "flip": false
+      },
+      "celebrate": {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/acoes-v1.webp",
+        "atlas": [
+          114,
+          629,
+          454,
+          539
+        ],
+        "atlasSize": [
+          1254,
+          1254
+        ],
+        "g": [
+          9.953246753246752,
+          22.36,
+          23.584415584415584,
+          28
+        ],
+        "p": [
+          85,
+          88
+        ],
+        "z": 3,
+        "flip": false
+      },
+      "think": {
+        "n": "arm",
+        "f": "assets/mascotes/mateus/acoes-v1.webp",
+        "atlas": [
+          792,
+          763,
+          400,
+          422
+        ],
+        "atlasSize": [
+          1254,
+          1254
+        ],
+        "g": [
+          25.104265402843602,
+          35.0,
+          18.95734597156398,
+          20
+        ],
+        "p": [
+          10,
+          80
+        ],
+        "z": 3,
+        "flip": true
+      }
+    },
+    "secondFrames": {
+      "idle": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          75,
+          21,
+          256,
+          526
+        ],
+        "g": [
+          64.80988593155894,
+          43.0,
+          14.600760456273765,
+          30
+        ],
+        "p": [
+          15,
+          20
+        ],
+        "z": 3
+      },
+      "welcome": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          543,
+          110,
+          467,
+          314
+        ],
+        "g": [
+          63.400000000000006,
+          43.35203426124197,
+          24,
+          16.137044967880087
+        ],
+        "p": [
+          15,
+          35
+        ],
+        "z": 3
+      },
+      "wave": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          51,
+          556,
+          420,
+          391
+        ],
+        "g": [
+          64.12,
+          38.94571428571429,
+          24,
+          22.34285714285714
+        ],
+        "p": [
+          12,
+          45
+        ],
+        "z": 3
+      },
+      "point": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          538,
+          676,
+          474,
+          202
+        ],
+        "g": [
+          63.64,
+          41.84050632911392,
+          28,
+          11.932489451476794
+        ],
+        "p": [
+          12,
+          60
+        ],
+        "z": 3
+      },
+      "celebrate": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          63,
+          1029,
+          403,
+          405
+        ],
+        "g": [
+          64.01481481481481,
+          31.5,
+          24.876543209876544,
+          25
+        ],
+        "p": [
+          12,
+          70
+        ],
+        "z": 3
+      },
+      "think": {
+        "n": "arm2",
+        "f": "assets/mascotes/mateus/braco2-v1.webp",
+        "atlas": [
+          576,
+          1051,
+          411,
+          401
+        ],
+        "g": [
+          64.36,
+          43.6338199513382,
+          22,
+          21.464720194647203
+        ],
+        "p": [
+          12,
+          25
+        ],
+        "z": 3
+      }
+    }
+  }
+}
