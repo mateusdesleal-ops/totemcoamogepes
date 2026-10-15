@@ -367,13 +367,32 @@ function regionPose() {
   const el = THREE.MathUtils.degToRad(portrait ? 60 : 55);
   return pose(V(look.x, Math.sin(el) * d, look.z + Math.cos(el) * d), look, fov, { orbit: false });
 }
+/* Enquadra os oito cantos da área jogável, incluindo a profundidade.
+   A margem vertical deixa espaço para o placar e os controles sobre o canvas. */
+function fitPlayArea(p, min, max) {
+  const back = p.pos.clone().sub(p.look).normalize();
+  const right = V(0, 1, 0).cross(back).normalize();
+  const up = back.clone().cross(right).normalize();
+  const half = Math.tan(THREE.MathUtils.degToRad(p.fov / 2));
+  let distance = p.pos.distanceTo(p.look);
+  for (const x of [min.x, max.x]) for (const y of [min.y, max.y]) for (const z of [min.z, max.z]) {
+    const offset = V(x, y, z).sub(p.look);
+    const depth = offset.dot(back);
+    distance = Math.max(distance,
+      depth + Math.abs(offset.dot(right)) / (half * camera.aspect * .88),
+      depth + Math.abs(offset.dot(up)) / (half * .62));
+  }
+  p.pos.copy(p.look).addScaledVector(back, distance);
+  return p;
+}
 function ch2Pose() {
   const a = camera.aspect, portrait = a < .9, fov = portrait ? 50 : 42;
   const look = V(15.5, portrait ? 9.5 : 7.5, -24.4);
   const dir = V(W.CAM2_DIR.x, portrait ? .3 : .26, W.CAM2_DIR.z).normalize();
   const half = Math.tan(THREE.MathUtils.degToRad(fov / 2));
   const d = Math.max(portrait ? 0 : 36, 15 / (half * Math.min(a, 1.7)));
-  return pose(look.clone().addScaledVector(dir, d), look, fov);
+  // Os quatro silos, suas etiquetas e o caminhão inteiro junto à moega.
+  return fitPlayArea(pose(look.clone().addScaledVector(dir, d), look, fov), V(-4, 0, -29), V(30, 18, -7));
 }
 function gamePose(cine) {
   const a = camera.aspect, portrait = a < .9, o = window.__gp || {};
@@ -384,7 +403,8 @@ function gamePose(cine) {
   const look = V(0, o.lookY != null ? o.lookY : .9, o.lookZ != null ? o.lookZ : (portrait ? .5 : 1.4));
   const pos = V(0, look.y + Math.sin(elev) * dist, look.z + Math.cos(elev) * dist);
   if (cine) pos.add(V(-1.5, 1.2, 2));
-  return pose(pos, look, fov);
+  // Inclui as duas pontas da esteira, o motor e as quatro caixas de destino.
+  return fitPlayArea(pose(pos, look, fov), V(BELT.x0 - 1.5, 0, -4), V(BELT.x1 + 1.5, 5, BIN.z + BIN.d));
 }
 function camTo(p, dur = 1.6) {
   cam.from = { pos: cam.pos.clone(), look: cam.look.clone(), fov: cam.fov };
