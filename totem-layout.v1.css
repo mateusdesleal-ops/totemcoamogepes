@@ -17,29 +17,29 @@ body {
 
 /* Vagas: a página inteira rola, sem um segundo contêiner de rolagem. */
 body[data-page="vagas"] .page-main--vacancies {
-  display: block;
-  height: auto;
-  min-height: 0;
-  overflow: visible;
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
 }
 
 body[data-page="vagas"] .vacancy-layout,
 body[data-page="vagas"] .vacancy-workspace {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  height: auto;
-  min-height: 0;
-  overflow: visible;
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
 }
 
 body[data-page="vagas"] .vacancy-grid {
-  display: flex;
-  flex-direction: column;
-  height: auto;
-  max-height: none;
-  overflow: visible;
-  overscroll-behavior: auto;
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  overscroll-behavior: auto !important;
 }
 
 /* Sorteio: deixa vídeo e formulário expandirem; o documento controla a rolagem. */
