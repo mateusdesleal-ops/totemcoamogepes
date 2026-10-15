@@ -270,14 +270,14 @@
   /* ---------------------------------------------------------- os mascotes se apresentam (banner principal) */
   var intro = { tap: function () {} };
   var HERO_SCRIPTS = [
-    [["left", "Olá! Eu sou o Aroldinho!", "wave"], ["right", "E eu sou o Toninho!", "wave"],
-     ["left", "Vamos jogar e descobrir a Coamo juntos?", "celebrate"], ["right", "Escolha um jogo aqui embaixo!", "talk"]],
+    [["left", "Olá! Eu sou o Mateus!", "wave"], ["right", "E eu sou o Pedrinho!", "wave"],
+     ["left", "Vamos jogar e descobrir a Coamo juntos?", "celebrate"], ["right", "Escolha um jogo aqui embaixo!", "point"]],
     [["right", "Cada jogo mostra um pedacinho da Coamo.", "talk"], ["left", "Tem quiz, memória, esteira e silos!", "celebrate"],
      ["right", "Toque em um jogo para começar.", "wave"]]
   ];
   var TAP_LINES = {
-    left: ["Eu sou o Aroldinho! Bora jogar?", "Opa! Escolhe um jogo aí!", "Aroldinho na área!"],
-    right: ["Eu sou o Toninho. Prazer!", "Estou aqui para te guiar.", "Escolha um jogo e vamos juntos."]
+    left: ["Eu sou o Mateus! Bora jogar?", "Opa! Escolhe um jogo aí!", "Mateus na área!"],
+    right: ["Eu sou o Pedrinho. Prazer!", "Estou aqui para te guiar.", "Escolha um jogo e vamos juntos."]
   };
   function heroIntro(root) {
     var bub = { left: root.querySelector(".cg-bubble--left"), right: root.querySelector(".cg-bubble--right") };

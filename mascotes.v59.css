@@ -233,8 +233,8 @@ img.cg-banner-src{ visibility:hidden !important; }
   height:62cqh; aspect-ratio:1/1;
   display:block;
 }
-.cg-banner__mascot--left { left:-5cqw; }
-.cg-banner__mascot--right{ right:-5cqw; }
+.cg-banner__mascot--left { left:-3cqw; }
+.cg-banner__mascot--right{ right:-1cqw; }
 .cg-banner__mascot.is-tappable .coamo-rig__part{ pointer-events:auto; cursor:pointer; }
 .cg-banner .coamo-rig__puppet{ filter:drop-shadow(0 1.2cqw .8cqw rgba(16,61,38,.22)); }
 

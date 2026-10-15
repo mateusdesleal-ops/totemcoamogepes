@@ -19,8 +19,8 @@
   API.speaks = !!(RIGS && Object.keys(RIGS).length && FALAS && FALAS.memory);
 
   var IMAGE_RIGS = {
-    "mascote_toninho.webp": "g_ton1", "mascote_toninho_pose2.webp": "g_ton2",
-    "mascote_aroldinho.webp": "g_aro1", "mascote_aroldinho_pose2.webp": "g_aro2"
+    "pedrinho-pose1.webp": "g_ton1", "pedrinho-pose2.webp": "g_ton2",
+    "mateus-pose1.webp": "g_aro1", "mateus-pose2.webp": "g_aro2"
   };
   var BANNERS = {
     "hero_coamo_games.webp":      { plate: "assets/mascotes/v58/b_hero_plate.webp",           rigs: ["b_hero_aro", "b_hero_ton"] },
@@ -56,29 +56,58 @@
     try { return el.animate(frames, Object.assign({ easing: "ease-in-out", fill: "none" }, opts)); } catch (e) { return null; }
   }
 
+  function atlasArt(im, L) {
+    var a = L.atlas, size = L.atlasSize || [1024, 1536];
+    im.style.backgroundImage = 'url("' + L.f + '")';
+    im.style.backgroundSize = (size[0] / a[2] * 100) + "% " + (size[1] / a[3] * 100) + "%";
+    im.style.backgroundPosition = (a[0] / (size[0] - a[2]) * 100) + "% " + (a[1] / (size[1] - a[3]) * 100) + "%";
+    im.style.transform = L.flip ? "scaleX(-1)" : "none";
+  }
+  function artPose(P, name) {
+    if (!P.R.poseFrames) return;
+    [["arm", P.R.poseFrames], ["arm2", P.R.secondFrames]].forEach(function (entry) {
+      var L = ((entry[1] || {})[name] || P.R.layers.filter(function (l) { return l.n === entry[0]; })[0]);
+      var box = P.parts[entry[0]];
+      if (!box || !L) return;
+      atlasArt(box.firstElementChild, L);
+      box.style.left = L.g[0] + "%"; box.style.top = L.g[1] + "%";
+      box.style.width = L.g[2] + "%"; box.style.height = L.g[3] + "%";
+      box.style.transformOrigin = L.p[0] + "% " + L.p[1] + "%";
+    });
+    P.root.dataset.pose = name || "idle";
+  }
+
   /* ======================================================== BONECOS */
   function buildRig(id) {
     var R = RIGS[id];
     if (!R) return null;
     var root = document.createElement("span");
     root.className = "coamo-rig";
+    if (R.character) root.dataset.character = R.character;
     root.setAttribute("aria-hidden", "true");
     var puppet = document.createElement("span");
     puppet.className = "coamo-rig__puppet";
     root.appendChild(puppet);
     var parts = {}, kids = [];
     R.layers.forEach(function (L) {
-      if (/^mouth/.test(L.n)) return; /* a boca fica sempre a original */
+      if (/^mouth/.test(L.n) && !R.speech) return;
       var box = document.createElement("span");
       box.className = "coamo-rig__part coamo-rig__part--" + L.n;
       box.style.left = L.g[0] + "%"; box.style.top = L.g[1] + "%";
       box.style.width = L.g[2] + "%"; box.style.height = L.g[3] + "%";
       box.style.zIndex = L.z || 0;
+      if (L.clip) box.style.clipPath = L.clip;
       if (L.p) box.style.transformOrigin = L.p[0] + "% " + L.p[1] + "%";
       if (L.n === "head" && R.ha) box.dataset.k = R.ha;
       if (/^arm/.test(L.n) && R.aa) box.dataset.k = R.aa;
-      var im = document.createElement("img");
-      im.src = L.f; im.alt = ""; im.draggable = false; im.decoding = "async";
+      if (L.atlas) {
+        var im = document.createElement("span");
+        im.style.cssText = "position:absolute;inset:0;display:block;background-repeat:no-repeat;pointer-events:none";
+        atlasArt(im, L);
+      } else {
+        var im = document.createElement("img");
+        im.src = L.f; im.alt = ""; im.draggable = false; im.decoding = "async";
+      }
       box.appendChild(im);
       parts[L.n] = box;
       if (L.parent) kids.push([L.parent, box]); else puppet.appendChild(box);
@@ -88,6 +117,7 @@
     root._puppet = P;
     puppets.push(P);
     scheduleBlink(P);
+    if (R.poseFrames) preload([R.poseFrames.wave.f, R.secondFrames && R.secondFrames.wave.f].filter(Boolean)).catch(function () {});
     return P;
   }
 
@@ -146,7 +176,7 @@
     if (!ids.length) return;
     img.dataset.coamoRig = "banner";
     var srcs = [B.plate];
-    ids.forEach(function (r) { RIGS[r].layers.forEach(function (L) { if (!/^mouth/.test(L.n)) srcs.push(L.f); }); });
+    ids.forEach(function (r) { RIGS[r].layers.forEach(function (L) { if (!/^mouth/.test(L.n) || RIGS[r].speech) srcs.push(L.f); }); });
     preload(srcs).then(function () {
       var ov = document.createElement("span");
       ov.className = "coamo-stage";
@@ -177,7 +207,7 @@
   function liveMascot(img, id) {
     if (img.dataset.coamoRig || !RIGS[id]) return;
     img.dataset.coamoRig = "solo";
-    preload(RIGS[id].layers.filter(function (L) { return !/^mouth/.test(L.n); }).map(function (L) { return L.f; })).then(function () {
+    preload(RIGS[id].layers.filter(function (L) { return !/^mouth/.test(L.n) || RIGS[id].speech; }).map(function (L) { return L.f; })).then(function () {
       var P = buildRig(id);
       P.root.classList.add("coamo-rig--solo");
       P.img = img;
@@ -225,6 +255,7 @@
     setTimeout(function () {
       if (shown(P)) { blink(P); if (Math.random() < 0.22) setTimeout(function () { blink(P); }, 230); }
       scheduleBlink(P);
+
     }, rand(2200, 5200));
   }
   function pup(P, frames, opts) { if (!P.banner) anim(P.puppet, frames, opts); }
@@ -236,12 +267,26 @@
       for (var i = 1; i < n; i++) fr.push({ rotate: (i % 2 ? -1.8 : 1.4) + "deg", translate: "0 " + (i % 2 ? "-1%" : "0") });
       fr.push({ rotate: "0deg", translate: "0 0" });
       anim(P.parts.head, fr, { duration: ms });
+      ["arm", "arm2"].forEach(function (key, i) {
+        anim(P.parts[key], [{ rotate: "0deg" }, { rotate: (i ? -3 : 3) + "deg" }, { rotate: "0deg" }], { duration: 650, iterations: Math.max(1, Math.round(ms / 650)) });
+      });
+      if (P.R.speech && P.parts.mouth_open) {
+        anim(P.parts.mouth_open, [{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }],
+          { duration: 280, iterations: Math.max(1, Math.round(ms / 280)), easing: "steps(1)" });
+      }
       return 300;
+    },
+    point: function (P) {
+      anim(P.parts.arm, [{ rotate: "0deg" }, { rotate: "-4deg" }, { rotate: "0deg" }], { duration: 1400 });
+      anim(P.parts.head, [{ rotate: "0deg" }, { rotate: "3deg" }, { rotate: "0deg" }], { duration: 1400 });
+      anim(P.parts.arm2, [{ rotate: "0deg" }, { rotate: "5deg" }, { rotate: "0deg" }], { duration: 1400 });
+      return 1400;
     },
     wave: function (P) {
       var u = P.R.up, a = P.parts.arm || P.parts.arm2, amp = P.R.arm === "shoulder" ? 13 : 17;
       anim(a, [{ rotate: "0deg" }, { rotate: (u * amp) + "deg" }, { rotate: (u * amp * .25) + "deg" }, { rotate: (u * amp) + "deg" }, { rotate: (u * amp * .25) + "deg" }, { rotate: "0deg" }], { duration: 1300 });
       anim(P.parts.head, [{ rotate: "0deg" }, { rotate: (-u * 3) + "deg" }, { rotate: (-u * 3) + "deg" }, { rotate: "0deg" }], { duration: 1300 });
+      anim(P.parts.arm2, [{ rotate: "0deg" }, { rotate: "-10deg" }, { rotate: "-2deg" }, { rotate: "-10deg" }, { rotate: "0deg" }], { duration: 1300 });
       pup(P, [{ translate: "0 0" }, { translate: "0 -1.2%" }, { translate: "0 0" }], { duration: 650, iterations: 2 });
       return 1300;
     },
@@ -265,6 +310,7 @@
       anim(P.parts.head, [{ rotate: "0deg" }, { rotate: (u * -7) + "deg", offset: .2 }, { rotate: (u * -8) + "deg", offset: .5 }, { rotate: (u * -7) + "deg", offset: .8 }, { rotate: "0deg" }], { duration: 2600 });
       anim(P.parts.arm, [{ rotate: "0deg" }, { rotate: (u * 4) + "deg", offset: .25 }, { rotate: (u * 5) + "deg", offset: .75 }, { rotate: "0deg" }], { duration: 2600 });
       pup(P, [{ rotate: "0deg" }, { rotate: (u * 1.2) + "deg", offset: .3 }, { rotate: (u * 1.2) + "deg", offset: .8 }, { rotate: "0deg" }], { duration: 2600 });
+      anim(P.parts.arm2, [{ rotate: "0deg" }, { rotate: "-4deg" }, { rotate: "0deg" }], { duration: 2600 });
       setTimeout(function () { blink(P, 160); }, 900);
       return 2600;
     },
@@ -273,6 +319,7 @@
       anim(P.parts.head, [{ rotate: "0deg" }, { rotate: "-5deg", offset: .18 }, { rotate: "5deg", offset: .38 }, { rotate: "-4deg", offset: .58 }, { rotate: "2deg", offset: .78 }, { rotate: "0deg" }], { duration: 950 });
       anim(P.parts.arm, [{ rotate: "0deg" }, { rotate: (-u * 8) + "deg", offset: .3 }, { rotate: (-u * 8) + "deg", offset: .7 }, { rotate: "0deg" }], { duration: 950 });
       pup(P, [{ translate: "0 0", scale: "1 1" }, { translate: "0 0", scale: "1.02 .97", offset: .25 }, { translate: "0 0", scale: "1 1" }], { duration: 700 });
+      anim(P.parts.arm2, [{ rotate: "0deg" }, { rotate: "6deg" }, { rotate: "0deg" }], { duration: 950 });
       blink(P, 340);
       return 950;
     }
@@ -281,9 +328,10 @@
     if (!P || reduce || !ACTIONS[name]) return;
     if (P.busy && !force) return;
     P.busy = true;
+    artPose(P, name);
     var ms = ACTIONS[name](P, o) || 1000;
     clearTimeout(P._busyT);
-    P._busyT = setTimeout(function () { P.busy = false; }, ms);
+    P._busyT = setTimeout(function () { P.busy = false; artPose(P, "idle"); }, ms);
   }
   function puppetOf(x) {
     if (!x) return null;
@@ -674,9 +722,9 @@
 
   /* guias nos jogos que não tinham os mascotes */
   var GUIDE_TEXT = {
-    "game-profile": ["Olá! Eu sou o Toninho.", "E eu sou o Aroldinho!"],
-    "game-memory":  ["Olá! Eu sou o Toninho.", "E eu sou o Aroldinho!"],
-    "game-chain":   ["Olá! Eu sou o Toninho.", "E eu sou o Aroldinho!"]
+    "game-profile": ["Olá! Eu sou o Pedrinho.", "E eu sou o Mateus!"],
+    "game-memory":  ["Olá! Eu sou o Pedrinho.", "E eu sou o Mateus!"],
+    "game-chain":   ["Olá! Eu sou o Pedrinho.", "E eu sou o Mateus!"]
   };
   function addGuides() {
     var text = GUIDE_TEXT[page];
@@ -686,8 +734,8 @@
     var box = document.createElement("div");
     box.className = "coamo-guides";
     box.innerHTML =
-      '<figure class="coamo-guide coamo-guide--toninho"><img src="assets/mascote_toninho_pose2.webp" alt="Toninho"><figcaption id="leftMascotSpeech" aria-live="polite">' + text[0] + '</figcaption></figure>' +
-      '<figure class="coamo-guide coamo-guide--aroldinho"><figcaption id="rightMascotSpeech" aria-live="polite">' + text[1] + '</figcaption><img src="assets/mascote_aroldinho.webp" alt="Aroldinho"></figure>';
+      '<figure class="coamo-guide coamo-guide--toninho"><img src="assets/mascotes/pedrinho/pedrinho-pose2.webp" alt="Pedrinho"><figcaption id="leftMascotSpeech" aria-live="polite">' + text[0] + '</figcaption></figure>' +
+      '<figure class="coamo-guide coamo-guide--aroldinho"><figcaption id="rightMascotSpeech" aria-live="polite">' + text[1] + '</figcaption><img src="assets/mascotes/mateus/mateus-pose1.webp" alt="Mateus"></figure>';
     var anchor = panel.querySelector(".memory-status, .game-progress, #chainTrack, .profile-game");
     if (anchor && anchor.parentElement === panel) panel.insertBefore(box, anchor);
     else { var poster = panel.querySelector(".game-stage-poster-v34"); if (poster) poster.insertAdjacentElement("afterend", box); else panel.insertBefore(box, panel.firstChild); }
