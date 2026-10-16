@@ -13,9 +13,9 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { ICONS } from "./jornada-icones.v1.js";
-import { createMaquinas } from "./jornada-maquinas.v1.js?v=1.1";
-import { createCenario3D } from "./jornada-cenario3d.v1.js?v=1.0";
-import { createWorld, V } from "./jornada-mundo.v1.js?v=2.7";
+import { createMaquinas } from "./jornada-maquinas.v1.js?v=1.2";
+import { createCenario3D } from "./jornada-cenario3d.v1.js?v=1.1";
+import { createWorld, V } from "./jornada-mundo.v1.js?v=2.8";
 import { createCh2, STORY2 } from "./jornada-cap2.v1.js?v=1.9";
 import { createCh3, STORY3 } from "./jornada-cap3.v1.js?v=2.1";
 import { createCh4, STORY4 } from "./jornada-cap4.v1.js?v=2.0";
@@ -68,7 +68,7 @@ const CHAPTERS = [
 
 const GAMES = [
   { id: "classificacao", label: "NOVO · 3D", title: "Desafio da Classificação", text: "Separe soja, milho, trigo e impurezas na esteira.", img: "assets/jornada/capa-jornada.webp", play: "ch1", isNew: true },
-  { id: "silo3d", label: "NOVO · 3D", title: "Corrida contra a chuva", text: "Guarde cada carga no silo certo antes do temporal.", img: "assets/jornada/unidade-coamo-v1.webp", play: "ch2", isNew: true },
+  { id: "silo3d", label: "NOVO · 3D", title: "Corrida contra a chuva", text: "Guarde cada carga no silo certo antes do temporal.", img: "assets/jornada/unidade-coamo-frota-v2.webp", play: "ch2", isNew: true },
   { id: "memoria3d", label: "NOVO · 3D", title: "O arquivo da Coamo", text: "Jogo da memória com curiosidades sobre a Coamo.", img: "assets/jornada/capa-memoria.webp", play: "ch4", isNew: true },
   { id: "cadeia3d", label: "NOVO · 3D", title: "Do grão ao mercado", text: "Trace a rota da soja, do trigo e do milho até o destino.", img: "assets/jornada/capa-rotas.webp", play: "ch3", isNew: true },
   { id: "quiz", label: "NOVO · 3D · QUIZ", title: "Onde você brilha", text: "Descubra a área da Coamo que mais combina com você.", img: "assets/jornada/capa-quiz.webp", play: "ch5", isNew: true, noRank: true },
