@@ -1,12 +1,12 @@
 /* =========================================================
    COAMO GAMES — JORNADA DA SAFRA · MÁQUINAS 3D (v1)
-   - Caminhão graneleiro (GLB) no lugar do caminhão procedural,
-     com a placa da Coamo na caçamba.
+   - Bitrens da frota Coamo em geometria nativa, cabine branca e lona azul.
    - Trator (plantio) e colheitadeira (colheita) andando pelas
      lavouras com dirigir(), soltando poeira leve.
    Se algum GLB não carregar, a cena segue com a geometria atual.
    ========================================================= */
 import * as THREE from "three";
+import { createCoamoTruck } from "./jornada-frota.v1.js?v=1.0";
 import { carregarModelo, dirigir, definirSombras } from "./modelos3d.v1.js?v=1.1";
 
 /* placa branca com a logo da Coamo (identidade visual nas máquinas) */
@@ -95,21 +95,10 @@ export function createMaquinas(W) {
   const maquinas = [];
   let detalhe = "high", t0 = 0;
 
-  /* ---------- caminhões: graneleiro (pátio) e basculante (frota da estrada) ---------- */
-  const placaM = new THREE.MeshStandardMaterial({ map: placaTex, roughness: .5, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2 });
-  [["caminhao", "base"], ["basculante", "basculante"]].forEach(([nome, variante]) => {
-    carregarModelo(nome).then(ctl => {
-      const proto = ctl.obj;
-      /* placa da Coamo nas laterais da caçamba (caçamba fica na parte de trás: z negativo do modelo) */
-      const box = new THREE.Box3().setFromObject(proto), sz = box.getSize(new THREE.Vector3());
-      for (const sx of [-1, 1]) {
-        const p = new THREE.Mesh(new THREE.PlaneGeometry(sz.z * .36, sz.z * .135), placaM);
-        p.position.set(sx * (sz.x / 2 + .03), sz.y * .58, box.min.z + sz.z * .3);
-        p.rotation.y = sx * Math.PI / 2; proto.add(p);
-      }
-      W.setTruckModel(proto, variante);
-    }).catch(e => console.warn(`[maquinas] ${nome} GLB indisponível, mantendo o procedural`, e));
-  });
+  /* Frota aprovada: mesmo bitrem em todos os caminhões da unidade e estrada. */
+  const fleet = createCoamoTruck(W);
+  W.setTruckModel(fleet, "base");
+  W.setTruckModel(fleet, "basculante");
 
   /* ---------- trator (plantio, lavoura de soja) e colheitadeira (colheita, trigo) ---------- */
   const PLANO = [

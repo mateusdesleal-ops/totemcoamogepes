@@ -654,8 +654,13 @@ export function createWorld(renderer) {
     if (g.userData.glb) g.remove(g.userData.glb);
     g.children.forEach(c => { if (c !== g.userData.blob) c.visible = false; });
     const holder = new THREE.Group(); holder.rotation.y = Math.PI / 2;   /* modelo olha para +z; caminhão da cena anda para +x */
-    holder.add(proto.clone(true)); g.add(holder);
-    g.userData.blob.scale.set(.66, 1.1, 1);
+    const model = proto.clone(true); holder.add(model); g.add(holder);
+    g.userData.wheels = [];
+    model.traverse(o => { if (o.name === "fleet-wheel") g.userData.wheels.push(o); });
+    const heap = model.getObjectByName("fleet-heap");
+    if (heap) g.userData.heap = heap;
+    g.userData.fleet = true;
+    g.userData.blob.scale.set(1, 1.1, 1);
     g.userData.glb = holder; g.userData.glbFrom = proto;
   }
   function setTruckModel(proto, variante = "base") { truckProtos[variante] = proto; truckList.forEach(upgradeTruck); }
@@ -1049,6 +1054,9 @@ export function createWorld(renderer) {
   const GRAIN_COLOR = { soja: "#dcb661", milho: "#f2a71b", trigo: "#c98f3c" };
   function setLoad(type) {
     const h = loadTruck.userData.heap; if (!h) return;
+    // Lona recolhida no recebimento: a carga continua visível e animada.
+    if (loadTruck.userData.glb) loadTruck.userData.glb.traverse(o => { if (o.name === "fleet-tarp") o.visible = false; if (o.name === "fleet-rolled-tarp") o.visible = true; });
+    h.visible = true;
     h.material = h.material.clone(); h.material.color.set(GRAIN_COLOR[type] || "#e0b54a");
     loadTruck.userData.bounce = 1;
   }

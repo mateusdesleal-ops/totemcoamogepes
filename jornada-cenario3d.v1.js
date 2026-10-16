@@ -12,7 +12,7 @@
    ========================================================= */
 import * as THREE from "three";
 import { carregarModelo } from "./modelos3d.v1.js?v=1.1";
-import { placaCoamo } from "./jornada-maquinas.v1.js?v=1.1";
+import { placaCoamo } from "./jornada-maquinas.v1.js?v=1.2";
 
 export function createCenario3D(W, { regiao } = {}) {
   const { scene, world, STATIONS, SEA, terrainH } = W;
