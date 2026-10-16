@@ -416,13 +416,24 @@ export function createWorld(renderer) {
       add(CY(.55, .7, .9, 16), roofM, 0, Hs + roofH + 1, 0, g);
       add(CY(.3, .3, .5, 12), stiff, 0, Hs + roofH + 1.6, 0, g);
       /* escada em caracol */
-      const stepM = std("step", { color: "#9aa3a7", metalness: .7, roughness: .45 });
+      const stepM = std("step", { color: "#f4c22e", metalness: .3, roughness: .45 });
       for (let k = 0; k < 44; k++) { const a = k * .16 + i, y = .8 + k * (Hs - .4) / 44; const s = add(new THREE.BoxGeometry(.9, .06, .32), stepM, Math.cos(a) * (R + .55), y, Math.sin(a) * (R + .55), g); s.rotation.y = -a; }
       /* logo Coamo no silo da frente */
       if (i === 1 || i === 3) {
         const logo = new THREE.Mesh(new THREE.CylinderGeometry(R + .03, R + .03, 2.3, 48, 1, true, -.62, 1.24), new THREE.MeshStandardMaterial({ map: logoTex, transparent: true, roughness: .5, metalness: .2 }));
         logo.position.y = Hs - 2.4; logo.rotation.y = Math.PI / 2 + .25; g.add(logo);
       }
+    });
+    /* Galeria horizontal com guarda-corpos e descidas aos silos. */
+    const gallery = new THREE.Group(); world.add(gallery);
+    add(new THREE.BoxGeometry(24, .8, 1.1), galv, 15.5, 19.8, -24.2, gallery);
+    for (const z of [-24.95, -23.45]) {
+      add(new THREE.BoxGeometry(24, .09, .09), yellow, 15.5, 20.9, z, gallery);
+      for (let x = 3.5; x <= 27.5; x += 2) add(new THREE.BoxGeometry(.07, 1.1, .07), yellow, x, 20.35, z, gallery);
+    }
+    xs.forEach(x => {
+      add(new THREE.CylinderGeometry(.23, .23, 3, 10), steel, x, 18.2, -24.2, gallery);
+      for (const z of [-25.05, -23.35]) add(new THREE.BoxGeometry(.12, 3.7, .12), steel, x, 18.1, z, gallery);
     });
     /* torre do elevador em treliça */
     const tower = new THREE.Group(); tower.position.set(-1.5, 0, -26); world.add(tower);
@@ -447,29 +458,48 @@ export function createWorld(renderer) {
     });
   }
 
-  /* ===================================================== armazém graneleiro */
+  /* Unidade inspirada em Ivaílândia: fachada baixa de tijolos e platibanda azul.
+     Mantém livres a moega, a balança e os quatro alvos interativos. */
   {
-    const g = new THREE.Group(); g.position.set(-14, 0, -19); world.add(g);
-    TEX.ribN.repeat.set(14, 2);
-    const wall = new THREE.MeshStandardMaterial({ color: "#f1f2ee", roughness: .55, metalness: .25, normalMap: TEX.ribN });
-    add(RB(22, 7, 11, .35, 4), wall, 0, 3.5, 0, g);
-    add(RB(22.25, 1.4, 11.25, .4, 4), std("wallBand", { color: "#1d5fa8", roughness: .5, metalness: .25, normalMap: TEX.ribN }), 0, .7, 0, g);
-    const roofShape = new THREE.Shape(); roofShape.moveTo(-6, 0); roofShape.lineTo(0, 3.1); roofShape.lineTo(6, 0); roofShape.lineTo(-6, 0);
-    const roofG = new THREE.ExtrudeGeometry(roofShape, { depth: 22.6, bevelEnabled: true, bevelThickness: .12, bevelSize: .12, bevelSegments: 3, curveSegments: 4 });
-    const roofTex = TEX.corrugN.clone(); roofTex.needsUpdate = true; roofTex.repeat.set(1, 18); roofTex.rotation = Math.PI / 2;
-    const roof = add(roofG, new THREE.MeshStandardMaterial({ color: "#2266b3", roughness: .4, metalness: .45, normalMap: roofTex }), -11.4, 7, 0, g);
-    roof.rotation.y = Math.PI / 2;
-    /* portões de enrolar */
-    const doorTex = TEX.corrugN.clone(); doorTex.needsUpdate = true; doorTex.repeat.set(2, 4);
-    const doorM = new THREE.MeshStandardMaterial({ color: "#c3c9cb", roughness: .35, metalness: .75, normalMap: doorTex });
-    [-5.5, 5.5].forEach(x => { add(RB(4.4, 4.6, .14, .05), doorM, x, 2.3, 5.52, g); add(RB(4.8, .5, .5, .2, 3), steelDark, x, 4.85, 5.6, g); });
-    /* letreiro */
-    add(RB(8, 2.1, .25, .08), white, 0, 5.7, 5.6, g);
-    const logo = new THREE.Mesh(new THREE.PlaneGeometry(6.8, 2), new THREE.MeshStandardMaterial({ map: logoTex, transparent: true, roughness: .5 }));
-    logo.position.set(0, 5.7, 5.75); g.add(logo);
-    /* calhas e luminárias */
-    add(RB(22.6, .25, .35, .1), steel, 0, 7, 5.7, g);
-    [-9, 0, 9].forEach(x => { add(RB(.7, .2, .5, .07), steelDark, x, 6.3, 5.8, g); add(new THREE.BoxGeometry(.6, .05, .4), new THREE.MeshStandardMaterial({ color: "#fff8e0", emissive: "#fff3c8", emissiveIntensity: 1.2 }), x, 6.18, 5.85, g); });
+    const g = new THREE.Group(); g.name = "unidade-coamo-ivailandia";
+    g.position.set(-16, 0, -24); world.add(g);
+    const brickTex = plateTexture((c, w, h) => {
+      c.fillStyle = "#b96f49"; c.fillRect(0, 0, w, h);
+      c.strokeStyle = "#d7b394"; c.lineWidth = 3;
+      for (let y = 0, row = 0; y <= h; y += 32, row++) {
+        c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke();
+        for (let x = (row % 2) * 48; x < w; x += 96) {
+          c.beginPath(); c.moveTo(x, y); c.lineTo(x, y + 32); c.stroke();
+        }
+      }
+    });
+    brickTex.wrapS = brickTex.wrapT = THREE.RepeatWrapping; brickTex.repeat.set(4, 1);
+    const brick = std("unitBrick", { map: brickTex, roughness: .9 });
+    add(new THREE.BoxGeometry(24, 4.2, 9), brick, 0, 2.1, 0, g);
+    add(new THREE.BoxGeometry(25, 1.6, 10), coamoGreen, 0, 4.8, 0, g);
+    add(new THREE.BoxGeometry(25.2, .18, 10.2), steel, 0, 5.68, 0, g);
+    // Painel branco: proporção original da marca, sem redesenhar a tipografia.
+    add(new THREE.BoxGeometry(6.8, 2.7, .18), white, 0, 4.8, 5.06, g);
+    const sign = add(new THREE.PlaneGeometry(6.2, 6.2 * 670 / 1478),
+      new THREE.MeshBasicMaterial({ map: logoTex, transparent: true }), 0, 4.8, 5.17, g, false);
+    sign.name = "marca-atual-coamo";
+    for (const x of [-10, -7, -4, 4, 7, 10]) {
+      add(new THREE.BoxGeometry(2.5, 1.7, .15), white, x, 2.5, 4.54, g);
+      add(new THREE.BoxGeometry(2.3, 1.5, .16), glass, x, 2.5, 4.63, g);
+      add(new THREE.BoxGeometry(.06, 1.5, .18), white, x, 2.5, 4.72, g);
+    }
+    add(new THREE.BoxGeometry(3, 3.5, .15), white, 0, 1.75, 4.55, g);
+    add(new THREE.BoxGeometry(2.8, 3.3, .18), glass, 0, 1.75, 4.65, g);
+    add(new THREE.BoxGeometry(.08, 3.3, .2), white, 0, 1.75, 4.75, g);
+    add(new THREE.BoxGeometry(25, .15, 1.8), concrete, 0, .14, 5.5, g);
+    // Totem fica ao lado do prédio, fora da rota dos caminhões e da esteira.
+    const pylon = new THREE.Group(); pylon.position.set(-30, 0, -15); world.add(pylon);
+    add(new THREE.BoxGeometry(1.1, 7.4, .8), white, 0, 3.7, 0, pylon);
+    add(new THREE.BoxGeometry(5.8, 3.2, .5), white, 0, 6.7, 0, pylon);
+    add(new THREE.PlaneGeometry(5.3, 5.3 * 670 / 1478),
+      new THREE.MeshBasicMaterial({ map: logoTex, transparent: true }), 0, 6.85, .26, pylon, false);
+    add(new THREE.BoxGeometry(5.8, .45, .54), std("brandGreen", { color: "#08743c", roughness: .6 }), 0, 5.25, 0, pylon);
+    add(new THREE.BoxGeometry(3.2, .3, 2), concrete, 0, .15, 0, pylon);
   }
 
   /* ===================================================== escritório / guarita */

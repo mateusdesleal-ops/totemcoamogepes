@@ -259,3 +259,6 @@ body[data-page="games"] .game-menu-card--ranking{ grid-column:auto !important; j
 body[data-page="games"] .game-menu-card--ranking .game-menu-card__content{ justify-content:center !important; padding:22px 20px !important; }
 body[data-page="games"] .game-menu-card--ranking .game-menu-card__content > span{ display:block !important; font-size:15px !important; line-height:1.35 !important; }
 body[data-page="games"] .game-menu-card--ranking .game-menu-card__content strong{ font-size:28px !important; }
+
+/* A unidade aprovada aparece inteira, inclusive o caminhão e o totem. */
+body[data-page="games"] .game-menu-card--journey .game-menu-card__poster{ object-fit:contain !important; background:#0b354c; }
