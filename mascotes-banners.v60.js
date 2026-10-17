@@ -97,9 +97,12 @@
       '</g>';
   }
   function skyline(id, x, y, s) {
-    /* Prédio da Coamo em vez da ilustração genérica de silos e galpão. */
-    return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')" opacity=".95">' +
-      '<image href="assets/coamo-games/predio-coamo-transparente.webp" x="0" y="-35" width="510" height="250" preserveAspectRatio="xMidYMid meet"/>' +
+    /* Trio arquitetônico: unidade de recebimento, sede e moinho de trigo. */
+    const px = x > 950 ? x - 170 : x;
+    return '<g transform="translate(' + px + ' ' + y + ') scale(' + s + ')" opacity=".97">' +
+      '<image href="assets/coamo-games/unidade-coamo-transparente.webp" x="-160" y="0" width="340" height="190" preserveAspectRatio="xMidYMid meet"/>' +
+      '<image href="assets/jornada/moinho-trigo-coamo.webp" x="360" y="-6" width="348" height="195" preserveAspectRatio="xMidYMid meet"/>' +
+      '<image href="assets/coamo-games/predio-coamo-transparente.webp" x="95" y="-58" width="355" height="250" preserveAspectRatio="xMidYMid meet"/>' +
       '</g>';
   }
 
