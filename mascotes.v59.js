@@ -65,15 +65,11 @@
   }
   function artPose(P, name) {
     if (!P.R.poseFrames) return;
-    // O torso original tem duas cavas escuras, porque foi desenhado
-    // para receber mangas. Durante gestos amplos elas ficavam à mostra
-    // como "braços extras". Ocultamos só as cavas, sem cortar o tronco.
+    // A cava é mascarada em todos os estados; o recorte é parte do rig.
     var torso = P.parts.body;
     if (torso) {
       var originalBody = P.R.layers.filter(function (l) { return l.n === "body"; })[0];
-      torso.style.clipPath = /^(wave|point|celebrate|think)$/.test(name || "")
-        ? "polygon(22% 0%,78% 0%,80% 15%,82% 32%,85% 43%,100% 55%,100% 100%,0% 100%,0% 55%,15% 43%,18% 32%,20% 15%)"
-        : (originalBody && originalBody.clip || "none");
+      torso.style.clipPath = originalBody && originalBody.clip || "none";
     }
     [["arm", P.R.poseFrames], ["arm2", P.R.secondFrames]].forEach(function (entry) {
       var L = ((entry[1] || {})[name] || P.R.layers.filter(function (l) { return l.n === entry[0]; })[0]);
@@ -83,6 +79,7 @@
       box.style.left = L.g[0] + "%"; box.style.top = L.g[1] + "%";
       box.style.width = L.g[2] + "%"; box.style.height = L.g[3] + "%";
       box.style.transformOrigin = L.p[0] + "% " + L.p[1] + "%";
+      box.style.clipPath = L.clip || "none";
     });
     P.root.dataset.pose = name || "idle";
   }

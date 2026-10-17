@@ -13,11 +13,24 @@
     think.flip = false;
     think.p = [90, 80];
 
+    // As cavas fazem parte do sprite do tronco. Elas devem permanecer
+    // escondidas inclusive nas poses paradas (antes apenas durante gestos).
+    var body = poses[id].layers.filter(function (part) { return part.n === "body"; })[0];
+    if (body) body.clip = "polygon(22% 0%,78% 0%,80% 15%,82% 32%,85% 43%,100% 55%,100% 100%,0% 100%,0% 55%,15% 43%,18% 32%,20% 15%)";
+
     // As poses recortadas precisam alcançar o ombro após a manga do
     // tronco ser ocultada; caso contrário, fica um vão entre as peças.
     ["wave", "point", "celebrate"].forEach(function (action) {
       var arm = poses[id].poseFrames[action];
       if (arm) arm.g[0] += 3.5;
+    });
+
+    // Os desenhos dos gestos incluem uma ponta triangular de manga
+    // excedente no canto inferior direito. Mantemos o tecido principal
+    // e ocultamos só essa ponta para não parecer uma peça solta.
+    ["wave", "point", "celebrate", "think"].forEach(function (action) {
+      var arm = poses[id].poseFrames[action];
+      if (arm) arm.clip = "polygon(0% 0%,100% 0%,100% 70%,97% 78%,92% 85%,85% 92%,74% 100%,0% 100%)";
     });
   });
   Object.keys(R).filter(function (id) { return /^b_.*_(aro|ton)$/.test(id); }).forEach(function (id) {
