@@ -1,0 +1,14 @@
+{
+  "name": "coamo-totem",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:ranking": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
