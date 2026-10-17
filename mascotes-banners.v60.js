@@ -107,11 +107,14 @@
     return '<g transform="translate(' + px + ' ' + y + ') scale(' + s + ')" opacity=".99">' +
       '<image href="assets/coamo-games/unidade-coamo-transparente.webp" x="-285" y="20" width="310" height="155" preserveAspectRatio="xMidYMid meet"/>' +
       '<image href="assets/coamo-games/predio-coamo-transparente.webp" x="95" y="-22" width="350" height="197" preserveAspectRatio="xMidYMid meet"/>' +
-      '<image href="assets/jornada/moinho-trigo-coamo.webp" x="520" y="13" width="300" height="169" preserveAspectRatio="xMidYMid meet"/>' +
+      /* talude de grama sobe conforme a base em perspectiva do moinho */
+      '<path d="M482 178 Q501 144 528 109 C598 127 687 165 760 188 Q813 184 859 200 L859 240 L482 240Z" fill="#b8d886"/>' +
+      '<image href="assets/jornada/moinho-trigo-coamo.webp" x="520" y="24" width="300" height="169" preserveAspectRatio="xMidYMid meet"/>' +
       /* gramados contíguos às bases: sem sombras elípticas nem ilhas soltas */
       '<path d="M-310 168 Q-235 163 -164 170 T20 169 L31 195 Q-138 188 -310 195Z" fill="#b8d886"/>' +
       '<path d="M89 166 Q182 163 270 170 T445 168 L452 194 Q268 188 89 194Z" fill="#b8d886"/>' +
-      '<path d="M510 176 Q584 171 664 175 T824 175 L828 197 Q668 190 510 197Z" fill="#b8d886"/>' +
+      /* vegetação acompanha a linha oblíqua da construção, sem criar plataforma */
+      '<path d="M518 112 C592 133 683 170 758 190 Q807 185 842 198 L846 219 Q777 207 702 187 C629 163 572 138 518 124Z" fill="#b8d886"/>' +
       '</g>';
   }
 
