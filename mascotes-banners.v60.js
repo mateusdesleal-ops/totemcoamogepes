@@ -101,19 +101,17 @@
       '</g>';
   }
   function skyline(id, x, y, s) {
-    /* Construções independentes sobre o relevo, com gramado, sombras e
-       distâncias livres: unidade à esquerda, sede ao centro, moinho à direita. */
+    /* Edifícios com escala e afastamento próprios, assentados nas colinas.
+       A vegetação em primeiro plano cobre delicadamente as suas bases. */
     var px = x > 950 ? x - 225 : (x > 850 ? x - 150 : x);
-    return '<g transform="translate(' + px + ' ' + y + ') scale(' + s + ')" opacity=".97">' +
-      '<path d="M-315 174 Q-145 161 38 174 L48 190 Q-139 183 -315 190Z" fill="#a5cd75" opacity=".55"/>' +
-      '<path d="M94 174 Q259 164 432 174 L439 192 Q268 183 94 192Z" fill="#a5cd75" opacity=".55"/>' +
-      '<path d="M508 174 Q660 164 837 174 L842 192 Q679 183 508 192Z" fill="#a5cd75" opacity=".55"/>' +
-      '<ellipse cx="-137" cy="177" rx="145" ry="10" fill="#49783a" opacity=".22"/>' +
-      '<ellipse cx="266" cy="177" rx="148" ry="10" fill="#49783a" opacity=".22"/>' +
-      '<ellipse cx="666" cy="177" rx="145" ry="10" fill="#49783a" opacity=".22"/>' +
+    return '<g transform="translate(' + px + ' ' + y + ') scale(' + s + ')" opacity=".99">' +
       '<image href="assets/coamo-games/unidade-coamo-transparente.webp" x="-285" y="20" width="310" height="155" preserveAspectRatio="xMidYMid meet"/>' +
       '<image href="assets/coamo-games/predio-coamo-transparente.webp" x="95" y="-22" width="350" height="197" preserveAspectRatio="xMidYMid meet"/>' +
-      '<image href="assets/jornada/moinho-trigo-coamo.webp" x="520" y="5" width="300" height="169" preserveAspectRatio="xMidYMid meet"/>' +
+      '<image href="assets/jornada/moinho-trigo-coamo.webp" x="520" y="13" width="300" height="169" preserveAspectRatio="xMidYMid meet"/>' +
+      /* gramados contíguos às bases: sem sombras elípticas nem ilhas soltas */
+      '<path d="M-310 168 Q-235 163 -164 170 T20 169 L31 195 Q-138 188 -310 195Z" fill="#b8d886"/>' +
+      '<path d="M89 166 Q182 163 270 170 T445 168 L452 194 Q268 188 89 194Z" fill="#b8d886"/>' +
+      '<path d="M510 176 Q584 171 664 175 T824 175 L828 197 Q668 190 510 197Z" fill="#b8d886"/>' +
       '</g>';
   }
 
