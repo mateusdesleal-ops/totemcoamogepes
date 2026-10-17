@@ -22,6 +22,10 @@
       key: "hero", title: "Coamo Games", sub: "Aprenda, jogue e descubra a Coamo de um jeito diferente.",
       left: "g_aro2", right: "g_ton2", scene: hero
     },
+    "predio-coamo-transparente.webp": {
+      key: "journey", title: "Jornada da Safra", sub: "Explore a Coamo do campo ao moinho.",
+      left: "g_aro1", right: "g_ton1", scene: journey
+    },
     "area_banner.webp": {
       key: "area", title: "Onde você brilha", sub: "Responda e descubra a área da Coamo que combina com você.",
       left: "g_aro1", right: "g_ton2", scene: area
@@ -97,12 +101,19 @@
       '</g>';
   }
   function skyline(id, x, y, s) {
-    /* Trio arquitetônico: unidade de recebimento, sede e moinho de trigo. */
-    const px = x > 950 ? x - 170 : x;
+    /* Construções independentes sobre o relevo, com gramado, sombras e
+       distâncias livres: unidade à esquerda, sede ao centro, moinho à direita. */
+    var px = x > 950 ? x - 225 : (x > 850 ? x - 150 : x);
     return '<g transform="translate(' + px + ' ' + y + ') scale(' + s + ')" opacity=".97">' +
-      '<image href="assets/coamo-games/unidade-coamo-transparente.webp" x="-160" y="0" width="340" height="190" preserveAspectRatio="xMidYMid meet"/>' +
-      '<image href="assets/jornada/moinho-trigo-coamo.webp" x="360" y="-6" width="348" height="195" preserveAspectRatio="xMidYMid meet"/>' +
-      '<image href="assets/coamo-games/predio-coamo-transparente.webp" x="95" y="-58" width="355" height="250" preserveAspectRatio="xMidYMid meet"/>' +
+      '<path d="M-315 174 Q-145 161 38 174 L48 190 Q-139 183 -315 190Z" fill="#a5cd75" opacity=".55"/>' +
+      '<path d="M94 174 Q259 164 432 174 L439 192 Q268 183 94 192Z" fill="#a5cd75" opacity=".55"/>' +
+      '<path d="M508 174 Q660 164 837 174 L842 192 Q679 183 508 192Z" fill="#a5cd75" opacity=".55"/>' +
+      '<ellipse cx="-137" cy="177" rx="145" ry="10" fill="#49783a" opacity=".22"/>' +
+      '<ellipse cx="266" cy="177" rx="148" ry="10" fill="#49783a" opacity=".22"/>' +
+      '<ellipse cx="666" cy="177" rx="145" ry="10" fill="#49783a" opacity=".22"/>' +
+      '<image href="assets/coamo-games/unidade-coamo-transparente.webp" x="-285" y="-1" width="310" height="177" preserveAspectRatio="xMidYMid meet"/>' +
+      '<image href="assets/coamo-games/predio-coamo-transparente.webp" x="110" y="-50" width="310" height="220" preserveAspectRatio="xMidYMid meet"/>' +
+      '<image href="assets/jornada/moinho-trigo-coamo.webp" x="520" y="3" width="300" height="170" preserveAspectRatio="xMidYMid meet"/>' +
       '</g>';
   }
 
@@ -114,6 +125,10 @@
   function hero(id) {
     /* no banner principal o sol é o da própria logo */
     return base(id, '', { horizon: 640, noSun: true, skyline: skyline(id, 600, 548, .72) });
+  }
+  function journey(id) {
+    /* Capa desenhada para substituir a antiga imagem sintética da unidade. */
+    return base(id, '', { horizon: 640, skyline: skyline(id, 600, 538, .90) });
   }
   function area(id) {
     var boards = [
@@ -359,7 +374,7 @@
     (root || document).querySelectorAll("img").forEach(function (img) {
       var src = img.getAttribute("src") || "";
       var B = BANNERS[src.split("?")[0].split("/").pop()];
-      if (B && /games\/v4[6-9]\//.test(src)) build(img, B);
+      if (B && (/games\/v4[6-9]\//.test(src) || /coamo-games\/predio-coamo-transparente\.webp/.test(src))) build(img, B);
     });
   }
   scan();
