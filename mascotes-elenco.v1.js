@@ -12,6 +12,13 @@
     if (!think) return;
     think.flip = false;
     think.p = [90, 80];
+
+    // As poses recortadas precisam alcançar o ombro após a manga do
+    // tronco ser ocultada; caso contrário, fica um vão entre as peças.
+    ["wave", "point", "celebrate"].forEach(function (action) {
+      var arm = poses[id].poseFrames[action];
+      if (arm) arm.g[0] += 3.5;
+    });
   });
   Object.keys(R).filter(function (id) { return /^b_.*_(aro|ton)$/.test(id); }).forEach(function (id) {
     var old = R[id], parts = old.layers.filter(function (p) { return !p.parent; });
