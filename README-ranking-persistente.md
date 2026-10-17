@@ -26,7 +26,7 @@ preparação não altera `main`, `jogos.html`, o modo apresentação ou o site e
    no editor SQL do Neon. A preparação não criou banco nem executou migrações.
 2. Configurar **somente no ambiente de teste/preview** as variáveis:
    - `DATABASE_URL`: conexão privada do Neon.
-   - `RANKING_ADMIN_SECRET`: senha aleatória longa (mínimo de 20 caracteres).
+   - `RANKING_ADMIN_SECRET`: senha administrativa privada (mínimo de 12 caracteres; recomenda-se uma senha aleatória longa).
    - `RANKING_ENABLED=1`: **apenas para testar o preview quando autorizado**.
 3. Testar pelo menos dois navegadores e simular perda de internet, envio offline,
    reinício do totem, retorno da conexão, troca do Top 5, reset de um jogo e reset
