@@ -154,13 +154,20 @@ function buildRegion(W) {
     const pipe = add(CY(.5, .5, 16, 12), steel, st.x + 2, 7, st.z - 1); pipe.rotation.z = Math.PI / 2;
     const sg = sign("INDÚSTRIA", 12, 3.1); sg.position.set(st.x - 6, 10.5, st.z + 3.06); root.add(sg);
   }
-  /* ---------- moinho de trigo ---------- */
+  /* ---------- moinho de trigo: fachada Coamo com fundo transparente ---------- */
   {
-    const st = S.moinho; pad("moinho", 36, 32);
-    building(st.x - 4, st.z, 14, 26, 11, 0, 3);
-    for (let y = 4; y < 25; y += 3.2) for (let x = -5; x <= 5; x += 2.5) add(new THREE.BoxGeometry(1.4, 1.6, .1), glass, st.x - 4 + x, y, st.z + 5.56, root, false);
-    for (let k = 0; k < 3; k++) { add(CY(2.6, 2.6, 13, 28), std("silo2", { color: "#eef1f3", roughness: .32, metalness: .7 }), st.x + 9, 6.5, st.z - 8 + k * 6); add(new THREE.ConeGeometry(2.7, 1.6, 28), std("tankTop"), st.x + 9, 13.8, st.z - 8 + k * 6); }
-    const sg = sign("MOINHO", 10, 2.6); sg.position.set(st.x - 4, 22, st.z + 5.62); root.add(sg);
+    const st = S.moinho;
+    pad("moinho", 36, 32);
+    const millTexture = new THREE.TextureLoader().load("assets/jornada/moinho-trigo-coamo.webp");
+    millTexture.colorSpace = THREE.SRGBColorSpace;
+    millTexture.anisotropy = 8;
+    const mill = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: millTexture, transparent: true, alphaTest: .025, depthWrite: false
+    }));
+    mill.name = "moinho-trigo-coamo";
+    mill.position.set(st.x, 14.1, st.z);
+    mill.scale.set(50, 28.2, 1);
+    root.add(mill);
   }
   /* ---------- centro de distribuição ---------- */
   const parked = [];

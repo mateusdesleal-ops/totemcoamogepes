@@ -97,12 +97,9 @@
       '</g>';
   }
   function skyline(id, x, y, s) {
-    /* armazém e silos da cooperativa ao fundo */
+    /* Prédio da Coamo em vez da ilustração genérica de silos e galpão. */
     return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')" opacity=".95">' +
-      siloShape(0, 40, 70, 150, id + "steel") + siloShape(84, 20, 80, 170, id + "steel") + siloShape(178, 40, 70, 150, id + "steel") +
-      '<rect x="262" y="90" width="230" height="100" fill="#f4f7f5" stroke="' + C.steel2 + '" stroke-width="3"/>' +
-      '<path d="M252 92 L377 40 L502 92Z" fill="' + C.leaf + '"/>' +
-      '<rect x="300" y="130" width="40" height="60" fill="#dbe5df"/><rect x="360" y="130" width="40" height="60" fill="#dbe5df"/><rect x="420" y="130" width="40" height="60" fill="#dbe5df"/>' +
+      '<image href="assets/coamo-games/predio-coamo-transparente.webp" x="0" y="-35" width="510" height="250" preserveAspectRatio="xMidYMid meet"/>' +
       '</g>';
   }
 
