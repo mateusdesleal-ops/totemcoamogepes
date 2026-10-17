@@ -12,7 +12,7 @@ const limitBody = obj => { try { return JSON.stringify(obj).length <= 100000; } 
 function authorized(req) {
   const expected = process.env.RANKING_ADMIN_SECRET;
   const supplied = req.headers["x-ranking-admin-secret"];
-  if (typeof expected !== "string" || expected.length < 20 || typeof supplied !== "string") return false;
+  if (typeof expected !== "string" || expected.length < 12 || typeof supplied !== "string") return false;
   const a = Buffer.from(expected, "utf8");
   const b = Buffer.from(supplied, "utf8");
   return a.length === b.length && timingSafeEqual(a, b);
