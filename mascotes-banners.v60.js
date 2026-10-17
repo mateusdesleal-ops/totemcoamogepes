@@ -111,9 +111,9 @@
       '<ellipse cx="-137" cy="177" rx="145" ry="10" fill="#49783a" opacity=".22"/>' +
       '<ellipse cx="266" cy="177" rx="148" ry="10" fill="#49783a" opacity=".22"/>' +
       '<ellipse cx="666" cy="177" rx="145" ry="10" fill="#49783a" opacity=".22"/>' +
-      '<image href="assets/coamo-games/unidade-coamo-transparente.webp" x="-285" y="-1" width="310" height="177" preserveAspectRatio="xMidYMid meet"/>' +
-      '<image href="assets/coamo-games/predio-coamo-transparente.webp" x="110" y="-50" width="310" height="220" preserveAspectRatio="xMidYMid meet"/>' +
-      '<image href="assets/jornada/moinho-trigo-coamo.webp" x="520" y="3" width="300" height="170" preserveAspectRatio="xMidYMid meet"/>' +
+      '<image href="assets/coamo-games/unidade-coamo-transparente.webp" x="-285" y="20" width="310" height="155" preserveAspectRatio="xMidYMid meet"/>' +
+      '<image href="assets/coamo-games/predio-coamo-transparente.webp" x="95" y="-22" width="350" height="197" preserveAspectRatio="xMidYMid meet"/>' +
+      '<image href="assets/jornada/moinho-trigo-coamo.webp" x="520" y="5" width="300" height="169" preserveAspectRatio="xMidYMid meet"/>' +
       '</g>';
   }
 
